@@ -1,0 +1,16 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<img
+  src="/assets/icons/arrow.svg"
+  alt=""
+  aria-hidden="true"
+  width="41"
+  height="41"
+  class:list={['block h-full w-full', className]}
+/>

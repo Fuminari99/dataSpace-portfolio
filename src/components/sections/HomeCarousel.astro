@@ -1,0 +1,170 @@
+---
+import ArrowIcon from '../ui/ArrowIcon.astro';
+import { experiments } from '../../data/experiments';
+---
+
+<section class="carousel flex min-h-screen w-full flex-col justify-center" data-module="carousel">
+  <h2 class="sr-only">Experiments</h2>
+
+  <ul class="carousel__track" data-carousel-track>
+    {
+      experiments.map((experiment) => (
+        <li class="carousel__slide" data-carousel-slide>
+          <video
+            class="carousel__video"
+            data-module="lazy-video"
+            poster={experiment.video.replace(/\.mp4$/, '.jpg')}
+            role="img"
+            aria-label={`${experiment.title} visualisation`}
+            muted
+            loop
+            playsinline
+            preload="none"
+          >
+            <source data-src={experiment.video} type="video/mp4" />
+          </video>
+
+          {/* Two layers: a flat lift over the whole panel, and a gradient up
+              from the bottom edge that the caption sits in. */}
+          <div class="carousel__scrim" aria-hidden="true" />
+          <div class="carousel__shade" aria-hidden="true" />
+
+          {/* The whole panel is the link, so a click anywhere on the visual
+              opens the experiment. */}
+          <a href={experiment.href} class="carousel__link" data-carousel-link>
+            <span class="sr-only">{experiment.title}</span>
+          </a>
+
+          <div class="carousel__caption">
+            <p class="font-display text-body tracking-tight whitespace-nowrap">
+              {experiment.eyebrow}
+            </p>
+            <div class="flex flex-col gap-6">
+              <p class="font-body text-h2 font-bold tracking-tight">{experiment.title}</p>
+              <p class="prose-justified max-w-[35rem] font-body text-body tracking-tight">
+                {experiment.summary}
+              </p>
+            </div>
+          </div>
+
+          <div class="carousel__arrow">
+            <ArrowIcon />
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="mx-auto mt-4 flex w-full max-w-page justify-end gap-4 px-gutter">
+    {
+      experiments.map((experiment, index) => (
+        <button
+          type="button"
+          class="size-[1.375rem] bg-dot aria-[current=true]:bg-dot-active"
+          data-carousel-dot
+          aria-current={index === 0 ? 'true' : 'false'}
+          aria-label={`Go to ${experiment.title}`}
+        />
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .carousel {
+    --slide-height: 90vh;
+    /* Leaves 4rem either side so a slice of the neighbouring panel stays
+       visible, and never exceeds the design's 1129 x 635 proportion. */
+    --slide-width: min(calc(100% - 8rem), calc(var(--slide-height) * 1129 / 635));
+  }
+
+  .carousel__track {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel__slide {
+    position: relative;
+    flex: 0 0 auto;
+    width: var(--slide-width);
+    height: var(--slide-height);
+    overflow: hidden;
+    scroll-snap-align: center;
+    background-color: var(--color-surface);
+  }
+
+  .carousel__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .carousel__scrim {
+    position: absolute;
+    inset: 0;
+    background-color: rgb(255 255 255 / 0.1);
+  }
+
+  /* Black from the bottom edge at 80%, gone by half height — this is what the
+     white caption reads against. */
+  .carousel__shade {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to top, rgb(0 0 0 / 0.8) 0%, rgb(0 0 0 / 0) 50%);
+  }
+
+  .carousel__link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /* Sits above the link visually but lets clicks through to it. */
+  .carousel__caption {
+    color: var(--color-paper);
+    position: absolute;
+    bottom: 1.1875rem;
+    left: 1.1875rem;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-right: 1.5rem;
+    pointer-events: none;
+  }
+
+  /* The exported arrow is a black stroke. Inverting the wrapper turns it white
+     without a second asset — scoped styles cannot reach into the child
+     component's own <img>, so the filter goes here. */
+  .carousel__arrow {
+    filter: invert(1);
+    position: absolute;
+    bottom: 2.5rem;
+    left: 38rem;
+    z-index: 2;
+    width: 2.5625rem;
+    height: 2.5625rem;
+    rotate: 180deg;
+    pointer-events: none;
+  }
+
+  @media (max-width: 64rem) {
+    .carousel {
+      --slide-height: 70vh;
+      --slide-width: calc(100% - 3rem);
+    }
+
+    .carousel__arrow {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,112 @@
+@import 'tailwindcss';
+
+/* Tokens mirror the Figma text/colour styles. Components reference these only —
+   no raw hex or px sizes anywhere in the markup. */
+@theme {
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+  --color-surface: #f7f7f7;
+  --color-placeholder: #d9d9d9;
+  --color-rule: #d4d4d4;
+  --color-footer: rgba(186, 186, 186, 0.2);
+  --color-accent: #fe2959;
+  --color-dot: #e6e6e6;
+  --color-dot-active: #8a8a8a;
+
+  /* "Orbit" is the display face from the design. The body face is set in Figma
+     as Noto Emoji, which carries no Latin glyphs — Noto Sans is the family the
+     design's own span style names, so it stands in for the intended text face. */
+  --font-display: 'Orbit', ui-monospace, 'SFMono-Regular', monospace;
+  --font-body: 'Noto Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* Every size in the design is tracked at -0.05em. */
+  --tracking-tight: -0.05em;
+
+  --text-label: 1rem; /* 16px — nav, footer, captions */
+  --text-body: 1.25rem; /* 20px — running text, section labels */
+  --text-body-lg: 1.5rem; /* 24px — Ex04 / About body */
+  --text-h3: 1.5625rem; /* 25px — "Visual Archive" */
+  --text-h2: 2rem; /* 32px — home hero title */
+  --text-h1: 3.125rem; /* 50px — page title */
+
+  --spacing-gutter: 1.5rem; /* 24px page padding */
+  --spacing-section: 4rem; /* 64px section rhythm */
+
+  --container-page: 80rem; /* 1280px */
+}
+
+@layer base {
+  /* The UA rule for [hidden] is display:none, which any author display wins
+     against — a panel carrying `flex` stays visible while hidden. The tab
+     panels rely on the attribute, so it has to hold. */
+  [hidden] {
+    display: none !important;
+  }
+
+  html {
+    /* Lenis owns the scrolling; native smoothing would fight it. */
+    scroll-behavior: auto;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* While a page transition runs, the incoming container is lifted out of flow
+     so it can ride up over the outgoing one instead of stacking below it. It
+     carries its own background: the old page is still painted underneath. */
+  [data-barba='container'].is-entering {
+    position: fixed;
+    inset: 0;
+    z-index: 15;
+    overflow: hidden;
+    background-color: var(--color-paper);
+  }
+
+  /* Sits between the two pages during a transition, dimming the one being left
+     behind. Driven entirely from main.ts. */
+  .page-veil {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background-color: #000;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+}
+
+@utility sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Running copy in the design is justified. */
+@utility prose-justified {
+  text-align: justify;
+  text-justify: inter-word;
+}

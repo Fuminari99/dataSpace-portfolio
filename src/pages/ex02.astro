@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeading from '../components/sections/PageHeading.astro';
+import VisualTriptych from '../components/sections/VisualTriptych.astro';
+import WideVisualRows from '../components/sections/WideVisualRows.astro';
+import NextExperiment from '../components/sections/NextExperiment.astro';
+import { experiments } from '../data/experiments';
+
+const experiment = experiments[1];
+
+const noiseTabs = [
+  {
+    id: 'noise-grid',
+    label: 'NOISE GRID',
+    description:
+      'One noise field, sampled nine ways at once. Each cell runs the same generator with a single parameter moved — frequency, octaves, offset — so the grid reads as a contact sheet of one system rather than nine unrelated images. Laying the variants side by side makes the parameter, not the picture, the thing on display.',
+    // No noise-grid clip of Maiya's in the source folder yet; that slot falls
+    // back to the still.
+    visuals: [
+      '/assets/video/ex02-noise-fumi.mp4',
+      '/assets/video/ex02-noise-keagan.mp4',
+      undefined,
+    ],
+  },
+];
+
+const fuzzyLead =
+  'The same material let loose. Instead of sampling the noise on a grid, particles inherit their motion from it and are left to run, so the structure only shows up where enough paths happen to cross. Nothing here is drawn directly — the density is a by-product of the rules.';
+---
+
+<BaseLayout title={`${experiment.title} — Data Spaces`} description={experiment.summary}>
+  <PageHeading eyebrow={experiment.eyebrow} title={experiment.title} intro={experiment.intro} />
+
+  <VisualTriptych tabs={noiseTabs} />
+
+  <WideVisualRows
+    label="FUZZY GRID"
+    id="fuzzy-grid"
+    rows={[{ text: fuzzyLead, align: 'right' }, { align: 'right' }, { align: 'right' }]}
+    visuals={[
+      '/assets/video/ex02-fuzzy-fumi.mp4',
+      '/assets/video/ex02-fuzzy-keagan.mp4',
+      // No fuzzy-grid clip of Maiya's yet; that row falls back to the still.
+      undefined,
+    ]}
+  />
+
+  <NextExperiment />
+</BaseLayout>

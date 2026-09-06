@@ -1,0 +1,70 @@
+---
+interface Props {
+  /** Still image. Ignored when `video` is set. */
+  src?: string;
+  /** Looping clip, used in place of the still. */
+  video?: string;
+  /** First frame, shown until the clip has loaded. */
+  poster?: string;
+  /** Describes the visual for screen readers; the caption alone is just a name. */
+  alt: string;
+  /** Left-hand caption, normally the member's name. */
+  name: string;
+  /** Optional right-hand caption, e.g. the recorded count "56/3min". */
+  value?: string;
+  /** Square in the Ex01/Ex02 grids, 16:9 for the wide stills. */
+  ratio?: 'square' | 'video';
+  /** Anchor target, set where a footer link points at this figure. */
+  id?: string;
+  class?: string;
+}
+
+const {
+  src,
+  video,
+  poster,
+  alt,
+  name,
+  value,
+  ratio = 'square',
+  id,
+  class: className,
+} = Astro.props;
+---
+
+<figure id={id} class:list={['flex scroll-mt-32 flex-col gap-2', className]}>
+  <div
+    class:list={[
+      'w-full overflow-hidden bg-placeholder',
+      ratio === 'square' ? 'aspect-square' : 'aspect-video',
+    ]}
+  >
+    {
+      video ? (
+        // Loads and plays only while on screen — see the lazy-video module.
+        <video
+          class="h-full w-full object-cover"
+          data-module="lazy-video"
+          poster={poster}
+          role="img"
+          aria-label={alt}
+          muted
+          loop
+          playsinline
+          preload="none"
+        >
+          <source data-src={video} type="video/mp4" />
+        </video>
+      ) : (
+        <img src={src} alt={alt} class="h-full w-full object-cover" loading="lazy" decoding="async" />
+      )
+    }
+  </div>
+
+  <figcaption
+    class="flex w-full items-start justify-between font-body text-label leading-[1.8] tracking-[0.01em] opacity-50"
+  >
+    <span>{name}</span>
+    {value && <span class="text-right">{value}</span>}
+  </figcaption>
+</figure>

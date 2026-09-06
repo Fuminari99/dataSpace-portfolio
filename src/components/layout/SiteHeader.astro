@@ -1,0 +1,139 @@
+---
+import { home, nav } from '../../data/site';
+
+// Rendered once per page at build time; after a Barba navigation the header
+// element persists, so main.ts re-syncs the current-page marker.
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const items = [home, ...nav];
+---
+
+<header class="sticky top-0 z-20 w-full bg-paper pt-4" data-module="nav-scramble">
+  <nav
+    class="mx-auto flex max-w-page items-center justify-between py-4 font-display text-label tracking-tight"
+    aria-label="Main"
+  >
+    {
+      items.map((item, index) => (
+        // The panel is a sibling of the link rather than a child: it holds links
+        // of its own, and keeping it inside the hover target means moving the
+        // pointer down into it never closes the panel.
+        <div
+          class="nav-item"
+          data-nav-item
+          style={index === 0 ? 'margin-inline-end:auto' : undefined}
+        >
+          <a
+            href={item.href}
+            class:list={['nav-link', { 'is-current': item.href === current }]}
+            aria-current={item.href === current ? 'page' : undefined}
+            aria-label={
+              item.label === item.hoverLabel ? item.label : `${item.label}: ${item.hoverLabel}`
+            }
+            data-nav-link
+            data-label={item.label}
+            data-hover-label={item.hoverLabel}
+          >
+            {/* Reserves the short label's width so swapping in the long one on
+                hover cannot shift the rest of the bar. */}
+            <span class="nav-link__sizer" aria-hidden="true">
+              {item.label}
+            </span>
+            <span class="nav-link__text" aria-hidden="true" data-nav-text>
+              {item.label}
+            </span>
+          </a>
+
+          {item.sections.length > 0 && (
+            <div class="nav-item__sections" data-nav-sections>
+              {item.sections.map((section) => (
+                <a
+                  href={`${item.href}#${section.hash}`}
+                  class="nav-item__section"
+                  data-nav-section
+                  data-text={section.label}
+                >
+                  {section.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      ))
+    }
+  </nav>
+</header>
+
+<style>
+  nav {
+    gap: 2rem;
+    padding-inline: var(--spacing-gutter);
+  }
+
+  /* At the design's own width the bar already stops at 1280px, so the gutter
+     comes off and the items sit on the outer edges, 154px apart. */
+  @media (min-width: 80rem) {
+    nav {
+      gap: 9.625rem;
+      padding-inline: 0;
+    }
+  }
+
+  .nav-item {
+    position: relative;
+    flex: none;
+  }
+
+  .nav-link {
+    position: relative;
+    display: inline-block;
+  }
+
+  .nav-link__sizer {
+    visibility: hidden;
+    white-space: nowrap;
+  }
+
+  /* The long label grows leftwards into the gap rather than pushing neighbours. */
+  .nav-link__text {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    white-space: nowrap;
+  }
+
+  /* "Home" anchors from the left instead, matching the design. */
+  .nav-item:first-child .nav-link__text {
+    inset-inline-end: auto;
+    inset-inline-start: 0;
+  }
+
+  .nav-item__sections {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-end: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* Matches the footer: 42px below the heading, 32px between items. The
+       padding is part of the hover target, so the gap under the label is
+       bridged and the panel does not close on the way down. */
+    gap: 2rem;
+    padding-block-start: 2.625rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .nav-item:hover .nav-item__sections,
+  .nav-item:focus-within .nav-item__sections {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @media (hover: none) {
+    .nav-item__sections {
+      display: none;
+    }
+  }
+</style>

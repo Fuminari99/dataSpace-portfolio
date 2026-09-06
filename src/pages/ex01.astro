@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeading from '../components/sections/PageHeading.astro';
+import VisualTriptych from '../components/sections/VisualTriptych.astro';
+import ConceptCollage from '../components/sections/ConceptCollage.astro';
+import NextExperiment from '../components/sections/NextExperiment.astro';
+import { experiments } from '../data/experiments';
+
+const experiment = experiments[0];
+
+// Counts the three of us recorded on the paper worksheet, over three minutes.
+// Values and visuals are in `members` order: Fumi, Keagan, Maiya.
+const tabs = [
+  {
+    id: 'breath',
+    label: 'BREATH',
+    description:
+      'Three minutes, a circle drawn for every full inhale and exhale. Fifty-six, thirty-five, sixty-four — the same stretch of time held at three noticeably different speeds. Counting it is enough to change it, which is part of what the recording captures.',
+    values: ['56/3min', '35/3min', '64/3min'],
+    visuals: [
+      '/assets/video/ex01-breath-fumi.mp4',
+      '/assets/video/ex01-breath-keagan.mp4',
+      undefined,
+    ],
+  },
+  {
+    id: 'pulse',
+    label: 'PULSE',
+    description:
+      'A hand held to the neck, one stroke drawn for every beat. This is the rhythm we had the least say over, and the fastest to record — the marks lean and compress wherever the hand fell behind what the pulse was actually doing.',
+    values: ['111/3min', '154/3min', '101/3min'],
+    visuals: [
+      '/assets/video/ex01-pulse-fumi.mp4',
+      '/assets/video/ex01-pulse-keagan.mp4',
+      undefined,
+    ],
+  },
+  {
+    id: 'blink',
+    label: 'BLINK',
+    description:
+      'Every blink marked with a small arc. This is the widest spread of the three — one hundred and eighteen against fifty-two — and the least regular: blinks arrive in clusters and gaps rather than on a beat, so the marks bunch up across the page.',
+    values: ['118/3min', '114/3min', '52/3min'],
+    visuals: [
+      '/assets/video/ex01-blink-fumi.mp4',
+      '/assets/video/ex01-blink-keagan.mp4',
+      undefined,
+    ],
+  },
+];
+---
+
+<BaseLayout title={`${experiment.title} — Data Spaces`} description={experiment.summary}>
+  <PageHeading eyebrow={experiment.eyebrow} title={experiment.title} intro={experiment.intro} />
+
+  <VisualTriptych label="Body rhythms" tabs={tabs} />
+
+  <ConceptCollage />
+
+  <NextExperiment />
+</BaseLayout>

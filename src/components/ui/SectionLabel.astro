@@ -1,0 +1,25 @@
+---
+interface Props {
+  /** Bracketed label text, e.g. "BREATH". Brackets are added here. */
+  label: string;
+  /** Anchor target for the matching footer / header-overlay link. */
+  id?: string;
+  /** Inactive members of a label group are dimmed in the design. */
+  muted?: boolean;
+  href?: string;
+}
+
+const { label, id, muted = false, href } = Astro.props;
+const Tag = href ? 'a' : 'span';
+---
+
+<Tag
+  id={id}
+  href={href}
+  class:list={[
+    'scroll-mt-32 font-body text-body tracking-tight whitespace-nowrap',
+    muted && 'opacity-50',
+  ]}
+>
+  [ {label} ]
+</Tag>

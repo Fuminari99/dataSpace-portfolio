@@ -1,0 +1,94 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+import VisualFigure from '../ui/VisualFigure.astro';
+import { members } from '../../data/site';
+
+export interface Row {
+  /** Copy set beside the visual. Omit for a visual on its own. */
+  text?: string;
+  /** Which side the visual sits on. */
+  align: 'left' | 'right';
+}
+
+interface Props {
+  label: string;
+  /** Anchor target, matching the hash the footer link uses. */
+  id?: string;
+  /** Gives each figure an id of the member's name, for the About page links. */
+  anchorMembers?: boolean;
+  /** Per-row clips, in row order; an undefined slot falls back to the still. */
+  visuals?: (string | undefined)[];
+  /** Copy above the rows, ahead of the first visual. */
+  lead?: string;
+  rows: Row[];
+  /** Vertical rhythm between rows; the two pages using this differ slightly. */
+  gap?: 'normal' | 'wide';
+}
+
+const { label, id, lead, rows, gap = 'normal', anchorMembers = false, visuals } = Astro.props;
+---
+
+<section class="w-full px-gutter py-section">
+  <div class="mx-auto flex max-w-page flex-col gap-6">
+    <SectionLabel label={label} id={id} />
+
+    {
+      lead && (
+        <p class="prose-justified max-w-[31.1875rem] font-body text-body-lg tracking-tight">
+          {lead}
+        </p>
+      )
+    }
+
+    <div
+      class:list={[
+        'flex w-full flex-col',
+        gap === 'wide' ? 'gap-[5.25rem]' : 'gap-16',
+      ]}
+    >
+      {
+        rows.map((row, index) => {
+          const member = members[index % members.length];
+          const figure = (
+            <VisualFigure
+              id={anchorMembers ? member.name.toLowerCase() : undefined}
+              src={member.visual}
+              video={visuals?.[index]}
+              poster={visuals?.[index]?.replace(/\.mp4$/, '.jpg')}
+              alt={`${label} still by ${member.name}`}
+              name={member.name}
+              ratio="video"
+              class="w-full lg:max-w-[44.3125rem]"
+            />
+          );
+          const copy = row.text ? (
+            <p class="prose-justified w-full font-body text-body-lg tracking-tight lg:max-w-[31.1875rem]">
+              {row.text}
+            </p>
+          ) : null;
+
+          return (
+            <div
+              class:list={[
+                'flex w-full flex-col items-start gap-8 lg:flex-row lg:items-center lg:justify-between',
+                !copy && row.align === 'right' && 'lg:justify-end',
+              ]}
+            >
+              {row.align === 'left' ? (
+                <>
+                  {figure}
+                  {copy}
+                </>
+              ) : (
+                <>
+                  {copy}
+                  {figure}
+                </>
+              )}
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,109 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+import { CANVAS, collage } from '../../data/concept-collage';
+
+// Text in the collage is 20px against a 1173px canvas; expressed in container
+// query units it keeps its proportion as the canvas scales.
+const fontSize = ((20 / CANVAS.width) * 100).toFixed(3);
+const canvasStyle = `--collage-font:${fontSize}cqw;--canvas-ratio:${CANVAS.width}/${CANVAS.height}`;
+---
+
+<section class="w-full px-gutter py-section">
+  <div class="mx-auto flex max-w-page flex-col gap-4">
+    <SectionLabel label="CONCEPT" />
+
+    <div class="collage" style={canvasStyle}>
+      {
+        collage.map((item) =>
+          item.kind === 'text' ? (
+            <p
+              class="collage__item font-body tracking-tight"
+              style={`--x:${item.x};--y:${item.y};--w:${item.w}`}
+            >
+              {item.text}
+            </p>
+          ) : (
+            <div
+              class="collage__item collage__image"
+              style={`--x:${item.x};--y:${item.y};--w:${item.w};--h:${item.h}`}
+            >
+              <img
+                src={item.src}
+                alt={item.alt}
+                loading="lazy"
+                decoding="async"
+                class:list={[item.crop && 'is-cropped']}
+                style={
+                  item.crop
+                    ? `--crop-h:${item.crop.height};--crop-top:${item.crop.top};--crop-left:${item.crop.left}`
+                    : undefined
+                }
+              />
+            </div>
+          )
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Below the breakpoint the scatter would be unreadable, so the items simply
+     stack in reading order. */
+  .collage {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .collage__item {
+    font-size: var(--text-body);
+    margin: 0;
+  }
+
+  .collage__image {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+  }
+
+  .collage__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Figma crops this frame to a window over a taller sprite sheet rather than
+     letting it cover the frame. */
+  .collage__image img.is-cropped {
+    position: absolute;
+    width: 100%;
+    max-width: none;
+    height: var(--crop-h);
+    top: var(--crop-top);
+    left: var(--crop-left);
+    object-fit: fill;
+  }
+
+  @media (min-width: 64rem) {
+    .collage {
+      display: block;
+      position: relative;
+      container-type: inline-size;
+      aspect-ratio: var(--canvas-ratio);
+    }
+
+    .collage__item {
+      position: absolute;
+      left: calc(var(--x) * 1%);
+      top: calc(var(--y) * 1%);
+      width: calc(var(--w) * 1%);
+      font-size: var(--collage-font);
+    }
+
+    .collage__image {
+      height: calc(var(--h) * 1%);
+      aspect-ratio: auto;
+    }
+  }
+</style>

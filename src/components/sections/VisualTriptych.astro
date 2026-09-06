@@ -1,0 +1,90 @@
+---
+import VisualFigure from '../ui/VisualFigure.astro';
+import { members } from '../../data/site';
+
+export interface Tab {
+  /** Doubles as the anchor target for the matching footer link. */
+  id: string;
+  label: string;
+  description?: string;
+  /** Caption value per member, in `members` order. */
+  values?: string[];
+  /** Per-member clips; a slot left undefined falls back to the still. */
+  visuals?: (string | undefined)[];
+}
+
+interface Props {
+  tabs: Tab[];
+  /** Names the tab group for assistive tech when there is more than one. */
+  label?: string;
+}
+
+const { tabs, label = 'Recordings' } = Astro.props;
+const isTabbed = tabs.length > 1;
+---
+
+<section class="w-full px-gutter py-section" data-module={isTabbed ? 'tabs' : undefined}>
+  <div class="mx-auto flex max-w-page flex-col gap-4">
+    <div class="flex flex-wrap gap-4" role={isTabbed ? 'tablist' : undefined} aria-label={isTabbed ? label : undefined}>
+      {
+        tabs.map((tab, index) =>
+          isTabbed ? (
+            <button
+              id={tab.id}
+              type="button"
+              role="tab"
+              class="scroll-mt-32 font-body text-body tracking-tight whitespace-nowrap aria-[selected=false]:opacity-50"
+              aria-selected={index === 0 ? 'true' : 'false'}
+              aria-controls={`${tab.id}-panel`}
+              tabindex={index === 0 ? 0 : -1}
+              data-tab={tab.id}
+            >
+              [ {tab.label} ]
+            </button>
+          ) : (
+            <span
+              id={tab.id}
+              class="scroll-mt-32 font-body text-body tracking-tight whitespace-nowrap"
+            >
+              [ {tab.label} ]
+            </span>
+          )
+        )
+      }
+    </div>
+
+    {
+      tabs.map((tab, index) => (
+        <div
+          id={`${tab.id}-panel`}
+          role={isTabbed ? 'tabpanel' : undefined}
+          aria-labelledby={isTabbed ? tab.id : undefined}
+          tabindex={isTabbed ? 0 : undefined}
+          data-tab-panel={tab.id}
+          hidden={index !== 0}
+          class="flex flex-col gap-6"
+        >
+          {tab.description && (
+            <p class="prose-justified max-w-[34.9375rem] font-body text-body tracking-tight">
+              {tab.description}
+            </p>
+          )}
+
+          <div class="flex flex-col items-center justify-between gap-12 md:flex-row md:gap-8">
+            {members.map((member, memberIndex) => (
+              <VisualFigure
+                src={member.visual}
+                video={tab.visuals?.[memberIndex]}
+                poster={tab.visuals?.[memberIndex]?.replace(/\.mp4$/, '.jpg')}
+                alt={`${tab.label} visualisation by ${member.name}`}
+                name={member.name}
+                value={tab.values?.[memberIndex]}
+                class="w-full max-w-[20rem]"
+              />
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>

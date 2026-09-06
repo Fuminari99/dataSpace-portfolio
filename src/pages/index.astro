@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AccentWash from '../components/sections/AccentWash.astro';
+import HomeCarousel from '../components/sections/HomeCarousel.astro';
+import VisualArchive from '../components/sections/VisualArchive.astro';
+import GradientGrid from '../components/sections/GradientGrid.astro';
+import NextExperiment from '../components/sections/NextExperiment.astro';
+---
+
+<BaseLayout
+  title="Data Spaces"
+  description="A web archive of experiments in collecting, quantifying and giving form to data, by Fumi, Keagan and Maiya."
+>
+  <div class="relative w-full">
+    <AccentWash />
+
+    <div class="relative flex w-full flex-col items-center">
+      <HomeCarousel />
+      <VisualArchive />
+      <GradientGrid />
+      <NextExperiment />
+    </div>
+  </div>
+</BaseLayout>

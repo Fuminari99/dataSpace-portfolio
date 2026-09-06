@@ -1,0 +1,55 @@
+---
+import '../styles/global.css';
+import SiteHeader from '../components/layout/SiteHeader.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = '' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Orbit&display=swap"
+    />
+  </head>
+
+  <body data-barba="wrapper" class="flex min-h-screen flex-col">
+    {/*
+      Header and footer live inside the Barba container, not outside it. Kept
+      outside they persist across a swap, which sounds tidy but breaks the
+      transition: the chrome stays nailed in place while the page slides up
+      underneath it, and the old page's header sits on top of the new one.
+      Inside the container each page carries its own, so the whole thing moves
+      as one piece. They are still defined once, here — this is a layout in
+      every sense except where the markup ends up in the DOM.
+    */}
+    <div data-barba="container" data-barba-namespace="default" class="flex flex-1 flex-col">
+      <SiteHeader />
+
+      <main class="flex flex-1 flex-col items-center">
+        <slot />
+      </main>
+
+      <SiteFooter />
+    </div>
+
+    <script>
+      import '../scripts/main';
+    </script>
+  </body>
+</html>

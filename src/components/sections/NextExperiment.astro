@@ -1,0 +1,14 @@
+---
+import { nextPage } from '../../data/site';
+
+const { href, label } = nextPage(Astro.url.pathname.replace(/\/$/, '') || '/');
+---
+
+<section class="flex w-full flex-col items-center gap-4 px-gutter py-section">
+  <a href={href} class="flex w-full max-w-[62.25rem] flex-col items-center gap-4">
+    <div class="aspect-[996/560] w-full bg-surface"></div>
+    <span class="font-display text-body tracking-tight whitespace-nowrap">
+      → Go to {label}
+    </span>
+  </a>
+</section>

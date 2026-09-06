@@ -1,0 +1,23 @@
+---
+const tiles = 6;
+---
+
+<section class="w-full py-section">
+  <div class="mx-auto flex max-w-page flex-col gap-32 px-gutter lg:px-[8.875rem]">
+    <div class="flex flex-col items-start justify-between gap-8 lg:flex-row">
+      <h2 class="font-display text-h3 tracking-tight whitespace-nowrap">Visual Archive</h2>
+
+      <div class="prose-justified flex max-w-[38.0625rem] flex-col font-body text-body tracking-tight">
+        <p>An accumulation of recorded moments, translated into form.</p>
+        <p>
+          Across analogue and computational processes, data is collected, rearranged and
+          transformed, revealing the variations through which each visual language emerges.
+        </p>
+      </div>
+    </div>
+
+    <ul class="grid grid-cols-2 gap-x-16 gap-y-24 sm:grid-cols-3 lg:gap-x-56 lg:gap-y-36">
+      {Array.from({ length: tiles }, () => <li class="aspect-square bg-surface" />)}
+    </ul>
+  </div>
+</section>

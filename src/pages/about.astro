@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeading from '../components/sections/PageHeading.astro';
+import WideVisualRows from '../components/sections/WideVisualRows.astro';
+import NextExperiment from '../components/sections/NextExperiment.astro';
+
+const intro = [
+  'Data Spaces is a three-week project in the second year of BA Design Communication at LASALLE College of the Arts, run across nine sessions.',
+  'The brief asks what happens when data — usually treated as a technical matter — is collected, quantified and given form by designers instead, in physical and digital registers alike.',
+];
+
+const lead =
+  'Each experiment answers a brief handed out at the start of a session and has to be finished before the next one. What is archived here is a set of quick decisions rather than resolved outcomes, which is the point: the work is meant to be looked back on as a body, not defended one piece at a time.';
+
+const rows = [
+  {
+    text: 'The recordings begin by hand. Breath, pulse and blink were counted on paper over three minutes before anything was written, and those counts stayed the source material as the work moved into p5.js, TouchDesigner and Arduino.',
+    align: 'right' as const,
+  },
+  {
+    text: 'Working as three meant the same brief produced three readings of it every time. Rather than resolving them into one house style, the archive keeps them side by side — the differences between us are the most legible data in the project.',
+    align: 'left' as const,
+  },
+];
+---
+
+<BaseLayout title="About — Data Spaces" description={intro[0]}>
+  <PageHeading title="About" id="class" intro={intro} />
+
+  <WideVisualRows
+    label="Conceptualisation"
+    id="conceptualisation"
+    lead={lead}
+    gap="wide"
+    anchorMembers
+    rows={[{ align: 'left' }, rows[0], rows[1]]}
+  />
+
+  <NextExperiment />
+</BaseLayout>

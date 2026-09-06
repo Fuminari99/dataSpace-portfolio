@@ -1,0 +1,44 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+
+interface Props {
+  label: string;
+  /** Anchor target, matching the hash the footer link uses. */
+  id?: string;
+  /** Looping clip filling the panel. */
+  video?: string;
+  poster?: string;
+  /** Describes the clip for screen readers. */
+  alt?: string;
+}
+
+const { label, id, video, poster, alt } = Astro.props;
+---
+
+<section class="w-full px-gutter py-section">
+  <div class="mx-auto flex max-w-page flex-col gap-6">
+    <SectionLabel label={label} id={id} />
+
+    <div class="flex w-full flex-col items-center justify-center">
+      <div class="aspect-[1024/530] w-full max-w-[64rem] overflow-hidden bg-placeholder">
+        {
+          video && (
+            <video
+              class="h-full w-full object-cover"
+              data-module="lazy-video"
+              poster={poster}
+              role="img"
+              aria-label={alt ?? label}
+              muted
+              loop
+              playsinline
+              preload="none"
+            >
+              <source data-src={video} type="video/mp4" />
+            </video>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
