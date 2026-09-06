@@ -4,7 +4,13 @@ export interface Experiment {
   href: string;
   /** Short line used on the home carousel. */
   summary: string;
-  /** Looping clip behind the home carousel panel. */
+  /**
+   * Looping clip behind the home carousel panel. Vercel serves everything under
+   * `public/` as `immutable` for a year, so replacing a clip's contents leaves
+   * every browser that has already seen it on the old one — the path has to
+   * change too. Bump the `-vN` suffix when the footage changes, and leave it
+   * alone when it does not.
+   */
   video: string;
   /** One or two columns of intro copy on the experiment's own page. */
   intro: string[];
@@ -36,7 +42,7 @@ export const experiments: Experiment[] = [
     eyebrow: '[EX.02]',
     title: 'Procedural Data',
     href: '/ex02',
-    video: '/assets/video/home-ex02.mp4',
+    video: '/assets/video/home-ex02-v2.mp4',
     summary:
       'Procedural systems in TouchDesigner, where noise, particle behaviour and repeated geometry drive visual change.',
     intro: [
@@ -52,7 +58,7 @@ export const experiments: Experiment[] = [
     eyebrow: '[EX.03]',
     title: 'Data Expression',
     href: '/ex03',
-    video: '/assets/video/home-ex03.mp4',
+    video: '/assets/video/home-ex03-v2.mp4',
     summary:
       'The same body rhythms rebuilt as a three-layer soundtrack, which is then handed back to TouchDesigner to draw the image.',
     intro: [
@@ -68,7 +74,7 @@ export const experiments: Experiment[] = [
     eyebrow: '[EX.04]',
     title: 'Sensory Data',
     href: '/ex04',
-    video: '/assets/video/home-ex04.mp4',
+    video: '/assets/video/home-ex04-v2.mp4',
     summary:
       'A touch sensor on an everyday object, read into the browser through an Arduino, so contact becomes something visible.',
     intro: [

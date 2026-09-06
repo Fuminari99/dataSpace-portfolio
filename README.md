@@ -194,7 +194,13 @@ to about 35MB. Clips load and play only while on screen and pause when scrolled 
 (`lazy-video` in `scripts/register.ts`).
 
 Swapping a clip is a one-line change: every slot takes a path, and any slot left `undefined` falls
-back to the still image. Ex01 tabs use the `visuals` array per tab, Ex02's rows use `visuals` on
+back to the still image.
+
+One catch on deploy. Astro copies `public/` through verbatim — no content hash — and Vercel serves
+it as `public, max-age=31536000, immutable`, which browsers honour without even revalidating. Drop
+new footage in at the same filename and everyone who has already seen the site keeps the old clip
+for a year. The home clips therefore carry a `-vN` suffix: bump it when the footage changes, leave
+it alone when it does not (`home-ex01` is still unversioned because its file never changed). Ex01 tabs use the `visuals` array per tab, Ex02's rows use `visuals` on
 the section, and the single-panel pages take `video` / `poster` on `FeatureStill`.
 
 Still missing: Maiya has no clips of her own in the source folder, so her Ex01, noise-grid and
