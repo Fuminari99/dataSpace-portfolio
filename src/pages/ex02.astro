@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeading from '../components/sections/PageHeading.astro';
 import VisualTriptych from '../components/sections/VisualTriptych.astro';
-import WideVisualRows from '../components/sections/WideVisualRows.astro';
+import StickyVisualRows from '../components/sections/StickyVisualRows.astro';
 import NextExperiment from '../components/sections/NextExperiment.astro';
 import { experiments } from '../data/experiments';
 
@@ -33,10 +33,10 @@ const fuzzyLead =
 
   <VisualTriptych tabs={noiseTabs} />
 
-  <WideVisualRows
+  <StickyVisualRows
     label="FUZZY GRID"
     id="fuzzy-grid"
-    rows={[{ text: fuzzyLead, align: 'right' }, { align: 'right' }, { align: 'right' }]}
+    lead={fuzzyLead}
     visuals={[
       '/assets/video/ex02-fuzzy-fumi.mp4',
       '/assets/video/ex02-fuzzy-keagan.mp4',

@@ -1,70 +1,92 @@
 ---
 import { home, nav } from '../../data/site';
 
-// Rendered once per page at build time; after a Barba navigation the header
-// element persists, so main.ts re-syncs the current-page marker.
+interface Props {
+  /**
+   * Lifts the bar out of the flow so the page below it can start at the top of
+   * the viewport. Used by the home page, whose carousel owns the first screen:
+   * the bar stays out of sight until the carousel has been scrolled past.
+   */
+  overlay?: boolean;
+}
+
+const { overlay = false } = Astro.props;
+
+// Each page ships its own header inside the Barba container, so the current
+// page is resolved here at build time and needs no re-syncing after a swap.
 const current = Astro.url.pathname.replace(/\/$/, '') || '/';
 
 const items = [home, ...nav];
 ---
 
-<header class="sticky top-0 z-20 w-full bg-paper pt-4" data-module="nav-scramble">
+<header
+  class:list={['z-20 w-full bg-paper pt-4', overlay ? 'site-header--overlay' : 'sticky top-0']}
+  data-module={overlay ? 'nav-scramble header-reveal' : 'nav-scramble'}
+>
   <nav
     class="mx-auto flex max-w-page items-center justify-between py-4 font-display text-label tracking-tight"
     aria-label="Main"
   >
     {
-      items.map((item, index) => (
-        // The panel is a sibling of the link rather than a child: it holds links
-        // of its own, and keeping it inside the hover target means moving the
-        // pointer down into it never closes the panel.
-        <div
-          class="nav-item"
-          data-nav-item
-          style={index === 0 ? 'margin-inline-end:auto' : undefined}
-        >
-          <a
-            href={item.href}
-            class:list={['nav-link', { 'is-current': item.href === current }]}
-            aria-current={item.href === current ? 'page' : undefined}
-            aria-label={
-              item.label === item.hoverLabel ? item.label : `${item.label}: ${item.hoverLabel}`
-            }
-            data-nav-link
-            data-label={item.label}
-            data-hover-label={item.hoverLabel}
-          >
-            {/* Reserves the short label's width so swapping in the long one on
-                hover cannot shift the rest of the bar. */}
-            <span class="nav-link__sizer" aria-hidden="true">
-              {item.label}
-            </span>
-            <span class="nav-link__text" aria-hidden="true" data-nav-text>
-              {item.label}
-            </span>
-          </a>
+      items.map((item, index) => {
+        // The page you are on wears its full title permanently — that is the
+        // marker for where you are — so there is nothing left for it to swap to
+        // and it does not respond to hover.
+        const isCurrent = item.href === current;
 
-          {item.sections.length > 0 && (
-            <div class="nav-item__sections" data-nav-sections>
-              {item.sections.map((section) => (
-                <a
-                  href={`${item.href}#${section.hash}`}
-                  class="nav-item__section"
-                  data-nav-section
-                  data-text={section.label}
-                >
-                  {section.label}
-                </a>
-              ))}
-            </div>
-          )}
-        </div>
-      ))
+        return (
+          <div
+            class="nav-item"
+            data-nav-item
+            data-nav-static={isCurrent ? '' : undefined}
+            style={index === 0 ? 'margin-inline-end:auto' : undefined}
+          >
+            <a
+              href={item.href}
+              class:list={['nav-link', { 'is-current': isCurrent }]}
+              aria-current={isCurrent ? 'page' : undefined}
+              aria-label={
+                item.label === item.hoverLabel ? item.label : `${item.label}: ${item.hoverLabel}`
+              }
+              data-nav-link
+              data-label={item.label}
+              data-hover-label={item.hoverLabel}
+            >
+              {/* Reserves the short label's width so swapping in the long one on
+                  hover cannot shift the rest of the bar. The current item keeps
+                  the same reservation, so being long does not move its
+                  neighbours either. */}
+              <span class="nav-link__sizer" aria-hidden="true">
+                {item.label}
+              </span>
+              <span class="nav-link__text" aria-hidden="true" data-nav-text>
+                {isCurrent ? item.hoverLabel : item.label}
+              </span>
+            </a>
+          </div>
+        );
+      })
     }
   </nav>
 </header>
 
 <style>
+  /* Out of the flow entirely, so the section below starts at the top of the
+     viewport rather than under the bar. `visibility` rather than opacity alone
+     keeps the links out of the tab order while the bar is not on screen. */
+  .site-header--overlay {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .site-header--overlay.is-revealed {
+    opacity: 1;
+    visibility: visible;
+  }
+
   nav {
     gap: 2rem;
     padding-inline: var(--spacing-gutter);
@@ -106,34 +128,5 @@ const items = [home, ...nav];
   .nav-item:first-child .nav-link__text {
     inset-inline-end: auto;
     inset-inline-start: 0;
-  }
-
-  .nav-item__sections {
-    position: absolute;
-    inset-block-start: 100%;
-    inset-inline-end: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    /* Matches the footer: 42px below the heading, 32px between items. The
-       padding is part of the hover target, so the gap under the label is
-       bridged and the panel does not close on the way down. */
-    gap: 2rem;
-    padding-block-start: 2.625rem;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  .nav-item:hover .nav-item__sections,
-  .nav-item:focus-within .nav-item__sections {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  @media (hover: none) {
-    .nav-item__sections {
-      display: none;
-    }
   }
 </style>

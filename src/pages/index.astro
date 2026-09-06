@@ -2,22 +2,49 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import AccentWash from '../components/sections/AccentWash.astro';
 import HomeCarousel from '../components/sections/HomeCarousel.astro';
+import ProjectIntro from '../components/sections/ProjectIntro.astro';
+import ExperimentSummary from '../components/sections/ExperimentSummary.astro';
+import AboutSummary from '../components/sections/AboutSummary.astro';
 import VisualArchive from '../components/sections/VisualArchive.astro';
-import GradientGrid from '../components/sections/GradientGrid.astro';
 import NextExperiment from '../components/sections/NextExperiment.astro';
+import { experiments } from '../data/experiments';
+import { home } from '../data/site';
+
+// The home page is the whole project in one read: what the brief was, then each
+// experiment in turn, then who made it. The anchors come from the Home entry in
+// site.ts so the header panel and these sections cannot drift apart.
+const anchors = home.sections.map((section) => section.hash);
+const [background, ...rest] = anchors;
+const experimentAnchors = rest.slice(0, experiments.length);
+const team = rest[experiments.length];
 ---
 
 <BaseLayout
   title="Data Spaces"
   description="A web archive of experiments in collecting, quantifying and giving form to data, by Fumi, Keagan and Maiya."
+  overlayHeader
 >
   <div class="relative w-full">
     <AccentWash />
 
     <div class="relative flex w-full flex-col items-center">
       <HomeCarousel />
+
+      <ProjectIntro id={background} />
+
+      {
+        experiments.map((experiment, index) => (
+          <ExperimentSummary
+            experiment={experiment}
+            id={experimentAnchors[index]}
+            flipped={index % 2 === 1}
+          />
+        ))
+      }
+
+      <AboutSummary id={team} />
+
       <VisualArchive />
-      <GradientGrid />
       <NextExperiment />
     </div>
   </div>

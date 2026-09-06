@@ -1,5 +1,5 @@
 ---
-const tiles = 6;
+import { archive } from '../../data/archive';
 ---
 
 <section class="w-full py-section">
@@ -17,7 +17,33 @@ const tiles = 6;
     </div>
 
     <ul class="grid grid-cols-2 gap-x-16 gap-y-24 sm:grid-cols-3 lg:gap-x-56 lg:gap-y-36">
-      {Array.from({ length: tiles }, () => <li class="aspect-square bg-surface" />)}
+      {
+        archive.map((tile) => (
+          <li>
+            <a href={tile.href} class="flex flex-col gap-2" data-module="hover-scramble">
+              <div class="aspect-square w-full overflow-hidden bg-surface">
+                <video
+                  class="h-full w-full object-cover"
+                  data-module="lazy-video"
+                  poster={tile.video.replace(/\.mp4$/, '.jpg')}
+                  role="img"
+                  aria-label={tile.alt}
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                >
+                  <source data-src={tile.video} type="video/mp4" />
+                </video>
+              </div>
+
+              <span class="font-body text-label tracking-tight opacity-50" data-scramble-text>
+                {tile.caption}
+              </span>
+            </a>
+          </li>
+        ))
+      }
     </ul>
   </div>
 </section>

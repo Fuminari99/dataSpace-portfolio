@@ -6,9 +6,11 @@ import SiteFooter from '../components/layout/SiteFooter.astro';
 interface Props {
   title: string;
   description?: string;
+  /** Floats the header over the page instead of stacking it above. See SiteHeader. */
+  overlayHeader?: boolean;
 }
 
-const { title, description = '' } = Astro.props;
+const { title, description = '', overlayHeader = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -39,9 +41,9 @@ const { title, description = '' } = Astro.props;
       every sense except where the markup ends up in the DOM.
     */}
     <div data-barba="container" data-barba-namespace="default" class="flex flex-1 flex-col">
-      <SiteHeader />
+      <SiteHeader overlay={overlayHeader} />
 
-      <main class="flex flex-1 flex-col items-center">
+      <main class="flex flex-1 flex-col items-center" data-module="heading-scramble">
         <slot />
       </main>
 

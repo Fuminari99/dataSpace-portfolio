@@ -1,0 +1,50 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+
+interface Props {
+  /** Anchor target, matching the hash the footer and header links use. */
+  id?: string;
+}
+
+const { id } = Astro.props;
+
+// The brief asks for each of these to be used at least once. What follows is
+// what each one actually ended up carrying.
+const tools = [
+  {
+    name: 'p5.js',
+    where: 'Ex01, Ex04',
+    text: 'Drew the body rhythms from the counts we took on paper, and later took the touch sensor’s readings straight from the serial bridge into the browser.',
+  },
+  {
+    name: 'TouchDesigner',
+    where: 'Ex02, Ex03',
+    text: 'Ran the procedural work — one noise field sampled nine ways — and then the audio-reactive patch, where the mix drives the image rather than sitting beside it.',
+  },
+  {
+    name: 'Arduino',
+    where: 'Ex04',
+    text: 'A touch sensor on an ordinary object, reporting one value at a time over serial once a reading crosses the threshold set on the board.',
+  },
+];
+---
+
+<section id={id} class="w-full scroll-mt-32 px-gutter py-section">
+  <div class="mx-auto flex max-w-page flex-col gap-8">
+    <SectionLabel label="TOOLS" />
+
+    <h2 class="font-body text-h2 font-bold tracking-tight">What the work was made with</h2>
+
+    <ul class="flex flex-col gap-12 lg:flex-row lg:gap-16">
+      {
+        tools.map((tool) => (
+          <li class="flex flex-1 flex-col gap-2">
+            <p class="font-display text-body tracking-tight">{tool.name}</p>
+            <p class="font-body text-label tracking-tight opacity-50">{tool.where}</p>
+            <p class="prose-justified font-body text-body tracking-tight">{tool.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,67 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+import type { Experiment } from '../../data/experiments';
+import { nav } from '../../data/site';
+
+interface Props {
+  experiment: Experiment;
+  /** Anchor target, matching the hash the header and footer links use. */
+  id?: string;
+  /** Alternates which side the clip sits on down the page. */
+  flipped?: boolean;
+}
+
+const { experiment, id, flipped = false } = Astro.props;
+
+const entry = nav.find((item) => item.href === experiment.href);
+const longLabel = entry ? entry.longLabel : experiment.title;
+const poster = experiment.video.replace(/\.mp4$/, '.jpg');
+---
+
+<section id={id} class="w-full scroll-mt-32 px-gutter py-section">
+  <div class="mx-auto flex max-w-page flex-col gap-6">
+    <SectionLabel label={experiment.eyebrow.replace(/[[\]]/g, '')} />
+
+    <div
+      class:list={[
+        'flex w-full flex-col items-start gap-8 lg:items-center lg:justify-between',
+        flipped ? 'lg:flex-row-reverse' : 'lg:flex-row',
+      ]}
+    >
+      <div class="w-full overflow-hidden bg-placeholder lg:max-w-[44.3125rem]">
+        <video
+          class="aspect-video h-full w-full object-cover"
+          data-module="lazy-video"
+          poster={poster}
+          role="img"
+          aria-label={`${experiment.title} — a clip from the experiment`}
+          muted
+          loop
+          playsinline
+          preload="none"
+        >
+          <source data-src={experiment.video} type="video/mp4" />
+        </video>
+      </div>
+
+      <div class="flex w-full flex-col gap-6 lg:max-w-[31.1875rem]">
+        <h2 class="font-body text-h2 font-bold tracking-tight">{experiment.title}</h2>
+
+        {
+          experiment.overview.map((paragraph) => (
+            <p class="prose-justified font-body text-body tracking-tight">{paragraph}</p>
+          ))
+        }
+
+        <a
+          href={experiment.href}
+          class="font-display text-body tracking-tight whitespace-nowrap"
+          aria-label={`Read ${longLabel}: ${experiment.title}`}
+          data-module="hover-scramble"
+        >
+          → <span data-scramble-text>{longLabel}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

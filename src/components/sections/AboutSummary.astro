@@ -1,0 +1,45 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+import { members } from '../../data/site';
+
+interface Props {
+  /** Anchor target, matching the hash the header and footer links use. */
+  id?: string;
+}
+
+const { id } = Astro.props;
+
+const columns = [
+  'The project was made by three of us, and every brief produced three readings of it. Rather than resolving those into one house style, the archive keeps them side by side — the differences between us are the most legible data in the whole project.',
+  'Each experiment was answered in a session and finished before the next one, so what is collected here is a set of quick decisions rather than resolved outcomes. That is the point of the brief: the work is meant to be looked back on as a body.',
+];
+---
+
+<section id={id} class="w-full scroll-mt-32 px-gutter py-section">
+  <div class="mx-auto flex max-w-page flex-col gap-8">
+    <SectionLabel label="THE TEAM" />
+
+    <div class="flex flex-col items-start justify-between gap-8 lg:flex-row">
+      <h2 class="font-body text-h2 font-bold tracking-tight">
+        {members.map((member) => member.name).join(' · ')}
+      </h2>
+
+      <div class="flex flex-col gap-6 lg:max-w-[38.0625rem]">
+        {
+          columns.map((paragraph) => (
+            <p class="prose-justified font-body text-body tracking-tight">{paragraph}</p>
+          ))
+        }
+
+        <a
+          href="/about"
+          class="font-display text-body tracking-tight whitespace-nowrap"
+          aria-label="Read About: the class, the brief and the three of us"
+          data-module="hover-scramble"
+        >
+          → <span data-scramble-text>ABOUT</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

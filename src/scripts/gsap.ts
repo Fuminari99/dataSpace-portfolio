@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 let registered = false;
 
@@ -7,16 +8,17 @@ let registered = false;
  * Plugins have to be registered before the first tween that uses them, and
  * registering twice is harmless but pointless, so it happens once here.
  *
- * When something scroll-driven is added later, register ScrollTrigger here too
- * and forward Lenis's scroll events to `ScrollTrigger.update` — Lenis moves the
- * real window scroll, so no scroller proxy is needed.
+ * Lenis moves the real window scroll rather than transforming a wrapper, so
+ * ScrollTrigger needs no scroller proxy — it only needs telling that a scroll
+ * happened, which main.ts does by forwarding Lenis's own event to
+ * `ScrollTrigger.update`.
  */
 export function initGsap() {
   if (!registered) {
     registered = true;
-    gsap.registerPlugin(ScrambleTextPlugin);
+    gsap.registerPlugin(ScrambleTextPlugin, ScrollTrigger);
   }
   return gsap;
 }
 
-export { gsap };
+export { gsap, ScrollTrigger };

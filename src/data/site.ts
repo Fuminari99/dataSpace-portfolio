@@ -38,7 +38,10 @@ export const nav: NavEntry[] = [
     hoverLabel: 'Data Expression',
     longLabel: 'EXPERIMENT 03',
     href: '/ex03',
-    sections: [section('TITLE OF VISUALS', 'title-of-visuals')],
+    sections: [
+      section('SOUND INTO VISUALS', 'sound-into-visuals'),
+      section('Conceptualisation', 'conceptualisation'),
+    ],
   },
   {
     label: 'Ex04',
@@ -46,7 +49,7 @@ export const nav: NavEntry[] = [
     longLabel: 'EXPERIMENT 04',
     href: '/ex04',
     sections: [
-      section('TITLE OF VISUALS', 'title-of-visuals'),
+      section('TOUCH RESPONSE', 'touch-response'),
       section('Conceptualisation', 'conceptualisation'),
     ],
   },
@@ -56,21 +59,33 @@ export const nav: NavEntry[] = [
     longLabel: 'ABOUT',
     href: '/about',
     sections: [
-      section('CLASS', 'class'),
-      section('FUMI', 'fumi'),
-      section('KEAGAN', 'keagan'),
-      section('MAIYA', 'maiya'),
+      section('DESIGN PROBLEM', 'design-problem'),
+      section('DESIGN CHALLENGE', 'design-challenge'),
+      section('APPROACH', 'approach'),
+      section('THE THREE OF US', 'team'),
+      section('TOOLS', 'tools'),
     ],
   },
 ];
 
-/** The "Home" slot, which the hover variant renames to "DataSpace". */
+/**
+ * The "Home" slot, which the hover variant renames to "DataSpace". Its sections
+ * are the run-through the home page is built from — the brief, each experiment
+ * in order, then the team — and index.astro takes its anchors from here.
+ */
 export const home: NavEntry = {
   label: 'Home',
   hoverLabel: 'DataSpace',
   longLabel: 'HOME',
   href: '/',
-  sections: [],
+  sections: [
+    section('BACKGROUND', 'background'),
+    section('EX01', 'ex01-summary'),
+    section('EX02', 'ex02-summary'),
+    section('EX03', 'ex03-summary'),
+    section('EX04', 'ex04-summary'),
+    section('THE TEAM', 'team'),
+  ],
 };
 
 /** Reading order of the whole site, used to resolve the "go to next" link. */
@@ -83,14 +98,44 @@ export function nextPage(current: string) {
   return { href, label: entry ? entry.longLabel : 'HOME' };
 }
 
+export interface Rate {
+  label: string;
+  /** Count over the three minutes of the Ex01 worksheet. */
+  value: string;
+}
+
 export interface Member {
   name: string;
   visual: string;
+  /** The counts this person recorded by hand in Ex01, the project's first data. */
+  rates: Rate[];
+  /**
+   * One line about what those counts show beside the other two. Arithmetic
+   * only — nothing here is a claim about the person.
+   */
+  note: string;
 }
+
+const rate = (label: string, value: string): Rate => ({ label, value });
 
 /** The three of us, in the order the visuals are laid out across the site. */
 export const members: Member[] = [
-  { name: 'FUMI', visual: '/assets/visuals/fumi.png' },
-  { name: 'KEAGAN', visual: '/assets/visuals/keagan.png' },
-  { name: 'MAIYA', visual: '/assets/visuals/maiya.png' },
+  {
+    name: 'FUMI',
+    visual: '/assets/visuals/fumi.png',
+    rates: [rate('BREATH', '56'), rate('PULSE', '111'), rate('BLINK', '118')],
+    note: 'The most blinks of the three — 118 against Maiya’s 52 — over a breath and a pulse that both sit between the other two.',
+  },
+  {
+    name: 'KEAGAN',
+    visual: '/assets/visuals/keagan.png',
+    rates: [rate('BREATH', '35'), rate('PULSE', '154'), rate('BLINK', '114')],
+    note: 'The widest gap between two rhythms in the project: 35 breaths against 154 beats in the same three minutes, roughly four beats to a breath.',
+  },
+  {
+    name: 'MAIYA',
+    visual: '/assets/visuals/maiya.png',
+    rates: [rate('BREATH', '64'), rate('PULSE', '101'), rate('BLINK', '52')],
+    note: 'The fastest breathing and the slowest pulse of the three, and 52 blinks — fewer than half of what Fumi recorded.',
+  },
 ];

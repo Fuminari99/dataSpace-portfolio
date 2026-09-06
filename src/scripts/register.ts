@@ -1,6 +1,8 @@
 import { registerModule } from './modules';
 import './carousel';
 import './nav-scramble';
+import './heading-scramble';
+import './hover-scramble';
 import './tabs';
 
 /**
@@ -49,5 +51,31 @@ registerModule('lazy-video', (el) => {
   return () => {
     observer.disconnect();
     video.pause();
+  };
+});
+
+/**
+ * The home page's header is an overlay (see SiteHeader) so the carousel can
+ * start at the very top of the viewport. It stays off screen for as long as the
+ * carousel is in view and comes back once the page has scrolled past it.
+ */
+registerModule('header-reveal', (el) => {
+  const carousel = document.querySelector('[data-module~="carousel"]');
+
+  // No carousel to hide behind, or no observer to watch it with: show the bar
+  // rather than leave the page without navigation.
+  if (!carousel || !('IntersectionObserver' in window)) {
+    el.classList.add('is-revealed');
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) el.classList.toggle('is-revealed', !entry.isIntersecting);
+  });
+  observer.observe(carousel);
+
+  return () => {
+    observer.disconnect();
+    el.classList.remove('is-revealed');
   };
 });

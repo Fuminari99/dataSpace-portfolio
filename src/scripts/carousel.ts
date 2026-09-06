@@ -1,9 +1,20 @@
 import { mountModules, registerModule, unmountModules } from './modules';
+import { initGsap } from './gsap';
 
 /** Pointer travel, in px, before a drag counts as "move one slide". */
 const DRAG_THRESHOLD = 40;
+/**
+ * Travel before a press is treated as a drag at all. A plain click is never
+ * perfectly still — a few pixels of hand movement between press and release is
+ * normal — so this has to sit above that noise or ordinary clicks on a panel
+ * get swallowed as drags and the panel's link never opens.
+ */
+const DRAG_SLOP = 10;
 /** Fallback settle delay for browsers without the scrollend event. */
 const SETTLE_MS = 140;
+/** The panel title resolves out of a scramble as its slide takes the centre. */
+const TITLE_DURATION = 0.5;
+const TITLE_CHARS = 'upperCase';
 
 registerModule('carousel', (root) => {
   const track = root.querySelector<HTMLElement>('[data-carousel-track]');
@@ -72,10 +83,51 @@ registerModule('carousel', (root) => {
   let currentIndex = count;
   const ratios = new Map<HTMLElement, number>();
 
+  const gsap = initGsap();
+
+  /**
+   * Which experiment is showing, rather than which slide: the strip hops
+   * between a clone and its original at the same position, and that hop should
+   * not read as a change of panel.
+   */
+  let scrambledActive = -1;
+
+  const scrambleTitle = (index: number) => {
+    const title = slides[index]?.querySelector<HTMLElement>('[data-carousel-title]');
+    if (!title) return;
+
+    const text = title.dataset.title ?? title.textContent!.trim();
+    if (prefersReducedMotion()) {
+      title.textContent = text;
+      return;
+    }
+
+    gsap.killTweensOf(title);
+    // Scrambled characters carry no spaces, so the title is one unbreakable
+    // word for the length of the tween; it has to be allowed to break or it
+    // pushes out of the panel.
+    title.style.overflowWrap = 'anywhere';
+    // Starting from a single character lets the plugin tween the length too, so
+    // the title grows into place rather than arriving at full width.
+    title.textContent = 'A';
+
+    gsap.to(title, {
+      duration: TITLE_DURATION,
+      ease: 'none',
+      scrambleText: { text, chars: TITLE_CHARS, speed: 0.6 },
+      onComplete: () => title.style.removeProperty('overflow-wrap'),
+    });
+  };
+
   const setCurrent = (index: number) => {
     currentIndex = index;
     const active = index % count;
     dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === active)));
+
+    if (active !== scrambledActive) {
+      scrambledActive = active;
+      scrambleTitle(index);
+    }
   };
 
   const observer = new IntersectionObserver(
@@ -171,19 +223,28 @@ registerModule('carousel', (root) => {
     dragStartX = event.clientX;
     dragStartScroll = track.scrollLeft;
     dragStartIndex = currentIndex;
-    try {
-      track.setPointerCapture(event.pointerId);
-    } catch {
-      // No active pointer to capture; the drag still works without it.
-    }
-    // Snapping fights a manual scrollLeft, so it is off for the duration.
-    track.style.scrollSnapType = 'none';
+    // Deliberately no pointer capture here. Capturing on press retargets the
+    // click that follows onto the track, so the panel's own link never sees it
+    // and a plain click stops opening the experiment. Capture is taken only
+    // once the press has actually turned into a drag, below.
   };
 
   const onPointerMove = (event: PointerEvent) => {
     if (!dragging) return;
+
     const dx = event.clientX - dragStartX;
-    if (Math.abs(dx) > 4) dragMoved = true;
+    if (!dragMoved) {
+      if (Math.abs(dx) <= DRAG_SLOP) return;
+      dragMoved = true;
+      try {
+        track.setPointerCapture(event.pointerId);
+      } catch {
+        // No active pointer to capture; the drag still works without it.
+      }
+      // Snapping fights a manual scrollLeft, so it is off for the duration.
+      track.style.scrollSnapType = 'none';
+    }
+
     track.scrollLeft = dragStartScroll - dx;
   };
 
@@ -192,6 +253,10 @@ registerModule('carousel', (root) => {
     dragging = false;
     if (track.hasPointerCapture?.(event.pointerId)) track.releasePointerCapture(event.pointerId);
     track.style.scrollSnapType = '';
+
+    // A press that never became a drag leaves the strip alone: it is a click on
+    // the panel, and moving the carousel under it would be wrong.
+    if (!dragMoved) return;
 
     const dx = event.clientX - dragStartX;
     const step = Math.abs(dx) >= DRAG_THRESHOLD ? (dx < 0 ? 1 : -1) : 0;
@@ -234,6 +299,11 @@ registerModule('carousel', (root) => {
   return () => {
     observer.disconnect();
     window.clearTimeout(settleTimer);
+    track.querySelectorAll<HTMLElement>('[data-carousel-title]').forEach((title) => {
+      gsap.killTweensOf(title);
+      title.style.removeProperty('overflow-wrap');
+      if (title.dataset.title) title.textContent = title.dataset.title;
+    });
     track.removeEventListener('scrollend', onScrollEnd);
     track.removeEventListener('scroll', queueSettle);
     track.removeEventListener('pointerdown', onPointerDown);

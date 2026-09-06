@@ -1,0 +1,57 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+import type { Member } from '../../data/site';
+
+interface Props {
+  member: Member;
+  /** Anchor target, matching the hash the footer and header links use. */
+  id?: string;
+  /** Alternates which side the portrait sits on down the page. */
+  flipped?: boolean;
+}
+
+const { member, id, flipped = false } = Astro.props;
+---
+
+<section id={id} class="w-full scroll-mt-32 px-gutter py-section">
+  <div class="mx-auto flex max-w-page flex-col gap-6">
+    <SectionLabel label={member.name} />
+
+    <div
+      class:list={[
+        'flex w-full flex-col items-start gap-8 lg:items-center lg:justify-between',
+        flipped ? 'lg:flex-row-reverse' : 'lg:flex-row',
+      ]}
+    >
+      <img
+        src={member.visual}
+        alt={`${member.name}'s visual from the body-rhythm recordings`}
+        class="aspect-square w-full max-w-[24rem] bg-placeholder object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+
+      <div class="flex w-full flex-col gap-6 lg:max-w-[31.1875rem]">
+        <h2 class="font-body text-h2 font-bold tracking-tight">{member.name}</h2>
+
+        {/* The project's first data, and the only numbers any of us produced by
+            hand: counts taken over three minutes in Ex01. */}
+        <dl class="flex gap-12 font-body text-body tracking-tight">
+          {
+            member.rates.map((entry) => (
+              <div class="flex flex-col gap-1">
+                <dt class="text-label opacity-50">{entry.label}</dt>
+                <dd class="font-bold">
+                  {entry.value}
+                  <span class="text-label font-normal opacity-50"> /3min</span>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <p class="prose-justified font-body text-body tracking-tight">{member.note}</p>
+      </div>
+    </div>
+  </div>
+</section>

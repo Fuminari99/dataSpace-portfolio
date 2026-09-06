@@ -55,6 +55,18 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* The outgoing page is pushed into a stacking context of its own for the
+     length of the transition. Without it the header inside it keeps the z-20 it
+     needs to sit above its own page, and — because a static container creates
+     no stacking context — competes at the root instead, painting over both the
+     veil and the incoming page. Confined here, the whole outgoing page sits
+     below the veil where it belongs. */
+  [data-barba='container'].is-leaving {
+    position: relative;
+    isolation: isolate;
+    z-index: 0;
+  }
+
   /* While a page transition runs, the incoming container is lifted out of flow
      so it can ride up over the outgoing one instead of stacking below it. It
      carries its own background: the old page is still painted underneath. */

@@ -1,0 +1,53 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+import VisualFigure from '../ui/VisualFigure.astro';
+import { members } from '../../data/site';
+
+interface Props {
+  label: string;
+  /** Anchor target, matching the hash the footer link uses. */
+  id?: string;
+  /** Copy that stays on screen while the visuals move past it. */
+  lead?: string;
+  /** One clip per member, in `members` order; an undefined slot falls back to the still. */
+  visuals?: (string | undefined)[];
+}
+
+const { label, id, lead, visuals } = Astro.props;
+---
+
+<section class="w-full px-gutter py-section">
+  <div class="mx-auto flex max-w-page flex-col gap-8 lg:flex-row lg:items-start lg:gap-16">
+    {/*
+      Held in place for the length of the column beside it, so the reading stays
+      put while the visuals it describes move past. `self-start` is what gives
+      the sticky element a shorter box than the row, without which there is
+      nothing for it to travel within; the offset clears the sticky header.
+    */}
+    <div class="flex flex-col gap-6 lg:sticky lg:top-32 lg:w-[31.1875rem] lg:shrink-0 lg:self-start">
+      <SectionLabel label={label} id={id} />
+
+      {
+        lead && (
+          <p class="prose-justified font-body text-body-lg tracking-tight">{lead}</p>
+        )
+      }
+    </div>
+
+    <div class="flex w-full flex-col gap-16">
+      {
+        members.map((member, index) => (
+          <VisualFigure
+            src={member.visual}
+            video={visuals?.[index]}
+            poster={visuals?.[index]?.replace(/\.mp4$/, '.jpg')}
+            alt={`${label} still by ${member.name}`}
+            name={member.name}
+            ratio="video"
+            class="w-full"
+          />
+        ))
+      }
+    </div>
+  </div>
+</section>

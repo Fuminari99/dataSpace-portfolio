@@ -1,7 +1,14 @@
 import barba from '@barba/core';
-import { initSmoothScroll, refreshScroll, resetScroll, scrollToHash } from './smooth-scroll';
+import {
+  getLenis,
+  initSmoothScroll,
+  refreshScroll,
+  resetScroll,
+  scrollToHash,
+} from './smooth-scroll';
 import { mountModules, unmountModules } from './modules';
-import { initGsap } from './gsap';
+import { initGsap, ScrollTrigger } from './gsap';
+import { syncHeadStyles } from './head-styles';
 import './register';
 
 const gsap = initGsap();
@@ -10,6 +17,15 @@ const VEIL_S = 0.4;
 const ENTER_S = 0.9;
 const ENTER_DELAY_S = 0.2;
 const EASE = 'expo.out';
+/**
+ * How long past the animation's own length to wait before finishing the swap
+ * regardless. GSAP advances on requestAnimationFrame, which the browser stops
+ * for a background tab, so a reader who switches away mid-transition can come
+ * back to a tween that never resolved — and with it a page still pinned out of
+ * flow, the old container still in the document and the body still locked. The
+ * animation is worth losing to avoid leaving the site in that state.
+ */
+const STALL_MS = 1200;
 
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -51,10 +67,13 @@ function getGate() {
 
 /**
  * The outgoing page stays where it is, at its own scroll position, and is
- * pushed behind the veil rather than moved or faded out itself.
+ * pushed behind the veil rather than moved or faded out itself — header
+ * included, which is what `is-leaving` is for.
  */
-async function leavePage(): Promise<void> {
+async function leavePage(el: HTMLElement): Promise<void> {
   if (reduceMotion()) return;
+
+  el.classList.add('is-leaving');
 
   const sheet = getVeil();
   sheet.style.display = 'block';
@@ -81,12 +100,15 @@ async function enterPage(el: HTMLElement): Promise<void> {
   el.classList.add('is-entering');
 
   try {
-    await gsap.fromTo(
-      el,
-      { y: '100vh' },
-      { y: 0, duration: ENTER_S, delay: ENTER_DELAY_S, ease: EASE }
-    );
+    await Promise.race([
+      gsap.fromTo(el, { y: '100vh' }, { y: 0, duration: ENTER_S, delay: ENTER_DELAY_S, ease: EASE }),
+      new Promise((resolve) =>
+        window.setTimeout(resolve, (ENTER_DELAY_S + ENTER_S) * 1000 + STALL_MS)
+      ),
+    ]);
   } finally {
+    // Whichever of the two won, nothing may write to the container after this.
+    gsap.killTweensOf(el);
     // Order matters. Scroll is reset natively while the page is still pinned,
     // where the document height is irrelevant; only then does it drop back into
     // flow and Lenis re-measure against the real height.
@@ -121,6 +143,9 @@ function boot() {
   window.__dataSpacesBooted = true;
 
   initSmoothScroll();
+  // Lenis drives the real window scroll, but it does so from its own rAF loop,
+  // which fires no scroll event ScrollTrigger would otherwise see in time.
+  getLenis()?.on('scroll', ScrollTrigger.update);
   mountModules();
 
   barba.init({
@@ -131,7 +156,10 @@ function boot() {
         // Both containers live at once, which is what lets the outgoing page
         // stay put while the incoming one rides up over it.
         sync: true,
-        leave: () => leavePage(),
+        // The incoming page's own styles have to be in the document before it
+        // is shown; only its container is being swapped in, not its head.
+        beforeEnter: ({ next }) => syncHeadStyles(next.html),
+        leave: ({ current }) => leavePage(current.container),
         enter: ({ next }) => enterPage(next.container),
       },
     ],
@@ -150,6 +178,10 @@ function boot() {
     // The old container is gone by now, so this is the first point at which the
     // document has its final height.
     refreshScroll();
+    // Headings on the incoming page are hidden until their trigger fires, so
+    // ScrollTrigger has to re-measure against the new document before any of
+    // them can be reached.
+    ScrollTrigger.refresh();
     // A footer or header link can name a section on the incoming page; landing
     // there beats landing at the top.
     if (!scrollToHash(window.location.hash, true)) resetScroll();

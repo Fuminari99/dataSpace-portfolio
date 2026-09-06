@@ -1,14 +1,45 @@
 ---
 import { nextPage } from '../../data/site';
+import { experiments } from '../../data/experiments';
 
 const { href, label } = nextPage(Astro.url.pathname.replace(/\/$/, '') || '/');
+
+// The panel shows where the link goes. Home is the one destination with no
+// experiment clip of its own, so it keeps the plain surface panel.
+const destination = experiments.find((experiment) => experiment.href === href);
+const video = destination?.video;
+const poster = video?.replace(/\.mp4$/, '.jpg');
 ---
 
 <section class="flex w-full flex-col items-center gap-4 px-gutter py-section">
-  <a href={href} class="flex w-full max-w-[62.25rem] flex-col items-center gap-4">
-    <div class="aspect-[996/560] w-full bg-surface"></div>
+  <a
+    href={href}
+    class="flex w-full max-w-[62.25rem] flex-col items-center gap-4"
+    aria-label={`Go to ${label}${destination ? `: ${destination.title}` : ''}`}
+    data-module="hover-scramble"
+  >
+    <div class="aspect-[996/560] w-full overflow-hidden bg-surface">
+      {
+        video && (
+          <video
+            class="h-full w-full object-cover"
+            data-module="lazy-video"
+            poster={poster}
+            role="img"
+            aria-label={`${destination!.title} — a clip from the experiment`}
+            muted
+            loop
+            playsinline
+            preload="none"
+          >
+            <source data-src={video} type="video/mp4" />
+          </video>
+        )
+      }
+    </div>
+
     <span class="font-display text-body tracking-tight whitespace-nowrap">
-      → Go to {label}
+      → Go to <span data-scramble-text>{label}</span>
     </span>
   </a>
 </section>

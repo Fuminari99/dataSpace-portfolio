@@ -8,17 +8,18 @@ import { experiments } from '../data/experiments';
 
 const experiment = experiments[3];
 
-// Drawn from the mix notes in the project's audio folder.
+// Drawn from the workshop sketch: a touch sensor on an Arduino, read into p5
+// over a serial bridge, with the reading eased rather than used raw.
 const lead =
-  'Three layers, each locked to a rate we actually recorded. Ocean is the ground the other two are built on: 4.5 second waves under a 17 second swell, standing in for a resting 13.3 breaths a minute.';
+  'The sensor is the whole input. It reports one number many times a second, and it only speaks up once a reading crosses the threshold set on the board, so what arrives in the browser is a sparse and jumpy stream rather than a smooth signal.';
 
 const rows = [
   {
-    text: 'The train carries the pulse at 0.84 seconds a beat — 71.4 to the minute. Its two-part figure does the work of a heartbeat’s lub-dub, and the sub-bass sits in the 20 to 120Hz band where the ocean is weakest, so the beat is felt rather than heard.',
+    text: 'Nothing is drawn from the raw reading. Each frame moves five per cent of the way towards the latest value instead of jumping to it — a low-pass filter, in effect — so a hand landing on the object reads as something swelling and settling rather than as a switch being flipped.',
     align: 'right' as const,
   },
   {
-    text: 'Footsteps in sand mark the blink at an average of 3.2 seconds. They are placed on a log-normal distribution rather than a grid, sometimes doubling up, because blinking arrives in clusters. Each one ducks the other layers by 3.2dB — the sonic equivalent of vision briefly pulling back.',
+    text: 'That easing is the argument of the experiment. A sensor knows only touched or not touched, and the response is what supplies everything else: how firm the contact was, how long it lasted, whether it is still there. An ordinary object becomes sensable in the reading, not in the wiring.',
     align: 'left' as const,
   },
 ];
@@ -28,11 +29,11 @@ const rows = [
   <PageHeading eyebrow={experiment.eyebrow} title={experiment.title} intro={experiment.intro} />
 
   <FeatureStill
-    label="TITLE OF VISUALS"
-    id="title-of-visuals"
+    label="TOUCH RESPONSE"
+    id="touch-response"
     video="/assets/video/ex04-sensory.mp4"
     poster="/assets/video/ex04-sensory.jpg"
-    alt="Sensory Data — the three recorded rhythms rendered as moving line fields"
+    alt="Sensory Data — a field of lines swelling and settling under contact"
   />
 
   <WideVisualRows
