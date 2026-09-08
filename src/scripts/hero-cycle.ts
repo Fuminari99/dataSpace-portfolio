@@ -30,6 +30,13 @@ registerModule('hero-cycle', (root) => {
   }));
 
   const load = (clip: HTMLVideoElement) => {
+    // Only the first clip carries its poster down with the page; the other
+    // three are three more full stills, and none of them is on screen yet.
+    if (clip.dataset.poster) {
+      clip.poster = clip.dataset.poster;
+      delete clip.dataset.poster;
+    }
+
     for (const source of clip.querySelectorAll('source[data-src]')) {
       source.setAttribute('src', source.getAttribute('data-src')!);
       source.removeAttribute('data-src');

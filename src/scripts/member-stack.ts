@@ -4,13 +4,9 @@ import { getLenis } from './smooth-scroll';
 
 /** The portrait dissolves; it is the slowest part of the change. */
 const PORTRAIT_S = 0.7;
-/** The paragraph being left behind scrambles as it fades out. */
-const BIO_OUT_S = 0.35;
-const BIO_IN_S = 0.35;
-const SCRAMBLE_OUT_S = 0.4;
-const SCRAMBLE_IN_S = 0.7;
-const LINE_STAGGER_S = 0.06;
-const CHARS = 'upperCase';
+/** The paragraph being left goes before the next one arrives. */
+const BIO_OUT_S = 0.3;
+const BIO_IN_S = 0.4;
 /** Screens of scroll spent handing the frame from one person to the next. */
 const STEP_SCREENS = 1;
 
@@ -22,8 +18,8 @@ const STEP_SCREENS = 1;
  * The three parts of a profile change differently, because they are doing
  * different things. The list of names does not go anywhere — it only shifts
  * which name is at full strength, since it is the one fixed thing to read the
- * change against. The portrait dissolves into the next. The paragraphs resolve
- * out of a scramble, the same treatment the headings and nav labels get.
+ * change against. The portrait dissolves into the next, and the paragraphs are
+ * simply handed over: one out, the next in behind it.
  *
  * Left alone the markup is three profiles in a row down the page, so this is
  * only ever an enhancement — it is not mounted at all when the reader has asked
@@ -42,43 +38,6 @@ registerModule('member-stack', (root) => {
 
   const portraits = panels.map((panel) => panel.querySelector<HTMLElement>('[data-stack-portrait]'));
   const bios = panels.map((panel) => panel.querySelector<HTMLElement>('[data-stack-bio]'));
-  const lines = panels.map((panel) => [
-    ...panel.querySelectorAll<HTMLElement>('[data-stack-line]'),
-  ]);
-
-  /**
-   * Every word gets a span of its own, and a word is only ever scrambled into
-   * characters of its own length — so the paragraph keeps its spaces, its line
-   * breaks and its height all the way through. Scrambling the paragraph whole
-   * would replace the spaces too, leaving one unbreakable run that rewraps on
-   * every frame and shoves everything under it around.
-   */
-  const splitWords = (line: HTMLElement) => {
-    const words: HTMLElement[] = [];
-    const parts = (line.textContent ?? '').split(/(\s+)/);
-    line.textContent = '';
-
-    for (const part of parts) {
-      if (!part) continue;
-      if (/^\s+$/.test(part)) {
-        line.append(part);
-        continue;
-      }
-      const span = document.createElement('span');
-      span.textContent = part;
-      line.append(span);
-      words.push(span);
-    }
-
-    return words;
-  };
-
-  // Taken before anything is scrambled, so a tween always has the real text to
-  // resolve to however many times the reader goes back and forth.
-  const texts = lines.map((group) => group.map((line) => line.textContent ?? ''));
-  const words = lines.map((group) => group.map(splitWords));
-  const wordTexts = words.map((group) => group.map((set) => set.map((w) => w.textContent ?? '')));
-
   // Only the first panel's list stays on screen once they are stacked, so that
   // is the one driven.
   const tabs = [...panels[0].querySelectorAll<HTMLElement>('[data-stack-tab]')];
@@ -101,20 +60,6 @@ registerModule('member-stack', (root) => {
     if (next) next.disabled = current === steps;
   };
 
-  const scramble = (panel: number, duration: number, delay: number) => {
-    for (const [line, set] of words[panel].entries()) {
-      for (const [index, word] of set.entries()) {
-        gsap.killTweensOf(word);
-        gsap.to(word, {
-          duration,
-          ease: 'none',
-          delay: delay + line * LINE_STAGGER_S,
-          scrambleText: { text: wordTexts[panel][line][index], chars: CHARS, speed: 0.8 },
-        });
-      }
-    }
-  };
-
   const show = (next: number) => {
     if (next === current || !panels[next]) return;
     const from = current;
@@ -131,13 +76,9 @@ registerModule('member-stack', (root) => {
     gsap.to(portraits[from], { autoAlpha: 0, duration: PORTRAIT_S, ease: 'none' });
     gsap.to(portraits[next], { autoAlpha: 1, duration: PORTRAIT_S, ease: 'none' });
 
-    // The paragraph being left scrambles where it stands as it fades out; the
-    // one arriving fades up already scrambling, and resolves into itself.
+    // One paragraph out, the next one in behind it.
     gsap.to(bios[from], { autoAlpha: 0, duration: BIO_OUT_S });
-    scramble(from, SCRAMBLE_OUT_S, 0);
-
     gsap.to(bios[next], { autoAlpha: 1, duration: BIO_IN_S, delay: BIO_OUT_S });
-    scramble(next, SCRAMBLE_IN_S, BIO_OUT_S);
   };
 
   const trigger = ScrollTrigger.create({
@@ -208,12 +149,6 @@ registerModule('member-stack', (root) => {
     root.removeEventListener('click', onTabClick);
     trigger.kill();
     root.classList.remove('is-stacked');
-    for (const [panel, group] of lines.entries()) {
-      for (const [index, line] of group.entries()) {
-        for (const word of words[panel][index]) gsap.killTweensOf(word);
-        line.textContent = texts[panel][index];
-      }
-    }
     gsap.set([...portraits, ...bios].filter(Boolean), { clearProps: 'opacity,visibility' });
     for (const [index, tab] of tabs.entries()) tab.classList.toggle('is-active', index === 0);
   };

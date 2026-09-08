@@ -27,7 +27,7 @@ export const archive: ArchiveTile[] = [
     href: '/ex01#blink',
   },
   {
-    video: '/assets/video/ex02-noise-fumi.mp4',
+    video: '/assets/video/ex02-noise-fumi-v2.mp4',
     caption: 'Ex02 · Noise grid, Fumi',
     alt: 'A three by three grid sampling one noise field, a parameter apart per cell',
     href: '/ex02#noise-grid',
@@ -39,13 +39,13 @@ export const archive: ArchiveTile[] = [
     href: '/ex02#fuzzy-grid',
   },
   {
-    video: '/assets/video/ex03-expression-v2.mp4',
+    video: '/assets/video/ex03-expression-v3.mp4',
     caption: 'Ex03 · Sound into visuals',
     alt: 'Line drawings surfacing out of a pale shore, driven by the mix',
     href: '/ex03#sound-into-visuals',
   },
   {
-    video: '/assets/video/ex04-sensory.mp4',
+    video: '/assets/video/ex04-sensory-v2.mp4',
     caption: 'Ex04 · Touch response',
     alt: 'A field of lines swelling and settling under contact',
     href: '/ex04#touch-response',

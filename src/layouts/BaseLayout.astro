@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import SiteHeader from '../components/layout/SiteHeader.astro';
 import SiteFooter from '../components/layout/SiteFooter.astro';
+import { hero } from '../data/home';
 
 interface Props {
   title: string;
@@ -11,6 +12,9 @@ interface Props {
 }
 
 const { title, description = '', overlayHeader = false } = Astro.props;
+
+/** The clip the hero opens on, and with it the home page's LCP. */
+const heroPoster = hero.clips[0].poster;
 ---
 
 <!doctype html>
@@ -22,12 +26,33 @@ const { title, description = '', overlayHeader = false } = Astro.props;
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {/* The two faces are served from here rather than from Google: a stylesheet
+        on another origin blocks the first paint on a second connection, and the
+        two files arriving late reflowed every line that had been set in the
+        fallback. Both are preloaded so they are in hand before the first
+        paint. */}
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Orbit&display=swap"
+      rel="preload"
+      href="/fonts/orbit-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
+    <link
+      rel="preload"
+      href="/fonts/noto-sans-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    {/* The still the hero opens on is the largest thing painted on the home
+        page; asking for it early is what takes it off the critical path. */}
+    {
+      overlayHeader && (
+        <link rel="preload" href={heroPoster} as="image" fetchpriority="high" />
+      )
+    }
   </head>
 
   <body data-barba="wrapper" class="flex min-h-screen flex-col">

@@ -110,7 +110,9 @@ registerModule('hero-cells', (root) => {
   const posters = new Map<string, HTMLImageElement>();
 
   const posterFor = (clip: HTMLVideoElement) => {
-    const src = clip.poster;
+    // Set by lazy-video once the clip is on screen; until then it is still on
+    // the dataset, and either one is a picture of what is about to play.
+    const src = clip.poster || clip.dataset.poster;
     if (!src) return null;
 
     let image = posters.get(src);

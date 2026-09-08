@@ -35,7 +35,7 @@ const rows = experiments.map((experiment, index) => ({
               {thumbs.map((image) => (
                 <div class="row__frame" style={`background-color:${image.tint}`}>
                   <img
-                    src={image.src}
+                    src={image.src.replace(/\.webp$/, '-288.webp')}
                     alt={image.alt}
                     width="144"
                     height="144"

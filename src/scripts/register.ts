@@ -22,6 +22,12 @@ registerModule('lazy-video', (el) => {
   const load = () => {
     if (loaded) return;
     loaded = true;
+    // The poster is a full still of its own, and a page carries a dozen of
+    // them: they are worth as much as the clip is, and no sooner.
+    if (video.dataset.poster) {
+      video.poster = video.dataset.poster;
+      delete video.dataset.poster;
+    }
     for (const source of video.querySelectorAll('source[data-src]')) {
       source.setAttribute('src', source.getAttribute('data-src')!);
       source.removeAttribute('data-src');

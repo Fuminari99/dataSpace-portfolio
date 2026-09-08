@@ -61,7 +61,7 @@ const SQUARES = [
         data-href={clip.href}
         data-label={clip.label}
         aria-hidden={index === 0 ? undefined : 'true'}
-        poster={clip.poster}
+        {...(index === 0 ? { poster: clip.poster } : { 'data-poster': clip.poster })}
         role="img"
         aria-label={clip.alt}
         muted
