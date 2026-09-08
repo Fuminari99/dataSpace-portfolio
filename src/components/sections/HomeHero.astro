@@ -76,6 +76,11 @@ const SQUARES = [
 
   <div class="absolute inset-0 bg-ink/30" aria-hidden="true"></div>
 
+  {/* Grain over the footage. Out of focus, the clips have no detail left at
+      all; the grain puts a surface back on them so the hero reads as a
+      photographed thing rather than a gradient. */}
+  <div class="hero__grain" aria-hidden="true"></div>
+
   {/* The column rules, the squares and their readouts are the hero's own
       decoration: the counts they carry are set out properly on the About page,
       so a screen reader is not made to walk a scattered instrument panel. */}
@@ -156,6 +161,19 @@ const SQUARES = [
   .hero__clip:first-of-type,
   .hero__clip.is-active {
     opacity: 1;
+  }
+
+  /* One tile of fractal noise, drawn by the browser from the SVG below rather
+     than fetched: no request, no file, and it scales to any viewport. Static —
+     animating grain means repainting the whole hero every frame. */
+  .hero__grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 140px 140px;
+    opacity: 0.75;
+    mix-blend-mode: overlay;
+    pointer-events: none;
   }
 
   /* The squares are open windows, not panes: an outline, whatever the footage

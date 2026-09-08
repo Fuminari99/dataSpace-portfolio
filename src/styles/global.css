@@ -257,3 +257,34 @@
 [data-lightbox] {
   cursor: zoom-in;
 }
+
+/* The pointer, as a square. Difference blend means one square reads against
+   both the paper and the footage without being told which it is over. */
+.cursor {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: 60;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  border: 1px solid #fff;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+
+/* `visibility` rather than `opacity`: the square's opacity is set inline by the
+   script, and an inline style beats a class every time. */
+.cursor.is-hidden {
+  visibility: hidden;
+}
+
+/* Only once the square is up: without the script the pointer stays as it is. */
+.has-cursor,
+.has-cursor a,
+.has-cursor button,
+.has-cursor summary,
+.has-cursor [data-lightbox] {
+  cursor: none;
+}
