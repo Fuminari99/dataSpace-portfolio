@@ -1,11 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeading from '../components/sections/PageHeading.astro';
-import MemberProfile from '../components/sections/MemberProfile.astro';
+import MemberStack from '../components/sections/MemberStack.astro';
 import ToolsUsed from '../components/sections/ToolsUsed.astro';
 import ExperimentStrip from '../components/sections/ExperimentStrip.astro';
 import NextExperiment from '../components/sections/NextExperiment.astro';
-import { members, nav } from '../data/site';
+import { nav } from '../data/site';
 
 // The About frame opens on the three of us rather than on the module: one
 // centred paragraph introducing the team, set under a centred title.
@@ -23,7 +23,7 @@ const anchorFor = (label: string) => aboutSections.find((s) => s.label === label
 >
   <PageHeading title="About Us" id="class" intro={intro} centred />
 
-  {members.map((member) => <MemberProfile member={member} id={member.name.toLowerCase()} />)}
+  <MemberStack />
 
   <ToolsUsed id={anchorFor('TOOLS')} />
 

@@ -1,0 +1,43 @@
+---
+import MemberProfile from './MemberProfile.astro';
+import { members } from '../../data/site';
+
+/**
+ * The three of us, held one at a time. The stack is a plain run of profiles
+ * until the script takes it over: from there the group is pinned in the middle
+ * of the screen and scrolling hands the space from one person to the next,
+ * releasing the page once the third has been read.
+ */
+---
+
+<div class="stack w-full" data-module="member-stack">
+  <div class="stack__viewport w-full" data-stack-viewport>
+    {
+      members.map((member) => (
+        <div class="stack__panel w-full" data-stack-panel data-stack-id={member.name.toLowerCase()}>
+          <MemberProfile member={member} id={member.name.toLowerCase()} />
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  /* Untouched, this is three profiles down the page — which is what a reader
+     without the script, or with motion turned down, gets. `is-stacked` is set
+     by the module and is what lays them on top of one another. */
+  .stack.is-stacked .stack__viewport {
+    position: relative;
+    display: flex;
+    height: 100svh;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .stack.is-stacked .stack__panel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+  }
+</style>

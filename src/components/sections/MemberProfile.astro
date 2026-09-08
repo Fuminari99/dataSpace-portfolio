@@ -56,7 +56,11 @@ const anchorFor = (name: string) => `#${name.toLowerCase()}`;
           }
         </nav>
 
-        <p class="prose-justified font-body text-copy leading-copy">{member.note}</p>
+        {
+          member.bio.map((paragraph) => (
+            <p class="prose-justified font-body text-copy leading-copy">{paragraph}</p>
+          ))
+        }
       </div>
     </div>
   </div>

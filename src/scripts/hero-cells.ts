@@ -1,75 +1,249 @@
 import { registerModule } from './modules';
 import { initGsap } from './gsap';
 
-const CELL_S = 2.6;
-const CELL_STAGGER_S = 0.18;
-const COUNT_S = 1.6;
-/** How long a readout holds its figure before it is taken again. */
-const COUNT_HOLD_S = 6;
+/** How far a square wanders from where it was drawn, in either direction. */
+const DRIFT_PX = 44;
+const DRIFT_MIN_S = 9;
+const DRIFT_MAX_S = 16;
 
 /**
- * The squares over the hero footage read as instruments taking a measurement:
- * each one breathes on its own cycle, and the counts beside three of them are
- * re-taken from zero every few seconds.
+ * The footage is read back through a canvas this wide — a thumbnail, not the
+ * frame. Averaging a square's colour needs a handful of pixels from inside it,
+ * and reading a full-size frame every tick would cost far more than the answer
+ * is worth.
+ */
+const SAMPLE_W = 96;
+/** Readings a second. Slow enough to be cheap, quick enough to look live. */
+const SAMPLE_HZ = 12;
+/** How closely the square chases the pointer. Lower is looser. */
+const CURSOR_S = 0.25;
+
+/**
+ * The squares over the hero footage are samplers left running: each one wanders
+ * slowly across the frame on its own cycle and reports the average colour of
+ * the clip inside it.
  *
- * Only opacity and transform are tweened. The squares carry a backdrop blur,
- * and animating anything that forces it to be re-rasterised every frame is what
- * makes that expensive — this way the blur is composited once and left alone.
+ * The reading is the cheap part. One `drawImage` of a 96px-wide thumbnail and
+ * one `getImageData` per tick serve all eight squares, eight times a second,
+ * and both stop entirely when the hero is off screen or the tab is in the
+ * background. The drift only ever tweens transforms, and the glass in the hero
+ * sits on the seams, which never move.
  */
 registerModule('hero-cells', (root) => {
-  const cells = [...root.querySelectorAll<HTMLElement>('[data-hero-cell]')];
-  const counts = [...root.querySelectorAll<HTMLElement>('[data-hero-count]')];
-  if (cells.length === 0 && counts.length === 0) return;
+  const cursor = root.querySelector<HTMLElement>('[data-hero-cursor]');
+  const cells = [...root.querySelectorAll<HTMLElement>('[data-hero-cell]')].filter(
+    (cell) => cell !== cursor
+  );
+  if (cells.length === 0 && !cursor) return;
 
   const gsap = initGsap();
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  // Without motion the squares sit as rendered and the counts keep the figures
-  // that came down with the page.
-  if (reduceMotion.matches) return;
+  const drift = () => gsap.utils.random(-DRIFT_PX, DRIFT_PX, 1);
 
-  const tweens = [
-    gsap.fromTo(
-      cells,
-      { opacity: 0.4 },
-      {
-        opacity: 1,
-        scale: 1.02,
-        duration: CELL_S,
-        ease: 'sine.inOut',
-        repeat: -1,
-        yoyo: true,
-        stagger: { each: CELL_STAGGER_S, from: 'random' },
+  // Without motion the squares sit where they were drawn. They still take their
+  // readings: that is the content, not the animation.
+  const tweens = reduceMotion.matches
+    ? []
+    : cells.map((cell) =>
+        gsap.to(cell, {
+          keyframes: {
+            x: [drift(), drift(), drift(), 0],
+            y: [drift(), drift(), drift(), 0],
+            easeEach: 'sine.inOut',
+          },
+          duration: gsap.utils.random(DRIFT_MIN_S, DRIFT_MAX_S),
+          repeat: -1,
+          delay: gsap.utils.random(0, 4),
+        })
+      );
+
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d', { willReadFrequently: true });
+
+  // Every square that carries a figure reports on its own area, the one under
+  // the pointer included.
+  const readings = [...root.querySelectorAll<HTMLElement>('[data-hero-sample]')]
+    .map((output) => ({ cell: output.parentElement, output }))
+    .filter((reading): reading is { cell: HTMLElement; output: HTMLElement } => !!reading.cell);
+
+  const clips = [...root.querySelectorAll<HTMLVideoElement>('[data-hero-clip]')];
+
+  /**
+   * hero-cycle marks the clip on screen by taking `aria-hidden` off it. Until
+   * the first one has decoded a frame there is nothing to read, so a clip that
+   * is ready is taken over the one that is showing rather than reporting black.
+   */
+  const activeClip = () => {
+    const showing = clips.find((clip) => !clip.hasAttribute('aria-hidden'));
+    if (showing && showing.readyState >= 2) return showing;
+    return clips.find((clip) => clip.readyState >= 2) ?? showing;
+  };
+
+  /**
+   * A clip that has not decoded a frame yet — and one whose autoplay was
+   * refused outright — leaves its poster on screen, so that is what the squares
+   * should be reading. The posters are already in the page's cache; this only
+   * gives the canvas something it can draw.
+   */
+  const posters = new Map<string, HTMLImageElement>();
+
+  const posterFor = (clip: HTMLVideoElement) => {
+    const src = clip.poster;
+    if (!src) return null;
+
+    let image = posters.get(src);
+    if (!image) {
+      image = new Image();
+      image.src = src;
+      posters.set(src, image);
+    }
+    return image.complete && image.naturalWidth > 0 ? image : null;
+  };
+
+  /** Whatever is actually on screen: the decoded clip, or its poster. */
+  const source = (): { element: CanvasImageSource; width: number; height: number } | null => {
+    const clip = activeClip();
+    if (!clip) return null;
+
+    if (clip.readyState >= 2 && clip.videoWidth) {
+      return { element: clip, width: clip.videoWidth, height: clip.videoHeight };
+    }
+
+    const poster = posterFor(clip);
+    return poster
+      ? { element: poster, width: poster.naturalWidth, height: poster.naturalHeight }
+      : null;
+  };
+
+  const sample = () => {
+    const frameSource = source();
+    // Nothing decoded and no poster yet: the squares keep the last reading they
+    // took rather than reporting black.
+    if (!context || !frameSource) return;
+
+    const frame = root.getBoundingClientRect();
+    if (frame.width === 0 || frame.height === 0) return;
+
+    const width = SAMPLE_W;
+    const height = Math.max(1, Math.round((SAMPLE_W * frame.height) / frame.width));
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    // The clips are laid over the hero with object-fit: cover, so the thumbnail
+    // has to be cropped the same way or the squares would report the colour of
+    // somewhere else in the frame.
+    const scale = Math.max(width / frameSource.width, height / frameSource.height);
+    const drawWidth = frameSource.width * scale;
+    const drawHeight = frameSource.height * scale;
+    context.drawImage(
+      frameSource.element,
+      (width - drawWidth) / 2,
+      (height - drawHeight) / 2,
+      drawWidth,
+      drawHeight
+    );
+
+    const { data } = context.getImageData(0, 0, width, height);
+
+    for (const { cell, output } of readings) {
+      const box = cell.getBoundingClientRect();
+      const x0 = Math.max(0, Math.floor(((box.left - frame.left) / frame.width) * width));
+      const y0 = Math.max(0, Math.floor(((box.top - frame.top) / frame.height) * height));
+      const x1 = Math.min(width, Math.ceil(((box.right - frame.left) / frame.width) * width));
+      const y1 = Math.min(height, Math.ceil(((box.bottom - frame.top) / frame.height) * height));
+      if (x1 <= x0 || y1 <= y0) continue;
+
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      let count = 0;
+
+      for (let y = y0; y < y1; y += 1) {
+        for (let x = x0; x < x1; x += 1) {
+          const i = (y * width + x) * 4;
+          r += data[i];
+          g += data[i + 1];
+          b += data[i + 2];
+          count += 1;
+        }
       }
-    ),
 
-    ...counts.map((el, index) => {
-      const target = Number(el.dataset.heroCount);
-      const digits = el.textContent?.length ?? 3;
-      const value = { current: 0 };
+      const pad = (value: number) => String(Math.round(value / count)).padStart(3, '0');
+      output.textContent = `${pad(r)} ${pad(g)} ${pad(b)}`;
+    }
+  };
 
-      return gsap.to(value, {
-        current: target,
-        duration: COUNT_S,
-        ease: 'power2.out',
-        delay: index * 0.12,
-        repeat: -1,
-        repeatDelay: COUNT_HOLD_S,
-        onUpdate: () => {
-          el.textContent = String(Math.round(value.current)).padStart(digits, '0');
-        },
-        onRepeat: () => {
-          value.current = 0;
-        },
-      });
-    }),
-  ];
+  /**
+   * The pointer square is placed with transforms off the hero's own top left,
+   * and eased rather than pinned to the cursor — it is an instrument being
+   * carried across the frame, not a crosshair.
+   */
+  const pointer = (() => {
+    if (!cursor || !window.matchMedia('(hover: hover)').matches) return null;
+
+    const toX = gsap.quickTo(cursor, 'x', { duration: CURSOR_S, ease: 'power3.out' });
+    const toY = gsap.quickTo(cursor, 'y', { duration: CURSOR_S, ease: 'power3.out' });
+
+    const onMove = (event: PointerEvent) => {
+      const frame = root.getBoundingClientRect();
+      toX(event.clientX - frame.left);
+      toY(event.clientY - frame.top);
+    };
+
+    const onEnter = (event: PointerEvent) => {
+      const frame = root.getBoundingClientRect();
+      // Placed before it is shown, so it does not fly in from the corner.
+      gsap.set(cursor, { x: event.clientX - frame.left, y: event.clientY - frame.top });
+      gsap.to(cursor, { opacity: 1, duration: 0.2 });
+    };
+
+    const onLeave = () => gsap.to(cursor, { opacity: 0, duration: 0.2 });
+
+    root.addEventListener('pointerenter', onEnter);
+    root.addEventListener('pointermove', onMove);
+    root.addEventListener('pointerleave', onLeave);
+
+    return () => {
+      root.removeEventListener('pointerenter', onEnter);
+      root.removeEventListener('pointermove', onMove);
+      root.removeEventListener('pointerleave', onLeave);
+      gsap.set(cursor, { clearProps: 'transform,opacity' });
+    };
+  })();
+
+  let timer = 0;
+
+  const start = () => {
+    if (timer) return;
+    timer = window.setInterval(sample, 1000 / SAMPLE_HZ);
+    sample();
+  };
+
+  const stop = () => {
+    window.clearInterval(timer);
+    timer = 0;
+  };
+
+  // Nothing is read while the hero is scrolled past, and nothing while the tab
+  // is in the background — a canvas read in a hidden tab is pure waste.
+  const onVisibility = () => (document.hidden ? stop() : observer.observe(root));
+
+  const observer = new IntersectionObserver(
+    ([entry]) => (entry.isIntersecting && !document.hidden ? start() : stop()),
+    { threshold: 0 }
+  );
+  observer.observe(root);
+  document.addEventListener('visibilitychange', onVisibility);
 
   return () => {
+    pointer?.();
+    stop();
+    observer.disconnect();
+    document.removeEventListener('visibilitychange', onVisibility);
     for (const tween of tweens) tween.kill();
-    gsap.set(cells, { clearProps: 'opacity,transform' });
-    for (const el of counts) {
-      el.textContent = String(el.dataset.heroCount).padStart(3, '0');
-    }
+    gsap.set(cells, { clearProps: 'transform' });
   };
 });

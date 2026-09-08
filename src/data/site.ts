@@ -143,6 +143,12 @@ export interface Member {
    * only — nothing here is a claim about the person.
    */
   note: string;
+  /**
+   * What this person brought to the project, in their own paragraphs, as the
+   * About page sets them out. Maiya's is the copy from the design file; the
+   * other two are written to match it and are the team's to correct.
+   */
+  bio: string[];
 }
 
 const rate = (label: string, value: string): Rate => ({ label, value });
@@ -155,6 +161,10 @@ export const members: Member[] = [
     portrait: '/assets/portraits/fumi.png',
     rates: [rate('BREATH', '56'), rate('PULSE', '111'), rate('BLINK', '118')],
     note: 'The most blinks of the three — 118 against Maiya’s 52 — over a breath and a pulse that both sit between the other two.',
+    bio: [
+      'Fumi works through building, with an interest in what a piece of code will do once it is running rather than in how it looks on the page.',
+      'He took the counts and the sensor readings into working sketches, wired the touch response through to the browser, and put the archive itself together — keeping every experiment reachable in the form it was made in.',
+    ],
   },
   {
     name: 'KEAGAN',
@@ -162,6 +172,10 @@ export const members: Member[] = [
     portrait: '/assets/portraits/keagan.png',
     rates: [rate('BREATH', '35'), rate('PULSE', '154'), rate('BLINK', '114')],
     note: 'The widest gap between two rhythms in the project: 35 breaths against 154 beats in the same three minutes, roughly four beats to a breath.',
+    bio: [
+      'Keagan brings a way of working that treats each brief as something to test rather than to settle, and is quick to try the version nobody has asked for yet.',
+      'Much of the procedural and sound-driven work came out of that — one noise field sampled again and again, and a patch where the mix drives the image — and the range those attempts produced is what the archive is made of.',
+    ],
   },
   {
     name: 'MAIYA',
@@ -169,5 +183,9 @@ export const members: Member[] = [
     portrait: '/assets/portraits/maiya.png',
     rates: [rate('BREATH', '64'), rate('PULSE', '101'), rate('BLINK', '52')],
     note: 'The fastest breathing and the slowest pulse of the three, and 52 blinks — fewer than half of what Fumi recorded.',
+    bio: [
+      'Mai brings a strong visual sensitivity to the team, with a keen eye for how ideas can be translated into a cohesive design language.',
+      'She helped shape the overall feel of the project, refining how the experiments came together visually and ensuring that each outcome still felt connected to the wider Fractal Glass direction.',
+    ],
   },
 ];

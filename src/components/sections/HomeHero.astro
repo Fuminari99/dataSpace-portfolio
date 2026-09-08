@@ -1,6 +1,5 @@
 ---
 import { hero } from '../../data/home';
-import { members } from '../../data/site';
 
 /**
  * The home hero: footage under a flat black lift, ruled into uneven vertical
@@ -17,32 +16,35 @@ const pctY = (px: number) => `${((px / FRAME.height) * 100).toFixed(3)}%`;
 /** Left edge of each column in the design, plus the closing edge. */
 const RULES = [0, 196, 505, 908, 1092, 1211, 1280];
 
-/** The outlined squares, as x / y / side in frame pixels. */
-const SQUARES = [
-  [2, 318, 102],
-  [162, 447, 68],
-  [768, 496, 102],
-  [884, 286, 68],
-  [897, 357, 103],
-  [927, 208, 103],
-  [927, 326, 103],
-  [956, 416, 103],
-] as const;
-
 /**
- * Three readouts sit beside the squares: the counts that person took by hand in
- * Ex01, which is the only data in the project that came from us rather than
- * from a system. Each is placed on whichever side of its square leaves it clear
- * of the frame's edge and of the squares around it.
+ * The squares, as x / y / side in frame pixels. They are grouped rather than
+ * scattered — two or three to a cluster, close enough to overlap each other and
+ * to keep overlapping as they drift — and the clusters are kept out to the
+ * sides so the middle of the frame stays clear for the wordmark.
+ *
+ * One square in each cluster reports its reading: the average colour of the
+ * footage inside it. Giving all ten a readout would stack the figures on top of
+ * one another wherever the squares overlap.
  */
-const READOUTS = [
-  { member: 'FUMI', x: 24, y: 432 },
-  { member: 'KEAGAN', x: 768, y: 400 },
-  { member: 'MAIYA', x: 927, y: 112 },
-] as const;
+const SQUARES = [
+  // Left, above the middle.
+  { x: 96, y: 250, side: 64, reads: true },
+  { x: 140, y: 292, side: 56, reads: false },
+  { x: 168, y: 246, side: 48, reads: false },
 
-const ratesFor = (name: string) => members.find((member) => member.name === name)!.rates;
-const pad = (value: string) => value.padStart(3, '0');
+  // Lower left.
+  { x: 280, y: 520, side: 56, reads: true },
+  { x: 318, y: 486, side: 48, reads: false },
+
+  // Upper right.
+  { x: 900, y: 120, side: 56, reads: true },
+  { x: 936, y: 152, side: 48, reads: false },
+
+  // Right, below the middle.
+  { x: 1000, y: 380, side: 64, reads: true },
+  { x: 1044, y: 424, side: 56, reads: false },
+  { x: 1056, y: 356, side: 48, reads: false },
+] as const;
 ---
 
 <section
@@ -88,31 +90,28 @@ const pad = (value: string) => value.padStart(3, '0');
     }
 
     {
-      SQUARES.map(([x, y, side]) => (
+      SQUARES.map(({ x, y, side, reads }) => (
         <span
           class="hero__cell absolute"
           style={`left:${pctX(x)};top:${pctY(y)};width:${pctX(side)};aspect-ratio:1`}
           data-hero-cell
-        />
-      ))
-    }
-
-    {
-      READOUTS.map(({ member, x, y }) => (
-        <span
-          class="hero__readout absolute font-display text-caption leading-[1.6] tracking-tight text-paper"
-          style={`left:${pctX(x)};top:${pctY(y)}`}
         >
-          <span class="hero__readout-name">[ {member} ]</span>
-          {ratesFor(member).map((rate) => (
-            <span class="hero__readout-row">
-              <span class="hero__readout-label">{rate.label}</span>
-              <span data-hero-count={rate.value}>{pad(rate.value)}</span>
+          {reads && (
+            <span class="hero__sample font-display tracking-tight text-paper" data-hero-sample>
+              000 000 000
             </span>
-          ))}
+          )}
         </span>
       ))
     }
+    {/* Follows the pointer and reports whatever the footage is doing under it.
+        Hidden until the pointer is over the hero, and never shown at all where
+        there is no pointer to follow. */}
+    <span class="hero__cursor hero__cell" data-hero-cursor>
+      <span class="hero__sample font-display tracking-tight text-paper" data-hero-sample>
+        000 000 000
+      </span>
+    </span>
   </div>
 
   <div class="relative flex flex-col items-center gap-2 px-gutter text-center text-paper">
@@ -152,53 +151,45 @@ const pad = (value: string) => value.padStart(3, '0');
     opacity: 1;
   }
 
-  /* Fractal Glass, cheaply: the blur is confined to the eight small squares
-     rather than laid over the whole frame, and nothing animates it — the cells
-     only ever tween opacity and transform, which the compositor can do without
-     re-rasterising the blur. */
+  /* The squares are open windows, not panes: an outline, whatever the footage
+     is doing behind them, and the reading taken from it underneath. */
   .hero__cell {
     border: 1px solid rgba(255, 255, 255, 0.55);
-    background-color: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(6px);
-    will-change: transform, opacity;
+    will-change: transform;
   }
 
-  @supports not (backdrop-filter: blur(1px)) {
-    .hero__cell {
-      background-color: rgba(255, 255, 255, 0.12);
-    }
-  }
-
-  .hero__readout {
-    display: flex;
-    flex-direction: column;
-    opacity: 0.75;
+  .hero__sample {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    font-size: 0.625rem;
+    line-height: 1.4;
+    white-space: nowrap;
+    opacity: 0.7;
     font-variant-numeric: tabular-nums;
   }
 
-  .hero__readout-name {
-    opacity: 0.7;
-  }
-
-  .hero__readout-row {
-    display: flex;
-    gap: 8px;
-  }
-
-  .hero__readout-label {
-    width: 56px;
-    opacity: 0.7;
-  }
-
-  /* Below the desktop layout the squares are small, crowded and sitting on the
+  /* Below the desktop layout the seams are narrow, crowded and sitting on the
      slowest GPUs of the lot: the blur comes off and the readouts come out. */
-  @media (max-width: 64rem) {
-    .hero__cell {
-      backdrop-filter: none;
-      will-change: auto;
+  .hero__cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* No pointer to follow, and the readings under the squares are too small to
+     be worth the room: both come off. */
+  @media (hover: none), (max-width: 64rem) {
+    .hero__cursor {
+      display: none;
     }
 
-    .hero__readout {
+    .hero__sample {
       display: none;
     }
   }
@@ -208,4 +199,5 @@ const pad = (value: string) => value.padStart(3, '0');
       will-change: auto;
     }
   }
+
 </style>
