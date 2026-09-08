@@ -4,6 +4,9 @@ import './nav-scramble';
 import './heading-scramble';
 import './hover-scramble';
 import './tabs';
+import './hero-cycle';
+import './hero-cells';
+import './experiment-rows';
 
 /**
  * Experiment footage is heavy and there is a lot of it on one page, so a clip
@@ -55,27 +58,51 @@ registerModule('lazy-video', (el) => {
 });
 
 /**
- * The home page's header is an overlay (see SiteHeader) so the carousel can
- * start at the very top of the viewport. It stays off screen for as long as the
- * carousel is in view and comes back once the page has scrolled past it.
+ * The home page's header is an overlay (see SiteHeader) so the hero can start
+ * at the very top of the viewport. White over the footage, it swaps to the
+ * page's own colours once the hero's bottom edge has gone by.
  */
 registerModule('header-reveal', (el) => {
-  const carousel = document.querySelector('[data-module~="carousel"]');
+  const sentinel = document.querySelector('[data-header-sentinel]');
 
-  // No carousel to hide behind, or no observer to watch it with: show the bar
-  // rather than leave the page without navigation.
-  if (!carousel || !('IntersectionObserver' in window)) {
-    el.classList.add('is-revealed');
+  // Nothing to watch, or no observer to watch it with: give the bar the paper
+  // background, which is legible against any page.
+  if (!sentinel || !('IntersectionObserver' in window)) {
+    el.classList.add('is-on-paper');
     return;
   }
 
-  const observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) el.classList.toggle('is-revealed', !entry.isIntersecting);
-  });
-  observer.observe(carousel);
+  // The swap has to happen when the hero's bottom edge reaches the *bar*, not
+  // the top of the viewport — otherwise white-on-white for the height of the
+  // bar. Pulling the root's top edge down by that height puts the crossing the
+  // observer reports exactly where the bar sits.
+  const barHeight = () => Math.round(el.getBoundingClientRect().height);
+
+  let observer = new IntersectionObserver(() => {}, {});
+
+  const watch = () => {
+    observer.disconnect();
+    const offset = barHeight();
+    observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          el.classList.toggle('is-on-paper', entry.boundingClientRect.top < offset);
+        }
+      },
+      { rootMargin: `-${offset}px 0px 0px 0px` }
+    );
+    observer.observe(sentinel);
+  };
+
+  watch();
+
+  // The bar's height changes with the viewport, and so does the line the swap
+  // has to happen on.
+  window.addEventListener('resize', watch);
 
   return () => {
+    window.removeEventListener('resize', watch);
     observer.disconnect();
-    el.classList.remove('is-revealed');
+    el.classList.remove('is-on-paper');
   };
 });

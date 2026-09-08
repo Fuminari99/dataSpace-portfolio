@@ -1,0 +1,211 @@
+---
+import { hero } from '../../data/home';
+import { members } from '../../data/site';
+
+/**
+ * The home hero: footage under a flat black lift, ruled into uneven vertical
+ * columns, with loose square outlines scattered over it and the wordmark in the
+ * middle. Everything sits in a 1280 x 667 frame in Figma; the rules and squares
+ * are stored as percentages of that frame so the arrangement survives a
+ * viewport of any proportion instead of being pinned to pixels.
+ */
+const FRAME = { width: 1280, height: 667 };
+
+const pctX = (px: number) => `${((px / FRAME.width) * 100).toFixed(3)}%`;
+const pctY = (px: number) => `${((px / FRAME.height) * 100).toFixed(3)}%`;
+
+/** Left edge of each column in the design, plus the closing edge. */
+const RULES = [0, 196, 505, 908, 1092, 1211, 1280];
+
+/** The outlined squares, as x / y / side in frame pixels. */
+const SQUARES = [
+  [2, 318, 102],
+  [162, 447, 68],
+  [768, 496, 102],
+  [884, 286, 68],
+  [897, 357, 103],
+  [927, 208, 103],
+  [927, 326, 103],
+  [956, 416, 103],
+] as const;
+
+/**
+ * Three readouts sit beside the squares: the counts that person took by hand in
+ * Ex01, which is the only data in the project that came from us rather than
+ * from a system. Each is placed on whichever side of its square leaves it clear
+ * of the frame's edge and of the squares around it.
+ */
+const READOUTS = [
+  { member: 'FUMI', x: 24, y: 432 },
+  { member: 'KEAGAN', x: 768, y: 400 },
+  { member: 'MAIYA', x: 927, y: 112 },
+] as const;
+
+const ratesFor = (name: string) => members.find((member) => member.name === name)!.rates;
+const pad = (value: string) => value.padStart(3, '0');
+---
+
+<section
+  class="hero relative flex min-h-[95svh] w-full items-center justify-center overflow-hidden bg-ink"
+  data-module="hero-cycle hero-cells"
+  style={`--hero-interval:${hero.interval}`}
+>
+  {
+    hero.clips.map((clip, index) => (
+      <video
+        class="hero__clip"
+        data-hero-clip
+        data-index={index}
+        data-href={clip.href}
+        data-label={clip.label}
+        aria-hidden={index === 0 ? undefined : 'true'}
+        poster={clip.poster}
+        role="img"
+        aria-label={clip.alt}
+        muted
+        loop
+        playsinline
+        preload="none"
+      >
+        <source data-src={clip.video} type="video/mp4" />
+      </video>
+    ))
+  }
+
+  <div class="absolute inset-0 bg-ink/30" aria-hidden="true"></div>
+
+  {/* The column rules, the squares and their readouts are the hero's own
+      decoration: the counts they carry are set out properly on the About page,
+      so a screen reader is not made to walk a scattered instrument panel. */}
+  <div class="absolute inset-0" aria-hidden="true">
+    {
+      RULES.map((x) => (
+        <span
+          class="absolute inset-y-0 w-px bg-hero-rule"
+          style={`left:${pctX(x)};${x === FRAME.width ? 'translate:-100% 0;' : ''}`}
+        />
+      ))
+    }
+
+    {
+      SQUARES.map(([x, y, side]) => (
+        <span
+          class="hero__cell absolute"
+          style={`left:${pctX(x)};top:${pctY(y)};width:${pctX(side)};aspect-ratio:1`}
+          data-hero-cell
+        />
+      ))
+    }
+
+    {
+      READOUTS.map(({ member, x, y }) => (
+        <span
+          class="hero__readout absolute font-display text-caption leading-[1.6] tracking-tight text-paper"
+          style={`left:${pctX(x)};top:${pctY(y)}`}
+        >
+          <span class="hero__readout-name">[ {member} ]</span>
+          {ratesFor(member).map((rate) => (
+            <span class="hero__readout-row">
+              <span class="hero__readout-label">{rate.label}</span>
+              <span data-hero-count={rate.value}>{pad(rate.value)}</span>
+            </span>
+          ))}
+        </span>
+      ))
+    }
+  </div>
+
+  <div class="relative flex flex-col items-center gap-2 px-gutter text-center text-paper">
+    <h1 class="font-display text-hero leading-none">{hero.wordmark}</h1>
+
+    {/* Retargeted by hero-cycle as the footage changes, so the link always
+        names the experiment currently on screen. */}
+    <a
+      href={hero.clips[0].href}
+      class="font-display text-copy leading-[1.667] tracking-tight"
+      aria-label={`Go to ${hero.clips[0].label}`}
+      data-hero-link
+      data-module="hover-scramble"
+    >
+      → Go to <span data-scramble-text>{hero.clips[0].label}</span>
+    </a>
+  </div>
+
+  {/* Watched by the header so it knows when the hero has been scrolled past. */}
+  <span class="absolute inset-x-0 bottom-0 h-px" data-header-sentinel aria-hidden="true"></span>
+</section>
+
+<style>
+  /* The clips are stacked and cross-faded in place. Only the first is opaque
+     until the script takes over, so the hero looks right with JS unavailable. */
+  .hero__clip {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+  }
+
+  .hero__clip:first-of-type,
+  .hero__clip.is-active {
+    opacity: 1;
+  }
+
+  /* Fractal Glass, cheaply: the blur is confined to the eight small squares
+     rather than laid over the whole frame, and nothing animates it — the cells
+     only ever tween opacity and transform, which the compositor can do without
+     re-rasterising the blur. */
+  .hero__cell {
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    background-color: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(6px);
+    will-change: transform, opacity;
+  }
+
+  @supports not (backdrop-filter: blur(1px)) {
+    .hero__cell {
+      background-color: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  .hero__readout {
+    display: flex;
+    flex-direction: column;
+    opacity: 0.75;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hero__readout-name {
+    opacity: 0.7;
+  }
+
+  .hero__readout-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .hero__readout-label {
+    width: 56px;
+    opacity: 0.7;
+  }
+
+  /* Below the desktop layout the squares are small, crowded and sitting on the
+     slowest GPUs of the lot: the blur comes off and the readouts come out. */
+  @media (max-width: 64rem) {
+    .hero__cell {
+      backdrop-filter: none;
+      will-change: auto;
+    }
+
+    .hero__readout {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__cell {
+      will-change: auto;
+    }
+  }
+</style>

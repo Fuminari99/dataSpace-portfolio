@@ -34,7 +34,7 @@ const { label, id, lead, rows, gap = 'normal', anchorMembers = false, visuals } 
 
     {
       lead && (
-        <p class="prose-justified max-w-[31.1875rem] font-body text-body-lg tracking-tight">
+        <p class="prose-justified max-w-[496px] font-body text-body-lg tracking-tight">
           {lead}
         </p>
       )
@@ -43,7 +43,7 @@ const { label, id, lead, rows, gap = 'normal', anchorMembers = false, visuals } 
     <div
       class:list={[
         'flex w-full flex-col',
-        gap === 'wide' ? 'gap-[5.25rem]' : 'gap-16',
+        gap === 'wide' ? 'gap-[84px]' : 'gap-16',
       ]}
     >
       {
@@ -58,11 +58,11 @@ const { label, id, lead, rows, gap = 'normal', anchorMembers = false, visuals } 
               alt={`${label} still by ${member.name}`}
               name={member.name}
               ratio="video"
-              class="w-full lg:max-w-[44.3125rem]"
+              class="w-full lg:max-w-[712px]"
             />
           );
           const copy = row.text ? (
-            <p class="prose-justified w-full font-body text-body-lg tracking-tight lg:max-w-[31.1875rem]">
+            <p class="prose-justified w-full font-body text-body-lg tracking-tight lg:max-w-[496px]">
               {row.text}
             </p>
           ) : null;

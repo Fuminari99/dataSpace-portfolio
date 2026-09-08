@@ -22,13 +22,13 @@ const { label, id, lead, columns = [], quote, quoteSource } = Astro.props;
   <div class="mx-auto flex max-w-page flex-col gap-8">
     <SectionLabel label={label} />
 
-    {lead && <h2 class="max-w-[54rem] font-body text-h2 font-bold tracking-tight">{lead}</h2>}
+    {lead && <h2 class="max-w-[864px] font-body text-h2 font-bold tracking-tight">{lead}</h2>}
 
     {
       columns.length > 0 && (
         <div class="flex flex-col gap-8 md:flex-row md:gap-16">
           {columns.map((paragraph) => (
-            <p class="prose-justified max-w-[31.1875rem] font-body text-body tracking-tight">
+            <p class="prose-justified max-w-[496px] font-body text-body tracking-tight">
               {paragraph}
             </p>
           ))}
@@ -38,7 +38,7 @@ const { label, id, lead, columns = [], quote, quoteSource } = Astro.props;
 
     {
       quote && (
-        <figure class="flex max-w-[54rem] flex-col gap-2 border-l border-rule pl-6">
+        <figure class="flex max-w-[864px] flex-col gap-2 border-l border-rule pl-6">
           <blockquote class="font-body text-body-lg tracking-tight">{quote}</blockquote>
           {quoteSource && (
             <figcaption class="font-display text-label tracking-tight opacity-50">

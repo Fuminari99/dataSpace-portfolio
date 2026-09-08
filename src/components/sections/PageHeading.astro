@@ -7,28 +7,70 @@ interface Props {
   id?: string;
   /** One or two columns of intro copy. */
   intro?: string[];
+  /**
+   * Sets the title in the display face at the design's own weight instead of
+   * the bold body face. This is what the Projects frame specifies; the
+   * experiment pages are left on the existing treatment.
+   */
+  display?: boolean;
+  /**
+   * The About frame centres the title over a single wide column of intro copy
+   * rather than running the pair of justified columns the other pages use.
+   */
+  centred?: boolean;
 }
 
-const { eyebrow, title, id, intro = [] } = Astro.props;
+const { eyebrow, title, id, intro = [], display = false, centred = false } = Astro.props;
 ---
 
 <section id={id} class="w-full scroll-mt-32 border-b border-rule px-gutter py-section">
-  <div class="mx-auto flex max-w-page flex-col gap-8">
-    <div class="flex flex-col gap-4">
+  <div
+    class:list={[
+      'mx-auto flex max-w-page flex-col gap-8',
+      centred && 'items-center text-center',
+    ]}
+  >
+    <div class:list={['flex flex-col gap-4', centred && 'items-center']}>
       {eyebrow && <p class="font-display text-body tracking-tight">{eyebrow}</p>}
-      <h1 class="font-body text-h1 font-bold tracking-tight">{title}</h1>
+      <h1
+        class:list={[
+          'text-h1 tracking-tight',
+          display || centred ? 'font-display leading-[1.2]' : 'font-body font-bold',
+        ]}
+      >
+        {title}
+      </h1>
     </div>
 
     {
-      intro.length > 0 && (
-        <div class="flex flex-col gap-6 md:flex-row">
-          {intro.map((paragraph) => (
-            <p class="prose-justified max-w-[31.1875rem] font-body text-body tracking-tight">
-              {paragraph}
-            </p>
-          ))}
-        </div>
-      )
+      intro.length > 0 &&
+        (centred ? (
+          <div class="flex flex-col gap-6">
+            {intro.map((paragraph) => (
+              <p class="max-w-[888px] font-display text-copy leading-copy">{paragraph}</p>
+            ))}
+          </div>
+        ) : (
+          <div
+            class:list={[
+              'flex flex-col gap-6',
+              display ? 'md:flex-row md:gap-[56px]' : 'md:flex-row',
+            ]}
+          >
+            {intro.map((paragraph) => (
+              <p
+                class:list={[
+                  'prose-justified font-body',
+                  display
+                    ? 'max-w-[496px] text-copy leading-copy'
+                    : 'max-w-[496px] text-body tracking-tight',
+                ]}
+              >
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        ))
     }
   </div>
 </section>

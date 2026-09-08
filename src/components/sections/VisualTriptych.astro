@@ -65,7 +65,7 @@ const isTabbed = tabs.length > 1;
           class="flex flex-col gap-6"
         >
           {tab.description && (
-            <p class="prose-justified max-w-[34.9375rem] font-body text-body tracking-tight">
+            <p class="prose-justified max-w-[560px] font-body text-body tracking-tight">
               {tab.description}
             </p>
           )}
@@ -79,7 +79,7 @@ const isTabbed = tabs.length > 1;
                 alt={`${tab.label} visualisation by ${member.name}`}
                 name={member.name}
                 value={tab.values?.[memberIndex]}
-                class="w-full max-w-[20rem]"
+                class="w-full max-w-[320px]"
               />
             ))}
           </div>

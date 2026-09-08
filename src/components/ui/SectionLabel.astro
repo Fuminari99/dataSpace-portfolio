@@ -7,17 +7,24 @@ interface Props {
   /** Inactive members of a label group are dimmed in the design. */
   muted?: boolean;
   href?: string;
+  /**
+   * `inline` is the small marker used within an experiment page. `heading` is
+   * the home page's own section head: the same brackets set in the display face
+   * at heading size, and marked up as a heading because that is what it is.
+   */
+  variant?: 'inline' | 'heading';
 }
 
-const { label, id, muted = false, href } = Astro.props;
-const Tag = href ? 'a' : 'span';
+const { label, id, muted = false, href, variant = 'inline' } = Astro.props;
+const Tag = href ? 'a' : variant === 'heading' ? 'h2' : 'span';
 ---
 
 <Tag
   id={id}
   href={href}
   class:list={[
-    'scroll-mt-32 font-body text-body tracking-tight whitespace-nowrap',
+    'scroll-mt-32 tracking-tight whitespace-nowrap',
+    variant === 'heading' ? 'font-display text-h2 leading-[1.1]' : 'font-body text-body',
     muted && 'opacity-50',
   ]}
 >

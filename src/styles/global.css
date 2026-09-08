@@ -9,6 +9,12 @@
   --color-placeholder: #d9d9d9;
   --color-rule: #d4d4d4;
   --color-footer: rgba(186, 186, 186, 0.2);
+  /* Home: the flat blocks standing in for imagery, and the two rule colours —
+     white over the hero footage, black over paper in the experiment list. */
+  --color-block: #e4e4e4;
+  --color-panel: #d5d5d5;
+  --color-hero-rule: rgba(255, 255, 255, 0.26);
+  --color-list-rule: rgba(0, 0, 0, 0.3);
   --color-accent: #fe2959;
   --color-dot: #e6e6e6;
   --color-dot-active: #8a8a8a;
@@ -19,20 +25,46 @@
   --font-display: 'Orbit', ui-monospace, 'SFMono-Regular', monospace;
   --font-body: 'Noto Sans', ui-sans-serif, system-ui, sans-serif;
 
-  /* Every size in the design is tracked at -0.05em. */
+  /* Tracked sizes in the design sit at -0.05em (-0.8px at 16, -1px at 20,
+     -2.5px at 50). Note that this is NOT universal: the library's own
+     `body/m` and `body/s` styles carry no tracking at all. */
   --tracking-tight: -0.05em;
 
+  /* Sizes below map to the Figma library's named text styles:
+       orbit/caption/navig  Orbit 14 / 1.8            → --text-caption
+       orbit/header         Orbit 16 / 24, -0.05em    → --text-label
+       body/s               Noto Sans 16 / 30         → --text-label
+       body/m, side-header  18 / 30                   → --text-copy
+       (project page copy)  20 / 30, -0.05em          → --text-body
+       (concept markers)    21.824 / 32.736, -0.05em  → --text-marker
+       orbit/32             Orbit 32 / 1.1            → --text-h2
+       (page title)         Orbit 50 / 75, -0.05em    → --text-h1 */
+  --text-caption: 0.875rem; /* 14px — home experiment-list links */
   --text-label: 1rem; /* 16px — nav, footer, captions */
+  --text-copy: 1.125rem; /* 18px — 18px running text and side links */
   --text-body: 1.25rem; /* 20px — running text, section labels */
+  --text-marker: 1.364rem; /* 21.824px — the (01)–(07) collage markers */
   --text-body-lg: 1.5rem; /* 24px — Ex04 / About body */
   --text-h3: 1.5625rem; /* 25px — "Visual Archive" */
-  --text-h2: 2rem; /* 32px — home hero title */
+  --text-h2: 2rem; /* 32px — home section headings */
   --text-h1: 3.125rem; /* 50px — page title */
+  --text-hero: 4rem; /* 64px — home hero wordmark */
 
-  --spacing-gutter: 1.5rem; /* 24px page padding */
-  --spacing-section: 4rem; /* 64px section rhythm */
+  /* The library sets one line-height across 16, 18 and 20px body copy, so it is
+     a token of its own rather than a ratio repeated at every size. */
+  --leading-copy: 1.875rem; /* 30px */
 
-  --container-page: 80rem; /* 1280px */
+  /* Tailwind のスペーシング基準を px に。gap-6 などのユーティリティも px 出力になる。 */
+  --spacing: 4px;
+
+  --spacing-gutter: 24px; /* page padding */
+  --spacing-section: 64px; /* section rhythm */
+
+  --container-page: 1280px;
+
+  /* ブレークポイントは Tailwind 既定の rem のまま（sm 40rem 〜 2xl 96rem）。
+     メディアクエリの rem はブラウザの既定文字サイズが基準になるので、
+     文字を大きく設定している利用者では折り返しも早まる。 */
 }
 
 @layer base {

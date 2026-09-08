@@ -1,0 +1,50 @@
+---
+import { experiments } from '../../data/experiments';
+
+// The About frame closes on a full-bleed band of four panels — one per
+// experiment — with the four links set out underneath it. The frame fills the
+// panels with flat grey, so the still each experiment already carries on the
+// home carousel stands in for that placeholder.
+const panels = experiments.map((experiment, index) => ({
+  ...experiment,
+  label: `Ex.0${index + 1}`,
+  poster: experiment.video.replace(/\.mp4$/, '.jpg'),
+}));
+---
+
+<section class="w-full">
+  <ul class="flex w-full">
+    {
+      panels.map((panel, index) => (
+        <li class="flex-1">
+          <a href={panel.href} aria-label={`Go to ${panel.label}: ${panel.title}`}>
+            <img
+              src={panel.poster}
+              alt=""
+              class:list={[
+                'h-[320px] w-full object-cover lg:h-[688px]',
+                index % 2 === 0 ? 'bg-placeholder' : 'bg-block',
+              ]}
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="mx-auto flex max-w-page flex-wrap justify-between gap-8 px-gutter py-5">
+    {
+      panels.map((panel) => (
+        <a
+          href={panel.href}
+          class="font-display text-body tracking-tight whitespace-nowrap"
+          aria-label={`Go to ${panel.label}: ${panel.title}`}
+        >
+          → {panel.label}
+        </a>
+      ))
+    }
+  </div>
+</section>

@@ -1,17 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeading from '../components/sections/PageHeading.astro';
-import ProseSection from '../components/sections/ProseSection.astro';
-import SectionLabel from '../components/ui/SectionLabel.astro';
 import MemberProfile from '../components/sections/MemberProfile.astro';
 import ToolsUsed from '../components/sections/ToolsUsed.astro';
+import ExperimentStrip from '../components/sections/ExperimentStrip.astro';
 import NextExperiment from '../components/sections/NextExperiment.astro';
 import { members, nav } from '../data/site';
 
-// Home says what was made. About is the class itself: the problem the project
-// was set against, the challenge it put to us, and how the sessions ran.
+// The About frame opens on the three of us rather than on the module: one
+// centred paragraph introducing the team, set under a centred title.
 const intro = [
-  'Data Spaces is a project in the second year of BA Design Communication at LASALLE College of the Arts, run over three weeks and nine sessions. This page is the brief the archive answers.',
+  'Hello there! We’re a team of three Design Communication students who came together through Data Spaces, each bringing a different way of thinking and making to the project. From coding and building ideas to shaping the visuals and overall art direction, we worked closely across every experiment and gradually turned our different strengths into one shared outcome.',
 ];
 
 const aboutSections = nav.find((entry) => entry.href === '/about')?.sections ?? [];
@@ -20,66 +19,15 @@ const anchorFor = (label: string) => aboutSections.find((s) => s.label === label
 
 <BaseLayout
   title="About — Data Spaces"
-  description="The brief behind Data Spaces: the design problem it was set against, the challenge it put to us, and how the nine sessions ran."
+  description="The three of us, what each of us brought to Data Spaces, and the tools the four experiments were made with."
 >
-  <PageHeading title="About" id="class" intro={intro} />
+  <PageHeading title="About Us" id="class" intro={intro} centred />
 
-  <ProseSection
-    label="DESIGN PROBLEM"
-    id={anchorFor('DESIGN PROBLEM')}
-    lead="Data has become a driving force in daily life, and giving it form is now a designer’s problem rather than only a technical one."
-    columns={[
-      'Information channels, interactions and digital footprints are captured seamlessly and everywhere, collected by algorithms and analysed in data centres, and what comes out of that analysis steers the world the same people live in. Very little of it is ever seen by the person it describes.',
-      'Handling data is usually filed under science and engineering. The brief puts it inside a designer’s toolkit, processes and knowledge instead — which makes the question one of method rather than of computation.',
-    ]}
-    quote="What methods can be employed to transform raw data into simple visual narratives in the realm of computational aesthetics?"
-    quoteSource="the project brief"
-  />
-
-  <ProseSection
-    label="DESIGN CHALLENGE"
-    id={anchorFor('DESIGN CHALLENGE')}
-    lead="Look at data from different angles, and explore how it can be gathered, quantified, experienced and presented — physically and digitally."
-    columns={[
-      'The project asks for different forms of data and different ways of giving form to it, applying a different method each time to collecting, analysing and expressing what is collected. The point is the range, not the resolution of any one attempt.',
-      'What that produced is the four experiments archived here: counts taken by hand, a procedural system, a soundtrack that drives an image, and a sensor that makes an ordinary object answer back.',
-    ]}
-  />
-
-  <ProseSection
-    label="APPROACH"
-    id={anchorFor('APPROACH')}
-    lead="Nine sessions, in groups of three, each one setting a brief that has to be finished before the next."
-    columns={[
-      'The sessions are technical, hands-on or consultation-based, and the last is a showcase. Because every brief is due at the following session, the work is made by responding quickly and deciding on the spot rather than by researching a position into shape.',
-      'That is deliberate. The variety those quick responses produce is what gets evaluated and reflected on at the end — as an accumulated body of work, archived on the web, rather than one outcome defended at a time.',
-    ]}
-  />
-
-  <section id={anchorFor('THE THREE OF US')} class="w-full scroll-mt-32 px-gutter py-section">
-    <div class="mx-auto flex max-w-page flex-col gap-8">
-      <SectionLabel label="THE THREE OF US" />
-
-      <h2 class="max-w-[54rem] font-body text-h2 font-bold tracking-tight">
-        Working as three meant every brief produced three readings of it.
-      </h2>
-
-      <p class="prose-justified max-w-[31.1875rem] font-body text-body tracking-tight">
-        Rather than resolving those into one house style, the archive keeps them side by side. The
-        first thing any of us produced was a count taken by hand over three minutes, and those are
-        still the only numbers in the project that came from us rather than from a system — so they
-        stand in for us here.
-      </p>
-    </div>
-  </section>
-
-  {
-    members.map((member, index) => (
-      <MemberProfile member={member} id={member.name.toLowerCase()} flipped={index % 2 === 1} />
-    ))
-  }
+  {members.map((member) => <MemberProfile member={member} id={member.name.toLowerCase()} />)}
 
   <ToolsUsed id={anchorFor('TOOLS')} />
+
+  <ExperimentStrip />
 
   <NextExperiment />
 </BaseLayout>

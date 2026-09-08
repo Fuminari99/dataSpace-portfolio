@@ -1,0 +1,34 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+import { about } from '../../data/home';
+
+interface Props {
+  /** Anchor target, matching the hash the header and footer links use. */
+  id?: string;
+}
+
+const { id } = Astro.props;
+---
+
+<section id={id} class="w-full scroll-mt-32 px-gutter py-section">
+  <div class="mx-auto flex max-w-page flex-col items-center gap-8">
+    <SectionLabel label={about.label} variant="heading" />
+
+    <div class="flex w-full max-w-[608px] flex-col gap-6">
+      {
+        about.columns.map((paragraph) => (
+          <p class="prose-justified font-body text-copy leading-[1.667]">{paragraph}</p>
+        ))
+      }
+
+      <a
+        href={about.link.href}
+        class="font-display text-copy leading-[1.667] tracking-tight"
+        aria-label="Read About: the class, the brief and the three of us"
+        data-module="hover-scramble"
+      >
+        → <span data-scramble-text>{about.link.label}</span>
+      </a>
+    </div>
+  </div>
+</section>

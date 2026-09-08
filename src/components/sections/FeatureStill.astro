@@ -20,7 +20,7 @@ const { label, id, video, poster, alt } = Astro.props;
     <SectionLabel label={label} id={id} />
 
     <div class="flex w-full flex-col items-center justify-center">
-      <div class="aspect-[1024/530] w-full max-w-[64rem] overflow-hidden bg-placeholder">
+      <div class="aspect-[1024/530] w-full max-w-[1024px] overflow-hidden bg-placeholder">
         {
           video && (
             <video

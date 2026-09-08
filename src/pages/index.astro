@@ -1,18 +1,17 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import AccentWash from '../components/sections/AccentWash.astro';
-import HomeCarousel from '../components/sections/HomeCarousel.astro';
-import ProjectIntro from '../components/sections/ProjectIntro.astro';
-import ExperimentSummary from '../components/sections/ExperimentSummary.astro';
-import AboutSummary from '../components/sections/AboutSummary.astro';
-import VisualArchive from '../components/sections/VisualArchive.astro';
-import NextExperiment from '../components/sections/NextExperiment.astro';
+import HomeHero from '../components/sections/HomeHero.astro';
+import HomeBackground from '../components/sections/HomeBackground.astro';
+import HomeConcept from '../components/sections/HomeConcept.astro';
+import ExperimentList from '../components/sections/ExperimentList.astro';
+import HomeAbout from '../components/sections/HomeAbout.astro';
 import { experiments } from '../data/experiments';
 import { home } from '../data/site';
 
-// The home page is the whole project in one read: what the brief was, then each
-// experiment in turn, then who made it. The anchors come from the Home entry in
-// site.ts so the header panel and these sections cannot drift apart.
+// The home page is the whole project in one read: the hero, what the brief was,
+// the concept the four experiments share, the experiments themselves, then who
+// made it. The anchors come from the Home entry in site.ts so the header panel
+// and these sections cannot drift apart.
 const anchors = home.sections.map((section) => section.hash);
 const [background, ...rest] = anchors;
 const experimentAnchors = rest.slice(0, experiments.length);
@@ -24,28 +23,15 @@ const team = rest[experiments.length];
   description="A web archive of experiments in collecting, quantifying and giving form to data, by Fumi, Keagan and Maiya."
   overlayHeader
 >
-  <div class="relative w-full">
-    <AccentWash />
+  <div class="flex w-full flex-col items-center">
+    <HomeHero />
 
-    <div class="relative flex w-full flex-col items-center">
-      <HomeCarousel />
+    <HomeBackground id={background} />
 
-      <ProjectIntro id={background} />
+    <HomeConcept />
 
-      {
-        experiments.map((experiment, index) => (
-          <ExperimentSummary
-            experiment={experiment}
-            id={experimentAnchors[index]}
-            flipped={index % 2 === 1}
-          />
-        ))
-      }
+    <ExperimentList ids={experimentAnchors} />
 
-      <AboutSummary id={team} />
-
-      <VisualArchive />
-      <NextExperiment />
-    </div>
+    <HomeAbout id={team} />
   </div>
 </BaseLayout>

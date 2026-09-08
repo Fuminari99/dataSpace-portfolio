@@ -28,7 +28,7 @@ const poster = experiment.video.replace(/\.mp4$/, '.jpg');
         flipped ? 'lg:flex-row-reverse' : 'lg:flex-row',
       ]}
     >
-      <div class="w-full overflow-hidden bg-placeholder lg:max-w-[44.3125rem]">
+      <div class="w-full overflow-hidden bg-placeholder lg:max-w-[712px]">
         <video
           class="aspect-video h-full w-full object-cover"
           data-module="lazy-video"
@@ -44,18 +44,23 @@ const poster = experiment.video.replace(/\.mp4$/, '.jpg');
         </video>
       </div>
 
-      <div class="flex w-full flex-col gap-6 lg:max-w-[31.1875rem]">
-        <h2 class="font-body text-h2 font-bold tracking-tight">{experiment.title}</h2>
+      <div class="flex w-full flex-col gap-6 lg:max-w-[496px]">
+        {/* The design shows no visible title here — the bracketed label above
+            names the experiment. The heading is kept for the document outline
+            and for anyone reading with a screen reader. */}
+        <h2 class="sr-only">{experiment.title}</h2>
 
         {
           experiment.overview.map((paragraph) => (
-            <p class="prose-justified font-body text-body tracking-tight">{paragraph}</p>
+            <p class="prose-justified font-body text-body leading-copy tracking-tight">
+              {paragraph}
+            </p>
           ))
         }
 
         <a
           href={experiment.href}
-          class="font-display text-body tracking-tight whitespace-nowrap"
+          class="font-display text-body leading-copy tracking-tight whitespace-nowrap"
           aria-label={`Read ${longLabel}: ${experiment.title}`}
           data-module="hover-scramble"
         >

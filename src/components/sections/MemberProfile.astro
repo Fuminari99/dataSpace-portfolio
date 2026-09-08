@@ -1,56 +1,62 @@
 ---
-import SectionLabel from '../ui/SectionLabel.astro';
-import type { Member } from '../../data/site';
+import { members, type Member } from '../../data/site';
 
 interface Props {
   member: Member;
   /** Anchor target, matching the hash the footer and header links use. */
   id?: string;
-  /** Alternates which side the portrait sits on down the page. */
-  flipped?: boolean;
 }
 
-const { member, id, flipped = false } = Astro.props;
+const { member, id } = Astro.props;
+
+// The About frame repeats the three names above every profile, with the one
+// being read at full opacity and the other two dimmed. Rendering the dimmed
+// pair as links is what makes the repetition useful rather than decorative:
+// it jumps straight down the page to that person.
+const anchorFor = (name: string) => `#${name.toLowerCase()}`;
 ---
 
 <section id={id} class="w-full scroll-mt-32 px-gutter py-section">
-  <div class="mx-auto flex max-w-page flex-col gap-6">
-    <SectionLabel label={member.name} />
+  <div class="mx-auto flex max-w-page flex-col items-center">
+    <div class="flex w-full flex-col items-center gap-8 lg:flex-row lg:justify-center lg:gap-[108px]">
+      <div class="flex shrink-0 items-center justify-center py-6">
+        <img
+          src={member.portrait}
+          alt={`${member.name}'s portrait mark`}
+          class="size-[208px] object-contain"
+          width="208"
+          height="208"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
 
-    <div
-      class:list={[
-        'flex w-full flex-col items-start gap-8 lg:items-center lg:justify-between',
-        flipped ? 'lg:flex-row-reverse' : 'lg:flex-row',
-      ]}
-    >
-      <img
-        src={member.visual}
-        alt={`${member.name}'s visual from the body-rhythm recordings`}
-        class="aspect-square w-full max-w-[24rem] bg-placeholder object-cover"
-        loading="lazy"
-        decoding="async"
-      />
-
-      <div class="flex w-full flex-col gap-6 lg:max-w-[31.1875rem]">
-        <h2 class="font-body text-h2 font-bold tracking-tight">{member.name}</h2>
-
-        {/* The project's first data, and the only numbers any of us produced by
-            hand: counts taken over three minutes in Ex01. */}
-        <dl class="flex gap-12 font-body text-body tracking-tight">
+      <div class="flex w-full flex-col gap-4 lg:max-w-[504px]">
+        <nav class="flex gap-4" aria-label="The three of us">
           {
-            member.rates.map((entry) => (
-              <div class="flex flex-col gap-1">
-                <dt class="text-label opacity-50">{entry.label}</dt>
-                <dd class="font-bold">
-                  {entry.value}
-                  <span class="text-label font-normal opacity-50"> /3min</span>
-                </dd>
-              </div>
-            ))
+            members.map((entry) => {
+              const current = entry.name === member.name;
+              return current ? (
+                <span
+                  class="font-body text-copy tracking-tight whitespace-nowrap"
+                  aria-current="true"
+                >
+                  [ {entry.name} ]
+                </span>
+              ) : (
+                <a
+                  href={anchorFor(entry.name)}
+                  class="font-body text-copy tracking-tight whitespace-nowrap opacity-50"
+                  aria-label={`Read about ${entry.name}`}
+                >
+                  [ {entry.name} ]
+                </a>
+              );
+            })
           }
-        </dl>
+        </nav>
 
-        <p class="prose-justified font-body text-body tracking-tight">{member.note}</p>
+        <p class="prose-justified font-body text-copy leading-copy">{member.note}</p>
       </div>
     </div>
   </div>

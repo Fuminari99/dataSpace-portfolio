@@ -1,17 +1,40 @@
 ---
 import { nav } from '../../data/site';
+import { hero } from '../../data/home';
+
+/**
+ * The footer carries the same treatment as the hero: footage under a flat black
+ * lift, with the columns set over it in white. It takes the last of the hero's
+ * clips so the page opens and closes on different footage.
+ */
+const clip = hero.clips[hero.clips.length - 1];
 ---
 
-<footer class="w-full bg-footer px-gutter pt-8 pb-section">
-  <div
-    class="mx-auto flex max-w-page flex-col gap-12 font-display text-label tracking-tight md:flex-row md:gap-[8.0625rem]"
+<footer class="relative w-full overflow-hidden bg-ink px-gutter pt-8 pb-section text-paper">
+  <video
+    class="absolute inset-0 h-full w-full object-cover"
+    data-module="lazy-video"
+    poster={clip.poster}
+    aria-hidden="true"
+    muted
+    loop
+    playsinline
+    preload="none"
   >
-    <p class="md:w-[11.5625rem]">Data Spaces</p>
+    <source data-src={clip.video} type="video/mp4" />
+  </video>
+
+  <div class="absolute inset-0 bg-ink/80" aria-hidden="true"></div>
+
+  <div
+    class="relative mx-auto flex max-w-page flex-col gap-12 font-display text-label tracking-tight md:flex-row md:gap-[128px]"
+  >
+    <p class="md:w-[184px]">Data Spaces</p>
 
     <div class="grid flex-1 grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3 lg:grid-cols-5 lg:gap-x-32">
       {
         nav.map((entry) => (
-          <div class="flex flex-col items-end gap-[2.625rem] text-right">
+          <div class="flex flex-col items-end gap-[40px] text-right">
             <a href={entry.href} class="whitespace-nowrap" data-nav-link>
               {entry.label}
             </a>

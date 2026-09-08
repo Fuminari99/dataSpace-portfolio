@@ -1,11 +1,12 @@
 ---
-import { home, nav } from '../../data/site';
+import { headerNav } from '../../data/site';
 
 interface Props {
   /**
    * Lifts the bar out of the flow so the page below it can start at the top of
-   * the viewport. Used by the home page, whose carousel owns the first screen:
-   * the bar stays out of sight until the carousel has been scrolled past.
+   * the viewport. Used by the home page, whose hero owns the first screen: the
+   * bar rides over the footage in white, then takes the paper background once
+   * the hero has been scrolled past.
    */
   overlay?: boolean;
 }
@@ -16,11 +17,14 @@ const { overlay = false } = Astro.props;
 // page is resolved here at build time and needs no re-syncing after a swap.
 const current = Astro.url.pathname.replace(/\/$/, '') || '/';
 
-const items = [home, ...nav];
+const items = headerNav;
 ---
 
 <header
-  class:list={['z-20 w-full bg-paper pt-4', overlay ? 'site-header--overlay' : 'sticky top-0']}
+  class:list={[
+    'z-20 w-full pt-4',
+    overlay ? 'site-header--overlay text-paper' : 'sticky top-0 bg-paper',
+  ]}
   data-module={overlay ? 'nav-scramble header-reveal' : 'nav-scramble'}
 >
   <nav
@@ -28,7 +32,7 @@ const items = [home, ...nav];
     aria-label="Main"
   >
     {
-      items.map((item, index) => {
+      items.map((item) => {
         // The page you are on wears its full title permanently — that is the
         // marker for where you are — so there is nothing left for it to swap to
         // and it does not respond to hover.
@@ -39,7 +43,6 @@ const items = [home, ...nav];
             class="nav-item"
             data-nav-item
             data-nav-static={isCurrent ? '' : undefined}
-            style={index === 0 ? 'margin-inline-end:auto' : undefined}
           >
             <a
               href={item.href}
@@ -71,32 +74,34 @@ const items = [home, ...nav];
 </header>
 
 <style>
-  /* Out of the flow entirely, so the section below starts at the top of the
-     viewport rather than under the bar. `visibility` rather than opacity alone
-     keeps the links out of the tab order while the bar is not on screen. */
+  /* Out of the flow entirely, so the hero starts at the top of the viewport
+     rather than under the bar. It sits over the footage in white for as long as
+     the hero is on screen. */
   .site-header--overlay {
     position: fixed;
     inset-block-start: 0;
     inset-inline: 0;
-    opacity: 0;
-    visibility: hidden;
   }
 
-  .site-header--overlay.is-revealed {
-    opacity: 1;
-    visibility: visible;
+  /* Past the hero there is no footage left to read against, so the bar takes
+     the page's own colours. */
+  .site-header--overlay.is-on-paper {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
   }
 
+  /* Three items spread across the bar: Home on the left edge, About on the
+     right, Projects between them. The gap is only a floor — `justify-between`
+     supplies the rest. */
   nav {
-    gap: 2rem;
+    gap: 32px;
     padding-inline: var(--spacing-gutter);
   }
 
   /* At the design's own width the bar already stops at 1280px, so the gutter
-     comes off and the items sit on the outer edges, 154px apart. */
+     comes off and the outer two sit on the container's own edges. */
   @media (min-width: 80rem) {
     nav {
-      gap: 9.625rem;
       padding-inline: 0;
     }
   }

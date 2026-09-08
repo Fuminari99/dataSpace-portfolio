@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeading from '../components/sections/PageHeading.astro';
+import ConceptCollage from '../components/sections/ConceptCollage.astro';
+import ExperimentSummary from '../components/sections/ExperimentSummary.astro';
+import NextExperiment from '../components/sections/NextExperiment.astro';
+import { experiments } from '../data/experiments';
+import { concept } from '../data/home';
+import { projects } from '../data/site';
+
+// Projects is the level between the home page and the four experiments: the
+// shared concept first, then each experiment in turn, alternating sides down
+// the page. The anchors come from the Projects entry in site.ts so the header
+// and footer links cannot drift apart from the sections here.
+const [conceptAnchor, ...experimentAnchors] = projects.sections.map((section) => section.hash);
+
+// The same two paragraphs the home page summarises the concept with. They are
+// the concept, so they are stated once and read from there.
+const intro = [concept.lead, concept.body];
+---
+
+<BaseLayout
+  title="Project Concept — Data Spaces"
+  description="Fractal Glass: the shared direction behind the four Data Spaces experiments, and each experiment in turn."
+>
+  <PageHeading title="Project Concept" intro={intro} display />
+
+  <ConceptCollage id={conceptAnchor} />
+
+  {
+    experiments.map((experiment, index) => (
+      <ExperimentSummary
+        experiment={experiment}
+        id={experimentAnchors[index]}
+        flipped={index % 2 === 1}
+      />
+    ))
+  }
+
+  <NextExperiment />
+</BaseLayout>

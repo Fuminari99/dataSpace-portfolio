@@ -1,0 +1,55 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+import { concept } from '../../data/home';
+
+interface Props {
+  /** Anchor target, matching the hash the header and footer links use. */
+  id?: string;
+}
+
+const { id } = Astro.props;
+---
+
+<section id={id} class="w-full scroll-mt-32 px-gutter py-section">
+  <div class="mx-auto flex max-w-page flex-col items-center gap-8">
+    <div class="flex w-full max-w-[608px] flex-col gap-6">
+      <div class="flex flex-col items-center gap-3">
+        <SectionLabel label={concept.label} variant="heading" />
+        <p class="font-body text-copy leading-[1.5] opacity-50">{concept.subtitle}</p>
+      </div>
+
+      <p class="prose-justified font-body text-copy leading-[1.5]">{concept.lead}</p>
+    </div>
+
+    <div class="flex w-full flex-col items-start gap-8 lg:flex-row">
+      <div class="w-full overflow-hidden bg-panel lg:max-w-[608px]">
+        <video
+          class="aspect-[604/375] h-full w-full object-cover"
+          data-module="lazy-video"
+          poster={concept.poster}
+          role="img"
+          aria-label={concept.alt}
+          muted
+          loop
+          playsinline
+          preload="none"
+        >
+          <source data-src={concept.video} type="video/mp4" />
+        </video>
+      </div>
+
+      <div class="flex flex-1 flex-col justify-center gap-6 lg:self-stretch">
+        <p class="prose-justified font-body text-copy leading-[1.5]">{concept.body}</p>
+
+        <a
+          href={concept.link.href}
+          class="font-display text-copy leading-[1.667] tracking-tight"
+          aria-label={`Read about the project concept: ${concept.subtitle}`}
+          data-module="hover-scramble"
+        >
+          → <span data-scramble-text>{concept.link.label}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

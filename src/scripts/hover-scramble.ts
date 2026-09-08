@@ -16,11 +16,21 @@ const CHARS = 'upperCase';
  */
 registerModule('hover-scramble', (el) => {
   const target = el.querySelector<HTMLElement>('[data-scramble-text]') ?? el;
-  const text = target.textContent?.trim();
-  if (!text) return;
+  const initial = target.textContent?.trim();
+  if (!initial) return;
 
   const gsap = initGsap();
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /**
+   * Mid-tween the element's own text is a run of random characters, so the
+   * label cannot simply be read back off it. Anything that retargets a link
+   * while the page is open — the home hero, as its footage changes — writes the
+   * new label to `data-scramble-text`, and that is what the scramble resolves
+   * to. Links that never change carry an empty attribute and fall back to the
+   * text they were rendered with.
+   */
+  const current = () => target.dataset.scrambleText?.trim() || initial;
 
   const run = () => {
     if (reduceMotion.matches) return;
@@ -28,7 +38,7 @@ registerModule('hover-scramble', (el) => {
     gsap.to(target, {
       duration: DURATION,
       ease: 'none',
-      scrambleText: { text, chars: CHARS, speed: 0.6 },
+      scrambleText: { text: current(), chars: CHARS, speed: 0.6 },
     });
   };
 
@@ -37,7 +47,7 @@ registerModule('hover-scramble', (el) => {
 
   return () => {
     gsap.killTweensOf(target);
-    target.textContent = text;
+    target.textContent = current();
     el.removeEventListener('pointerenter', run);
     el.removeEventListener('focus', run);
   };

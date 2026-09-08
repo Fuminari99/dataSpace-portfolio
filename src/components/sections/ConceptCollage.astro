@@ -1,14 +1,27 @@
 ---
 import SectionLabel from '../ui/SectionLabel.astro';
-import { CANVAS, collage } from '../../data/concept-collage';
+import { CANVAS, ROLE_SIZE, TYPE_CANVAS, collage } from '../../data/concept-collage';
 
-// Text in the collage is 20px against a 1173px canvas; expressed in container
-// query units it keeps its proportion as the canvas scales.
-const fontSize = ((20 / CANVAS.width) * 100).toFixed(3);
-const canvasStyle = `--collage-font:${fontSize}cqw;--canvas-ratio:${CANVAS.width}/${CANVAS.height}`;
+interface Props {
+  /** Anchor target, matching the hash the header and footer links use. */
+  id?: string;
+}
+
+const { id } = Astro.props;
+
+// Sizes are quoted against the design's 1280-wide frame; in container query
+// units they hold their proportion as the canvas scales.
+const cqw = (px: number) => `${((px / TYPE_CANVAS) * 100).toFixed(4)}cqw`;
+
+const canvasStyle = [
+  `--collage-heading:${cqw(ROLE_SIZE.heading)}`,
+  `--collage-note:${cqw(ROLE_SIZE.note)}`,
+  `--collage-marker:${cqw(ROLE_SIZE.marker)}`,
+  `--canvas-ratio:${CANVAS.width}/${CANVAS.height}`,
+].join(';');
 ---
 
-<section class="w-full px-gutter py-section">
+<section id={id} class="w-full scroll-mt-32 px-gutter py-section">
   <div class="mx-auto flex max-w-page flex-col gap-4">
     <SectionLabel label="CONCEPT" />
 
@@ -17,7 +30,15 @@ const canvasStyle = `--collage-font:${fontSize}cqw;--canvas-ratio:${CANVAS.width
         collage.map((item) =>
           item.kind === 'text' ? (
             <p
-              class="collage__item font-body tracking-tight"
+              class:list={[
+                'collage__item',
+                `is-${item.role}`,
+                // Only the headings and the markers are tracked; the running
+                // notes carry none in the library's own style.
+                item.role === 'note' ? 'font-body' : 'tracking-tight',
+                item.role === 'heading' && 'font-display',
+                item.role === 'marker' && 'font-body',
+              ]}
               style={`--x:${item.x};--y:${item.y};--w:${item.w}`}
             >
               {item.text}
@@ -49,16 +70,28 @@ const canvasStyle = `--collage-font:${fontSize}cqw;--canvas-ratio:${CANVAS.width
 
 <style>
   /* Below the breakpoint the scatter would be unreadable, so the items simply
-     stack in reading order. */
+     stack in reading order at the page's own type sizes. */
   .collage {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 32px;
   }
 
   .collage__item {
-    font-size: var(--text-body);
     margin: 0;
+    line-height: var(--leading-copy);
+  }
+
+  .collage__item.is-heading {
+    font-size: var(--text-copy);
+  }
+
+  .collage__item.is-note {
+    font-size: var(--text-label);
+  }
+
+  .collage__item.is-marker {
+    font-size: var(--text-marker);
   }
 
   .collage__image {
@@ -98,7 +131,21 @@ const canvasStyle = `--collage-font:${fontSize}cqw;--canvas-ratio:${CANVAS.width
       left: calc(var(--x) * 1%);
       top: calc(var(--y) * 1%);
       width: calc(var(--w) * 1%);
-      font-size: var(--collage-font);
+      /* In the scatter the type scales with the canvas, so the three sizes are
+         held as a proportion of it rather than in rem. */
+      line-height: 1.667;
+    }
+
+    .collage__item.is-heading {
+      font-size: var(--collage-heading);
+    }
+
+    .collage__item.is-note {
+      font-size: var(--collage-note);
+    }
+
+    .collage__item.is-marker {
+      font-size: var(--collage-marker);
     }
 
     .collage__image {

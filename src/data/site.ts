@@ -59,10 +59,9 @@ export const nav: NavEntry[] = [
     longLabel: 'ABOUT',
     href: '/about',
     sections: [
-      section('DESIGN PROBLEM', 'design-problem'),
-      section('DESIGN CHALLENGE', 'design-challenge'),
-      section('APPROACH', 'approach'),
-      section('THE THREE OF US', 'team'),
+      section('FUMI', 'fumi'),
+      section('KEAGAN', 'keagan'),
+      section('MAIYA', 'maiya'),
       section('TOOLS', 'tools'),
     ],
   },
@@ -88,13 +87,41 @@ export const home: NavEntry = {
   ],
 };
 
+/**
+ * The Projects page: the shared concept the four experiments came out of,
+ * followed by each of them in turn. The experiments sit *under* it rather than
+ * beside it, which is why the header carries this instead of listing Ex01–04.
+ */
+export const projects: NavEntry = {
+  label: 'Projects',
+  hoverLabel: 'Project Concept',
+  longLabel: 'PROJECTS',
+  href: '/projects',
+  sections: [
+    section('CONCEPT', 'concept'),
+    section('EX.01', 'ex01'),
+    section('EX.02', 'ex02'),
+    section('EX.03', 'ex03'),
+    section('EX.04', 'ex04'),
+  ],
+};
+
+const about = nav[nav.length - 1];
+
+/**
+ * The header carries three entries — Home, Projects, About — with the four
+ * experiments reached through Projects. The footer still lists them as columns
+ * of their own, so `nav` above stays the full set; only the bar is narrowed.
+ */
+export const headerNav: NavEntry[] = [home, projects, about];
+
 /** Reading order of the whole site, used to resolve the "go to next" link. */
-const order = ['/', ...nav.map((entry) => entry.href)];
+const order = ['/', projects.href, ...nav.map((entry) => entry.href)];
 
 export function nextPage(current: string) {
   const index = order.indexOf(current);
   const href = order[(index + 1) % order.length];
-  const entry = nav.find((item) => item.href === href);
+  const entry = [projects, ...nav].find((item) => item.href === href);
   return { href, label: entry ? entry.longLabel : 'HOME' };
 }
 
@@ -107,6 +134,8 @@ export interface Rate {
 export interface Member {
   name: string;
   visual: string;
+  /** Round portrait used on the About page, exported from the design file. */
+  portrait: string;
   /** The counts this person recorded by hand in Ex01, the project's first data. */
   rates: Rate[];
   /**
@@ -123,18 +152,21 @@ export const members: Member[] = [
   {
     name: 'FUMI',
     visual: '/assets/visuals/fumi.png',
+    portrait: '/assets/portraits/fumi.png',
     rates: [rate('BREATH', '56'), rate('PULSE', '111'), rate('BLINK', '118')],
     note: 'The most blinks of the three — 118 against Maiya’s 52 — over a breath and a pulse that both sit between the other two.',
   },
   {
     name: 'KEAGAN',
     visual: '/assets/visuals/keagan.png',
+    portrait: '/assets/portraits/keagan.png',
     rates: [rate('BREATH', '35'), rate('PULSE', '154'), rate('BLINK', '114')],
     note: 'The widest gap between two rhythms in the project: 35 breaths against 154 beats in the same three minutes, roughly four beats to a breath.',
   },
   {
     name: 'MAIYA',
     visual: '/assets/visuals/maiya.png',
+    portrait: '/assets/portraits/maiya.png',
     rates: [rate('BREATH', '64'), rate('PULSE', '101'), rate('BLINK', '52')],
     note: 'The fastest breathing and the slowest pulse of the three, and 52 blinks — fewer than half of what Fumi recorded.',
   },

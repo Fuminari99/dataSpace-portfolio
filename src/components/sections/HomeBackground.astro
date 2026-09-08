@@ -1,0 +1,32 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+import { background } from '../../data/home';
+
+interface Props {
+  /** Anchor target, matching the hash the header and footer links use. */
+  id?: string;
+}
+
+const { id } = Astro.props;
+---
+
+<section id={id} class="relative w-full scroll-mt-32 overflow-hidden px-gutter py-section">
+  {/* Two flat blocks bleeding in from either edge, behind the column of text.
+      They are decoration in the design, not imagery, so they carry no content. */}
+  <div class="pointer-events-none absolute inset-0 hidden xl:block" aria-hidden="true">
+    <span class="absolute top-20 right-[3%] h-[168px] w-[272px] bg-block"></span>
+    <span class="absolute top-[376px] left-[4%] h-[168px] w-[272px] bg-block"></span>
+  </div>
+
+  <div class="relative mx-auto flex max-w-page flex-col items-center gap-12">
+    <SectionLabel label={background.label} variant="heading" />
+
+    <div class="flex w-full max-w-[592px] flex-col gap-16">
+      {
+        background.columns.map((paragraph) => (
+          <p class="prose-justified font-body text-copy leading-[1.5]">{paragraph}</p>
+        ))
+      }
+    </div>
+  </div>
+</section>
