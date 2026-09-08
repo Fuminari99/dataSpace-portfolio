@@ -62,6 +62,15 @@ export const background = {
 export const concept = {
   label: 'Project concept',
   lead: 'After having compared our very first iterations, we began to notice similar qualities appearing within each of our responses: repetition and shifting patterns. Rather than forcing everyone to follow a singular design style, we looked for a concept that could tie them together.',
+  /**
+   * Home (Figma 59:1038) breaks the second paragraph so “the concept of Fractal
+   * Glass” sits on its own line. `body` is the same copy joined for Projects.
+   */
+  bodyLines: [
+    'From there, we decided on',
+    'the concept of Fractal Glass',
+    'as our shared project direction. It became the framework for all the experiments that followed, allowing us to individually experiment on how to achieve these broken, repeated structures across our codes.',
+  ],
   body: 'From there, we decided on the concept of Fractal Glass as our shared project direction. It became the framework for all the experiments that followed, allowing us to individually experiment on how to achieve these broken, repeated structures across our codes.',
   /**
    * (05) from the collage on the Projects page — the band the collage crops out
@@ -72,13 +81,14 @@ export const concept = {
   link: { href: '/projects', label: 'Project concept' },
 };
 
+/**
+ * Shortened from the About page's own opening line — home only needs enough
+ * to point at the team, not the full introduction.
+ */
 export const about = {
   label: 'About',
-  columns: [
-    "This collaborative project allowed the cohesion of three varying individuals, with outcomes that reflect on just that. Instead of forcing a single visual style, this archive's explorations are the translated, re-worked outcomes alongside a theme we collectively agreed upon.",
-    'Eventually, the decisions, tests and discoveries made along the way, which resulted in our final outcomes, are a testament to our evolving approaches across the project — be it in design decisions, coding choices, or the cohesive feel as a set.',
-  ],
-  link: { href: '/about', label: 'ABOUT' },
+  lead: 'Three Design Communication students, each bringing a different way of thinking and making — brought together into one shared outcome.',
+  link: { href: '/about', label: 'About' },
 };
 
 /**

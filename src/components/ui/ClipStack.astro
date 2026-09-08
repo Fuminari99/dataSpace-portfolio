@@ -1,0 +1,54 @@
+---
+import type { HeroClip } from '../../data/home';
+
+interface Props {
+  clips: HeroClip[];
+  /**
+   * When true, each clip carries href / label for the home hero link. Footer
+   * and about → home only need the footage, so they leave this off.
+   */
+  retarget?: boolean;
+}
+
+const { clips, retarget = false } = Astro.props;
+---
+
+{/* Stacked clips the hero-cycle module cross-fades. Absolute fill; the parent
+    supplies the frame size and any blur / grain treatment around this stack. */}
+<div class="clip-stack relative h-full w-full">
+  {
+    clips.map((clip, index) => (
+      <video
+        class="clip-stack__clip"
+        data-hero-clip
+        data-index={index}
+        {...(retarget ? { 'data-href': clip.href, 'data-label': clip.label } : {})}
+        aria-hidden={index === 0 ? undefined : 'true'}
+        {...(index === 0 ? { poster: clip.poster } : { 'data-poster': clip.poster })}
+        role="img"
+        aria-label={clip.alt}
+        muted
+        loop
+        playsinline
+        preload="none"
+      >
+        <source data-src={clip.video} type="video/mp4" />
+      </video>
+    ))
+  }
+</div>
+
+<style>
+  .clip-stack__clip {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+  }
+
+  .clip-stack__clip:first-of-type {
+    opacity: 1;
+  }
+</style>

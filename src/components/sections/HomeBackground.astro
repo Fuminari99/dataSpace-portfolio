@@ -25,12 +25,11 @@ interface Props {
 const { id } = Astro.props;
 ---
 
-<section id={id} class="relative w-full scroll-mt-32 overflow-hidden px-gutter py-section">
+<section id={id} class="relative mt-28 w-full scroll-mt-32 overflow-hidden px-gutter py-28">
   {/* The two blocks either side of the column, in the frame's own positions. */}
   {/* The two panels need the column of text plus 272px either side of it —
-      1136px, and a little air. The gate was on `xl`, which is 1280: a laptop at
-      exactly that width loses them to its own scrollbar. */}
-  <div class="pointer-events-none absolute inset-0 hidden min-[1180px]:block" aria-hidden="true">
+      1136px, and a little air. Gate at 1280 so they never sit under the copy. */}
+  <div class="pointer-events-none absolute inset-0 hidden min-[1280px]:block" aria-hidden="true">
     {
       panels.map((panel) => (
         <figure

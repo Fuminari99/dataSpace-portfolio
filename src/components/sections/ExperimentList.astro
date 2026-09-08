@@ -19,7 +19,8 @@ const rows = experiments.map((experiment, index) => ({
 }));
 ---
 
-<section class="w-full px-gutter py-section">
+{/* Shares a section with HomeConcept above it — see the note there. */}
+<div class="w-full px-gutter">
   <ul class="rows mx-auto w-full max-w-page border-b border-list-rule" data-module="experiment-rows">
     {
       rows.map(({ experiment, id, name, longLabel, thumbs }) => (
@@ -70,7 +71,7 @@ const rows = experiments.map((experiment, index) => ({
       ))
     }
   </ul>
-</section>
+</div>
 
 <style>
   /* The two heights the script tweens between. A row is either the one being
@@ -183,6 +184,10 @@ const rows = experiments.map((experiment, index) => ({
     .rows:has([data-row][data-open]) {
       display: block;
       height: auto;
+    }
+
+    .rows:has([data-row][data-open]) .row[data-open='false'] .row__body {
+      visibility: visible;
     }
 
     .row {

@@ -2,34 +2,102 @@
 import { experiments } from '../../data/experiments';
 import HeroMediaTreatment from '../ui/HeroMediaTreatment.astro';
 
-// Four linked stills with the home hero's treatment and labels over the media.
+// Four linked clips with the home hero's treatment. Rest label is short
+// ("EX01"); hover scrambles to the formal title with an arrow, and widens
+// that column so the four shares of the strip rebalance. Height fills whatever
+// remains of the tools + strip 80svh block on About.
 const panels = experiments.map((experiment, index) => ({
   ...experiment,
-  label: `EX0${index + 1}`,
+  shortLabel: `EX0${index + 1}`,
+  hoverLabel: `→ ${experiment.title}`,
   poster: experiment.video.replace(/\.mp4$/, '.webp'),
 }));
 ---
 
-<section class="w-full">
-  <ul class="flex w-full">
+<section class="experiment-strip-section flex min-h-[240px] w-full flex-col lg:min-h-[240px] lg:flex-1">
+  <ul class="experiment-strip grid min-h-[240px] w-full flex-1 grid-cols-2 lg:flex lg:min-h-[240px]" data-module="nav-scramble">
     {
-      panels.map((panel) => (
-        <li class="min-w-0 flex-1">
-          <a class="relative block h-[320px] w-full lg:h-[688px]" href={panel.href} aria-label={`Go to ${panel.label}: ${panel.title}`}>
-            <HeroMediaTreatment>
-            <img
-              src={panel.poster}
-              alt=""
-              class="h-full w-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
-            </HeroMediaTreatment>
-            <span class="pointer-events-none absolute inset-0 flex items-center justify-center font-display text-body tracking-tight text-white">{panel.label}</span>
+      panels.map((panel, index) => (
+        <li class="experiment-strip__item min-h-0 min-w-0" data-nav-item data-exp={`ex0${index + 1}`}>
+          <a
+            class="experiment-strip__link relative block h-full min-h-[200px] w-full overflow-hidden lg:min-h-0"
+            href={panel.href}
+            aria-label={`Go to ${panel.shortLabel}: ${panel.title}`}
+            data-nav-link
+            data-label={panel.shortLabel}
+            data-hover-label={panel.hoverLabel}
+          >
+            <div class="absolute inset-0">
+              <HeroMediaTreatment>
+                <video
+                  class="h-full w-full object-cover"
+                  data-module="lazy-video"
+                  data-poster={panel.poster}
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  aria-hidden="true"
+                >
+                  <source data-src={panel.video} type="video/mp4" />
+                </video>
+              </HeroMediaTreatment>
+            </div>
+            <span
+              class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-4 text-center font-display text-body tracking-tight text-paper"
+              data-nav-text
+              aria-hidden="true"
+            >
+              {panel.shortLabel}
+            </span>
           </a>
         </li>
       ))
     }
   </ul>
-
 </section>
+
+<style>
+  .experiment-strip__item {
+    min-width: 0;
+  }
+
+  @media (min-width: 64rem) {
+    .experiment-strip__item {
+      flex-grow: 1;
+      flex-shrink: 1;
+      flex-basis: 0;
+      transition: flex-grow 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .experiment-strip__item:hover,
+    .experiment-strip__item:focus-within,
+    .experiment-strip__item.is-open {
+      flex-grow: 4.5;
+    }
+
+    /* Unhovered / unopened siblings narrow so their labels mostly clip. */
+    .experiment-strip:has(.experiment-strip__item:hover) .experiment-strip__item:not(:hover),
+    .experiment-strip:has(.experiment-strip__item:focus-within) .experiment-strip__item:not(:focus-within),
+    .experiment-strip.is-strip-filtered .experiment-strip__item:not(.is-open) {
+      flex-grow: 0.45;
+    }
+
+    .experiment-strip__item :is([data-nav-text]) {
+      transition: opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .experiment-strip:has(.experiment-strip__item:hover) .experiment-strip__item:not(:hover) :is([data-nav-text]),
+    .experiment-strip:has(.experiment-strip__item:focus-within) .experiment-strip__item:not(:focus-within) :is([data-nav-text]),
+    .experiment-strip.is-strip-filtered .experiment-strip__item:not(.is-open) :is([data-nav-text]) {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .experiment-strip__item,
+    .experiment-strip__item :is([data-nav-text]) {
+      transition: none;
+    }
+  }
+</style>

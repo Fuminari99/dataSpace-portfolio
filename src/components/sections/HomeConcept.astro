@@ -2,49 +2,51 @@
 import SectionLabel from '../ui/SectionLabel.astro';
 import SamplerSquare from '../ui/SamplerSquare.astro';
 import { concept } from '../../data/home';
-
-interface Props {
-  /** Anchor target, matching the hash the header and footer links use. */
-  id?: string;
-}
-
-const { id } = Astro.props;
 ---
 
-<section id={id} class="w-full scroll-mt-32 px-gutter py-section">
-  <div class="mx-auto flex max-w-page flex-col items-center gap-8">
-    <div class="flex w-full max-w-[608px] flex-col gap-6">
+{/* Figma 59:1038 — image left (604×375), copy right (604), 32px gutter.
+    Shares a section with ExperimentList below it — that outer <section> in
+    index.astro owns the vertical rhythm, so this stays a plain <div>. */}
+<div class="w-full px-gutter">
+  <div class="mx-auto flex max-w-page flex-col items-stretch gap-8 lg:flex-row lg:items-start">
+    <div
+      class="relative w-full bg-panel lg:max-w-[608px] lg:flex-1"
+      data-module="hero-cells"
+      data-drift-x="200"
+      data-drift-y="100"
+      data-lightbox
+    >
+      <img
+        class="aspect-[604/375] h-full w-full object-cover"
+        src={concept.still}
+        alt={concept.alt}
+        width="604"
+        height="375"
+        loading="lazy"
+        decoding="async"
+        data-hero-still
+      />
+
+      <SamplerSquare top="40%" left="45%" />
+    </div>
+
+    <div class="flex w-full flex-col gap-6 lg:w-[608px] lg:shrink-0">
       <SectionLabel label={concept.label} variant="heading" />
 
       <p class="prose-justified font-body text-copy leading-[1.5]">{concept.lead}</p>
-    </div>
 
-    <div class="flex w-full flex-col items-center gap-8">
-      <div
-        class="relative w-full max-w-[608px] bg-panel"
-        data-module="hero-cells"
-        data-drift-x="200"
-        data-drift-y="100"
-        data-lightbox
-      >
-        <img
-          class="aspect-[604/375] h-full w-full object-cover"
-          src={concept.still}
-          alt={concept.alt}
-          loading="lazy"
-          decoding="async"
-          data-hero-still
-        />
-
-        <SamplerSquare top="40%" left="45%" />
-      </div>
-
-      <div class="flex w-full max-w-[608px] flex-col gap-6">
-        <p class="prose-justified font-body text-copy leading-[1.5]">{concept.body}</p>
+      <div class="flex flex-col gap-6">
+        <div class="prose-justified font-body text-copy leading-[1.5]">
+          {
+            concept.bodyLines.map((line) => (
+              <p class="mb-0">{line}</p>
+            ))
+          }
+        </div>
 
         <a
           href={concept.link.href}
-          class="font-display text-copy leading-[1.667] tracking-tight"
+          class="font-display text-copy leading-[1.667] tracking-tight capitalize"
           aria-label="Read about the project concept: Fractal Glass"
           data-module="hover-scramble"
         >
@@ -53,4 +55,4 @@ const { id } = Astro.props;
       </div>
     </div>
   </div>
-</section>
+</div>

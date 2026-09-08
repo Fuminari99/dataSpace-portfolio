@@ -4,11 +4,10 @@ import PageHeading from '../components/sections/PageHeading.astro';
 import MemberStack from '../components/sections/MemberStack.astro';
 import ToolsUsed from '../components/sections/ToolsUsed.astro';
 import ExperimentStrip from '../components/sections/ExperimentStrip.astro';
-import NextExperiment from '../components/sections/NextExperiment.astro';
 import { nav } from '../data/site';
 
 // The About frame opens on the three of us rather than on the module: one
-// centred paragraph introducing the team, set under a centred title.
+// single paragraph introducing the team, aligned to the page grid.
 const intro = [
   'Hello there! We’re a team of three Design Communication students who came together through Data Spaces, each bringing a different way of thinking and making to the project. From coding and building ideas to shaping the visuals and overall art direction, we worked closely across every experiment and gradually turned our different strengths into one shared outcome.',
 ];
@@ -21,13 +20,13 @@ const anchorFor = (label: string) => aboutSections.find((s) => s.label === label
   title="About — Data Spaces"
   description="The three of us, what each of us brought to Data Spaces, and the tools the four experiments were made with."
 >
-  <PageHeading title="About Us" id="class" intro={intro} centred />
+  <PageHeading title="About Us" id="class" intro={intro} singleColumn centred />
 
   <MemberStack />
 
-  <ToolsUsed id={anchorFor('TOOLS')} />
+  <div class="flex w-full flex-col lg:min-h-[80svh]" data-module="about-tools">
+    <ToolsUsed id={anchorFor('TOOLS')} />
 
-  <ExperimentStrip />
-
-  <NextExperiment />
+    <ExperimentStrip />
+  </div>
 </BaseLayout>

@@ -172,10 +172,12 @@ registerModule('hero-cells', (root) => {
       canvas.height = height;
     }
 
-    // The clips are laid over the hero with object-fit: cover, so the thumbnail
-    // has to be cropped the same way or the squares would report the colour of
-    // somewhere else in the frame.
-    const scale = Math.max(width / frameSource.width, height / frameSource.height);
+    // Home hero clips (and treated media frames) are scaled up after cover —
+    // see `.hero__clip` / `.media-frame--treated`. Opt in with
+    // `data-sample-scale`; panels without that transform stay at 1.
+    const visualScale = Number(root.dataset.sampleScale) || 1;
+    const scale =
+      Math.max(width / frameSource.width, height / frameSource.height) * visualScale;
     const drawWidth = frameSource.width * scale;
     const drawHeight = frameSource.height * scale;
     context.drawImage(

@@ -1,0 +1,16 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  accessibleLabel?: string;
+}
+const { href, label, accessibleLabel = label } = Astro.props;
+---
+
+<a
+  href={href}
+  aria-label={accessibleLabel}
+  class="inline-flex min-h-12 items-center gap-4 self-start font-display text-copy leading-copy tracking-tight text-ink underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+>
+  <span>{label}</span><span aria-hidden="true">↗</span>
+</a>

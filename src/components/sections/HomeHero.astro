@@ -50,6 +50,7 @@ const SQUARES = [
 <section
   class="hero relative flex min-h-[95svh] w-full items-center justify-center overflow-hidden bg-ink"
   data-module="hero-cycle hero-cells"
+  data-sample-scale="1.12"
   style={`--hero-interval:${hero.interval}`}
 >
   {
@@ -120,7 +121,7 @@ const SQUARES = [
   </div>
 
   <div class="relative flex flex-col items-center gap-2 px-gutter text-center text-paper">
-    <h1 class="font-display text-hero leading-none">{hero.wordmark}</h1>
+    <h1 class="font-display text-[2.5rem] leading-none sm:text-[3rem] md:text-hero">{hero.wordmark}</h1>
 
     {/* Retargeted by hero-cycle as the footage changes, so the link always
         names the experiment currently on screen. */}
@@ -202,9 +203,9 @@ const SQUARES = [
     position: absolute;
     top: 0;
     left: 0;
-    width: 64px;
-    height: 64px;
-    margin: -32px 0 0 -32px;
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px;
     opacity: 0;
     pointer-events: none;
   }

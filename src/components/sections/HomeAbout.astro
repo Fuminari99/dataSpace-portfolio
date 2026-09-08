@@ -1,6 +1,8 @@
 ---
 import SectionLabel from '../ui/SectionLabel.astro';
+import MemberPreview from '../ui/MemberPreview.astro';
 import { about } from '../../data/home';
+import { members } from '../../data/site';
 
 interface Props {
   /** Anchor target, matching the hash the header and footer links use. */
@@ -10,25 +12,26 @@ interface Props {
 const { id } = Astro.props;
 ---
 
-<section id={id} class="w-full scroll-mt-32 px-gutter py-section">
-  <div class="mx-auto flex max-w-page flex-col items-center gap-8">
-    <SectionLabel label={about.label} variant="heading" />
-
-    <div class="flex w-full max-w-[608px] flex-col gap-6">
-      {
-        about.columns.map((paragraph) => (
-          <p class="prose-justified font-body text-copy leading-[1.667]">{paragraph}</p>
-        ))
-      }
-
-      <a
-        href={about.link.href}
-        class="font-display text-copy leading-[1.667] tracking-tight"
-        aria-label="Read About: the class, the brief and the three of us"
-        data-module="hover-scramble"
-      >
-        → <span data-scramble-text>{about.link.label}</span>
-      </a>
+<section id={id} class="w-full scroll-mt-32 px-gutter py-28">
+  <div class="mx-auto flex w-full max-w-page flex-col gap-20 text-ink">
+    <div class="flex flex-col items-start gap-6 lg:max-w-[608px]">
+      <SectionLabel label={about.label} variant="heading" />
+      <p class="font-body text-copy leading-copy">{about.lead}</p>
     </div>
+
+    <ul class="grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-8">
+      {members.map((member) => (
+        <li class="min-w-0"><MemberPreview member={member} /></li>
+      ))}
+    </ul>
+
+    <a
+      href={about.link.href}
+      class="self-end font-display text-copy leading-[1.667] tracking-tight capitalize"
+      aria-label="Read more about the team"
+      data-module="hover-scramble"
+    >
+      → <span data-scramble-text>{about.link.label}</span>
+    </a>
   </div>
 </section>

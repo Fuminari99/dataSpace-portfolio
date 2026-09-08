@@ -20,7 +20,7 @@ const team = rest[experiments.length];
 
 <BaseLayout
   title="Data Spaces"
-  description="A web archive of experiments in collecting, quantifying and giving form to data, by Fumi, Keagan and Maiya."
+  description="A web archive of experiments in collecting, quantifying and giving form to data, by Keagan, Fumi and Maiya."
   overlayHeader
 >
   <div class="flex w-full flex-col items-center">
@@ -28,9 +28,13 @@ const team = rest[experiments.length];
 
     <HomeBackground id={background} />
 
-    <HomeConcept />
+    {/* Concept and the experiment list read as one section — the shared
+        project direction, then the four experiments it produced. */}
+    <section class="flex w-full flex-col gap-16 py-28">
+      <HomeConcept />
 
-    <ExperimentList ids={experimentAnchors} />
+      <ExperimentList ids={experimentAnchors} />
+    </section>
 
     <HomeAbout id={team} />
   </div>

@@ -7,19 +7,19 @@ const FADE_S = 0.8;
 const DEFAULT_INTERVAL_S = 6;
 
 /**
- * The hero runs through the four experiments' clips rather than sitting on one,
- * and the link under the wordmark is retargeted with each change so it always
- * points at the experiment currently on screen.
+ * Cycles stacked `[data-hero-clip]` videos with the same cross-fade the home
+ * hero uses. The home hero also retargets `[data-hero-link]` when present;
+ * the footer and the about → home panel only need the footage to turn over.
  *
  * Only the clip on screen is loaded and playing; the rest stay at their poster
  * until their turn comes, so the page does not fetch four films up front.
  */
 registerModule('hero-cycle', (root) => {
   const clips = [...root.querySelectorAll<HTMLVideoElement>('[data-hero-clip]')];
+  if (clips.length < 2) return;
+
   const link = root.querySelector<HTMLAnchorElement>('[data-hero-link]');
   const label = link?.querySelector<HTMLElement>('[data-scramble-text]');
-  if (clips.length < 2 || !link || !label) return;
-
   const gsap = initGsap();
 
   // The label and destination for each clip are read off the markup, so the
@@ -63,7 +63,9 @@ registerModule('hero-cycle', (root) => {
     const to = clips[next];
 
     play(to);
-
+    // A fresh swap cancels whatever fade was still running — otherwise a
+    // background-tab backlog leaves two clips half-visible.
+    gsap.killTweensOf(clips);
     gsap.to(from, { opacity: 0, duration: FADE_S, ease: 'none' });
     gsap.to(to, {
       opacity: 1,
@@ -76,8 +78,8 @@ registerModule('hero-cycle', (root) => {
     to.removeAttribute('aria-hidden');
 
     const target = targets[next];
-    if (target.href) link.href = target.href;
-    if (target.label) {
+    if (link && target.href) link.href = target.href;
+    if (link && label && target.label) {
       label.textContent = target.label;
       // hover-scramble resolves to whatever this holds, so the two stay in step.
       label.dataset.scrambleText = target.label;
@@ -104,7 +106,7 @@ registerModule('hero-cycle', (root) => {
     timer = 0;
   };
 
-  // Reduced motion keeps the hero on the first clip: no cross-fade, and no
+  // Reduced motion keeps the stack on the first clip: no cross-fade, and no
   // footage swapping out from under someone who asked for less movement.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -118,6 +120,7 @@ registerModule('hero-cycle', (root) => {
 
   play(clips[0]);
   gsap.set(clips[0], { opacity: 1 });
+  for (const clip of clips.slice(1)) gsap.set(clip, { opacity: 0 });
   sync();
   reduce.addEventListener('change', sync);
 
@@ -141,8 +144,8 @@ registerModule('hero-cycle', (root) => {
 
   document.addEventListener('visibilitychange', settle);
 
-  // Scrolled past, the hero has nothing to show — pause rather than leave four
-  // clips decoding behind the rest of the page.
+  // Scrolled past, the stack has nothing to show — pause rather than leave
+  // four clips decoding behind the rest of the page.
   let observer: IntersectionObserver | null = null;
   if ('IntersectionObserver' in window) {
     observer = new IntersectionObserver((entries) => {

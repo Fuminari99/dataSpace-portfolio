@@ -55,12 +55,12 @@ export const nav: NavEntry[] = [
   },
   {
     label: 'About',
-    hoverLabel: 'About',
+    hoverLabel: 'About Us',
     longLabel: 'ABOUT',
     href: '/about',
     sections: [
-      section('FUMI', 'fumi'),
       section('KEAGAN', 'keagan'),
+      section('FUMI', 'fumi'),
       section('MAIYA', 'maiya'),
       section('TOOLS', 'tools'),
     ],
@@ -156,17 +156,6 @@ const rate = (label: string, value: string): Rate => ({ label, value });
 /** The three of us, in the order the visuals are laid out across the site. */
 export const members: Member[] = [
   {
-    name: 'FUMI',
-    visual: '/assets/visuals/fumi.webp',
-    portrait: '/assets/portraits/fumi.webp',
-    rates: [rate('BREATH', '56'), rate('PULSE', '111'), rate('BLINK', '118')],
-    note: 'The most blinks of the three — 118 against Maiya’s 52 — over a breath and a pulse that both sit between the other two.',
-    bio: [
-      'Fumi brings a strong analytical mind and a deep understanding of code to the team. He is quick to turn ideas into working systems, and his ability to visualise data efficiently has helped shape many of the project’s most refined outcomes.',
-      'His technical knowledge became an important foundation for how we explored creative coding throughout Data Spaces.',
-    ],
-  },
-  {
     name: 'KEAGAN',
     visual: '/assets/visuals/keagan.webp',
     portrait: '/assets/portraits/keagan.webp',
@@ -175,6 +164,17 @@ export const members: Member[] = [
     bio: [
       'Keagan brings energy, focus and a strong sense of direction to the group. He is constantly thinking about how each experiment can be pushed further, whether through concept, making or visual outcome.',
       'His hands-on and outcome driven approach helped the team stay focused while shaping the broader direction of the project.',
+    ],
+  },
+  {
+    name: 'FUMI',
+    visual: '/assets/visuals/fumi.webp',
+    portrait: '/assets/portraits/fumi.webp',
+    rates: [rate('BREATH', '56'), rate('PULSE', '111'), rate('BLINK', '118')],
+    note: 'The most blinks of the three — 118 against Maiya’s 52 — over a breath and a pulse that both sit between the other two.',
+    bio: [
+      'Fumi brings a strong analytical mind and a deep understanding of code to the team. He is quick to turn ideas into working systems, and his ability to visualise data efficiently has helped shape many of the project’s most refined outcomes.',
+      'His technical knowledge became an important foundation for how we explored creative coding throughout Data Spaces.',
     ],
   },
   {

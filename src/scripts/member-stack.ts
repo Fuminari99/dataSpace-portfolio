@@ -31,7 +31,10 @@ registerModule('member-stack', (root) => {
   if (!viewport || panels.length < 2) return;
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if (reduceMotion.matches) return;
+  // The stacked pin only fits once the profile is a two-column row; below that
+  // the three profiles simply read down the page as the markup already does.
+  const wide = window.matchMedia('(min-width: 64rem)');
+  if (reduceMotion.matches || !wide.matches) return;
 
   const gsap = initGsap();
   const steps = panels.length - 1;

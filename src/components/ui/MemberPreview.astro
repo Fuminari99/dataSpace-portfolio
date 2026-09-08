@@ -1,0 +1,33 @@
+---
+import type { Member } from '../../data/site';
+
+interface Props {
+  member: Member;
+}
+const { member } = Astro.props;
+// The full opening paragraph, clamped rather than cut to a single sentence —
+// the trailing ellipsis is the cue that there is more on the About page.
+const excerpt = member.bio[0];
+---
+
+<a
+  href={`/about#${member.name.toLowerCase()}`}
+  aria-label={`Read about ${member.name}`}
+  class="flex w-full flex-col items-center gap-10 text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+>
+  <div class="flex items-center justify-center">
+    <img
+      src={member.portrait}
+      alt={`${member.name}'s abstract portrait mark`}
+      width="160"
+      height="160"
+      class="size-[160px] object-contain"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  <div class="flex max-w-[320px] flex-col items-center gap-3 text-center">
+    <h3 class="font-display text-body tracking-tight">[ {member.name} ]</h3>
+    <p class="line-clamp-3 font-body text-copy leading-copy">{excerpt}</p>
+  </div>
+</a>

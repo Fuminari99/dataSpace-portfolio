@@ -239,6 +239,26 @@ const experiments = nav.filter((entry) => entry.href.startsWith('/ex'));
     visibility: visible;
   }
 
+  /* Touch devices cannot hover-open the panel, and tapping Projects navigates
+     away: keep the four experiment links reachable under the bar. */
+  @media (hover: none) {
+    .nav-item--sub {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .nav-sub {
+      position: static;
+      align-items: flex-end;
+      gap: 4px 12px;
+      padding-block-start: 8px;
+      min-height: 0;
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
   /* "Home" anchors from the left instead, matching the design. Scoped to the
      bar itself: the experiments in the panel below all anchor right. */
   nav > .nav-item:first-child .nav-link__text {

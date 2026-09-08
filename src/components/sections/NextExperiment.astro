@@ -3,52 +3,61 @@ import { nextPage } from '../../data/site';
 import { experiments } from '../../data/experiments';
 import { hero } from '../../data/home';
 import HeroMediaTreatment from '../ui/HeroMediaTreatment.astro';
+import ClipStack from '../ui/ClipStack.astro';
 
 const { href, label } = nextPage(Astro.url.pathname.replace(/\/$/, '') || '/');
 
-// The panel shows where the link goes. Home has no experiment clip of its own,
-// so it shows what the hero opens on.
+// The panel shows where the link goes. Home has no single experiment clip, so
+// about → home runs the same four-clip cycle as the hero (cross-fades included).
 const destination = experiments.find((experiment) => experiment.href === href);
 const isAboutHome = Astro.url.pathname.replace(/\/$/, '') === '/about' && href === '/';
-const video = isAboutHome
-  ? '/assets/video/about-home-preview-v1.mp4'
-  : destination?.video ?? hero.clips[0].video;
+const video = destination?.video ?? hero.clips[0].video;
 const poster = video.replace(/\.mp4$/, '.webp');
 const clipLabel = destination
   ? `${destination.title} — a clip from the experiment`
   : hero.clips[0].alt;
 ---
 
-<section class="flex w-full flex-col items-center gap-4 px-gutter py-section">
+{/* Same face as the home hero wordmark, centred over the next clip — the link
+    is the panel, not a caption under it. */}
+<section class="w-full px-gutter py-section">
   <a
     href={href}
-    class="flex w-full max-w-[992px] flex-col items-center gap-4"
+    class:list={[
+      'relative mx-auto flex aspect-[996/560] w-full max-w-[992px] items-center justify-center overflow-hidden bg-surface text-paper',
+      isAboutHome && 'next-home',
+    ]}
     aria-label={`Go to ${label}${destination ? `: ${destination.title}` : ''}`}
-    data-module="hover-scramble"
+    data-module={isAboutHome ? 'hover-scramble hero-cycle' : 'hover-scramble'}
+    style={isAboutHome ? `--hero-interval:${hero.interval}` : undefined}
   >
-    <div class="aspect-[996/560] w-full overflow-hidden bg-surface">
-      <HeroMediaTreatment enabled={isAboutHome}>
-      {
-        video && (
-          <video
-            class="h-full w-full object-cover"
-            data-module="lazy-video"
-            data-poster={poster}
-            role="img"
-            aria-label={clipLabel}
-            muted
-            loop
-            playsinline
-            preload="none"
-          >
-            <source data-src={video} type="video/mp4" />
-          </video>
-        )
-      }
+    <div class="absolute inset-0" aria-hidden="true">
+      <HeroMediaTreatment>
+        {
+          isAboutHome ? (
+            <ClipStack clips={hero.clips} />
+          ) : (
+            video && (
+              <video
+                class="h-full w-full object-cover"
+                data-module="lazy-video"
+                data-poster={poster}
+                role="img"
+                aria-label={clipLabel}
+                muted
+                loop
+                playsinline
+                preload="none"
+              >
+                <source data-src={video} type="video/mp4" />
+              </video>
+            )
+          )
+        }
       </HeroMediaTreatment>
     </div>
 
-    <span class="font-display text-body tracking-tight whitespace-nowrap">
+    <span class="relative z-10 px-gutter text-center font-display text-h2 leading-tight text-balance sm:text-h1 lg:text-hero lg:leading-none">
       → Go to <span data-scramble-text>{label}</span>
     </span>
   </a>

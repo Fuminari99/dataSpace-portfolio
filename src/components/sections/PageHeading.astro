@@ -14,13 +14,14 @@ interface Props {
    */
   display?: boolean;
   /**
-   * The About frame centres the title over a single wide column of intro copy
-   * rather than running the pair of justified columns the other pages use.
+   * The About frame uses a single wide column of intro copy.
    */
+  singleColumn?: boolean;
+  /** Centre the title and intro within the page grid. */
   centred?: boolean;
 }
 
-const { eyebrow, title, id, intro = [], display = false, centred = false } = Astro.props;
+const { eyebrow, title, id, intro = [], display = false, singleColumn = false, centred = false } = Astro.props;
 ---
 
 {/* Every page opens on a band of the same height, whatever the title and
@@ -30,23 +31,18 @@ const { eyebrow, title, id, intro = [], display = false, centred = false } = Ast
   id={id}
   class="flex min-h-[60svh] w-full scroll-mt-32 flex-col justify-center border-b border-rule px-gutter py-section"
 >
-  <div
-    class:list={[
-      'mx-auto flex max-w-page flex-col gap-8',
-      centred && 'items-center text-center',
-    ]}
-  >
-    <div class:list={['flex flex-col gap-4', centred && 'items-center']}>
+  <div class:list={['mx-auto flex w-full max-w-page flex-col gap-8', centred ? 'items-center text-center' : 'text-left']}>
+    <div class:list={['flex flex-col gap-4', centred ? 'items-center' : 'items-start']}>
       {eyebrow && <p class="font-display text-body tracking-tight">{eyebrow}</p>}
       {/* Every page title is set the same way — the display face at the frame's
-          own weight. `display` and `centred` only decide what happens to the
+          own weight. `display` and `singleColumn` only decide what happens to the
           intro underneath it. */}
       <h1 class="font-display text-h1 leading-[1.2] tracking-tight">{title}</h1>
     </div>
 
     {
       intro.length > 0 &&
-        (centred ? (
+        (singleColumn ? (
           <div class="flex flex-col gap-6">
             {intro.map((paragraph) => (
               <p class="max-w-[888px] font-display text-copy leading-copy">{paragraph}</p>
@@ -62,7 +58,7 @@ const { eyebrow, title, id, intro = [], display = false, centred = false } = Ast
             {intro.map((paragraph) => (
               <p
                 class:list={[
-                  'prose-justified font-body',
+                  'font-body',
                   display
                     ? 'max-w-[496px] text-copy leading-copy'
                     : 'max-w-[496px] text-body tracking-tight',

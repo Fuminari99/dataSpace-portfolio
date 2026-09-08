@@ -19,12 +19,18 @@ const { label, id, lead, visuals } = Astro.props;
 <section class="w-full px-gutter py-section">
   <div class="mx-auto flex max-w-page flex-col gap-8 lg:flex-row lg:items-start lg:gap-16">
     {/*
-      Held in place for the length of the column beside it, so the reading stays
-      put while the visuals it describes move past. `self-start` is what gives
-      the sticky element a shorter box than the row, without which there is
-      nothing for it to travel within; the offset clears the sticky header.
+      Held in the middle of the viewport for the length of the column beside it,
+      so the reading stays put while the visuals it describes move past.
+      `self-start` is what gives the sticky element a shorter box than the row,
+      without which there is nothing for it to travel within. Centring is done
+      by giving the sticky box the full viewport height and flex-centring its
+      content inside it, rather than a `top-1/2` + `-translate-y-1/2` transform:
+      that transform applies unconditionally, including before the box is
+      actually pinned, which pulled the label up out of place the moment the
+      section came on screen. A flex-centred `h-svh` box reads the same whether
+      it is stuck or still sitting in normal flow.
     */}
-    <div class="flex flex-col gap-6 lg:sticky lg:top-32 lg:w-[496px] lg:shrink-0 lg:self-start">
+    <div class="flex flex-col gap-6 lg:sticky lg:top-0 lg:h-svh lg:w-[496px] lg:shrink-0 lg:justify-center lg:self-start">
       <SectionLabel label={label} id={id} />
 
       {
