@@ -12,7 +12,10 @@ const { member, id } = Astro.props;
 // The About frame repeats the three names above every profile, with the one
 // being read at full opacity and the other two dimmed. Rendering the dimmed
 // pair as links is what makes the repetition useful rather than decorative:
-// it jumps straight down the page to that person.
+// it jumps straight down the page to that person. Once the profiles are stacked
+// only the first list is left on screen, and it becomes the control for all
+// three — which is why every name is a link here rather than the current one
+// being inert.
 const anchorFor = (name: string) => `#${name.toLowerCase()}`;
 ---
 
@@ -28,40 +31,52 @@ const anchorFor = (name: string) => `#${name.toLowerCase()}`;
           height="208"
           loading="lazy"
           decoding="async"
+          data-stack-portrait
         />
       </div>
 
       <div class="flex w-full flex-col gap-4 lg:max-w-[504px]">
-        <nav class="flex gap-4" aria-label="The three of us">
+        <nav class="stack-tabs flex gap-4" aria-label="The three of us" data-stack-tabs>
           {
-            members.map((entry) => {
-              const current = entry.name === member.name;
-              return current ? (
-                <span
-                  class="font-body text-copy tracking-tight whitespace-nowrap"
-                  aria-current="true"
-                >
-                  [ {entry.name} ]
-                </span>
-              ) : (
-                <a
-                  href={anchorFor(entry.name)}
-                  class="font-body text-copy tracking-tight whitespace-nowrap opacity-50"
-                  aria-label={`Read about ${entry.name}`}
-                >
-                  [ {entry.name} ]
-                </a>
-              );
-            })
+            members.map((entry) => (
+              <a
+                href={anchorFor(entry.name)}
+                class:list={[
+                  'stack-tab font-body text-copy tracking-tight whitespace-nowrap',
+                  { 'is-active': entry.name === member.name },
+                ]}
+                aria-current={entry.name === member.name ? 'true' : undefined}
+                aria-label={`Read about ${entry.name}`}
+                data-stack-tab
+              >
+                [ {entry.name} ]
+              </a>
+            ))
           }
         </nav>
 
-        {
-          member.bio.map((paragraph) => (
-            <p class="prose-justified font-body text-copy leading-copy">{paragraph}</p>
-          ))
-        }
+        <div class="flex flex-col gap-4" data-stack-bio>
+          {
+            member.bio.map((paragraph) => (
+              <p class="prose-justified font-body text-copy leading-copy" data-stack-line>
+                {paragraph}
+              </p>
+            ))
+          }
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* The name being read is at full strength and the other two are dimmed; that
+     difference is the only thing the list does when the profile changes. */
+  .stack-tab {
+    opacity: 0.5;
+  }
+
+  .stack-tab.is-active {
+    opacity: 1;
+  }
+</style>

@@ -3,11 +3,11 @@ import './carousel';
 import './nav-scramble';
 import './heading-scramble';
 import './hover-scramble';
-import './tabs';
 import './hero-cycle';
 import './hero-cells';
 import './experiment-rows';
 import './member-stack';
+import './lightbox';
 
 /**
  * Experiment footage is heavy and there is a lot of it on one page, so a clip

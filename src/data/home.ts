@@ -10,9 +10,15 @@ import { experiments } from './experiments';
 export interface Thumb {
   src: string;
   alt: string;
+  /**
+   * The image's own average colour, sat behind it while it loads. Taken by
+   * scaling the file to a single pixel, so a frame holds the shade of what is
+   * about to arrive in it rather than a flat grey.
+   */
+  tint: string;
 }
 
-const thumb = (src: string, alt: string): Thumb => ({ src, alt });
+const thumb = (src: string, alt: string, tint: string): Thumb => ({ src, alt, tint });
 
 export interface HeroClip {
   video: string;
@@ -81,29 +87,32 @@ export const about = {
 export const experimentThumbs: Record<string, Thumb[]> = {
   '/ex01': [
     thumb(
-      '/assets/video/ex01-breath-fumi.jpg',
-      'BREATH visualisation by Fumi — concentric forms at the rate of a recorded breath'
+      '/assets/video/ex01-breath-fumi-v2.jpg',
+      'BREATH visualisation by Fumi — concentric forms at the rate of a recorded breath',
+      '#bbe2d1'
     ),
     thumb(
-      '/assets/video/ex01-pulse-keagan.jpg',
-      'PULSE visualisation by Keagan — marks arriving at the rate of a recorded heartbeat'
+      '/assets/video/ex01-pulse-keagan-v2.jpg',
+      'PULSE visualisation by Keagan — marks arriving at the rate of a recorded heartbeat',
+      '#99b1f7'
     ),
     thumb(
-      '/assets/video/ex01-blink-keagan.jpg',
-      'BLINK visualisation by Keagan — clusters at the rate of a recorded blink'
+      '/assets/video/ex01-blink-keagan-v2.jpg',
+      'BLINK visualisation by Keagan — clusters at the rate of a recorded blink',
+      '#a5dcf7'
     ),
   ],
   '/ex02': [
-    thumb('/assets/video/ex02-noise-fumi.jpg', 'Noise grid by Fumi — one noise field sampled nine ways'),
-    thumb('/assets/video/ex02-noise-keagan.jpg', 'Noise grid by Keagan — the same field under different parameters'),
-    thumb('/assets/video/ex02-fuzzy-keagan.jpg', 'Fuzzy grid by Keagan — particles running across the source material'),
+    thumb('/assets/video/ex02-noise-fumi.jpg', 'Noise grid by Fumi — one noise field sampled nine ways', '#42744d'),
+    thumb('/assets/video/ex02-noise-keagan-v2.jpg', 'Noise grid by Keagan — the same field under different parameters', '#356f92'),
+    thumb('/assets/video/ex02-fuzzy-keagan-v2.jpg', 'Fuzzy grid by Keagan — particles running across the source material', '#282b3b'),
   ],
   '/ex03': [
-    thumb('/assets/video/ex03-expression.jpg', 'Line drawings surfacing out of a pale shore, driven by the mix'),
-    thumb('/assets/video/home-ex03-v2.jpg', 'A later frame of the same sound-driven sequence'),
+    thumb('/assets/video/ex03-expression-v2.jpg', 'Line drawings surfacing out of a pale shore, driven by the mix', '#c7c2da'),
+    thumb('/assets/video/home-ex03-v3.jpg', 'A later frame of the same sound-driven sequence', '#ccd5fe'),
   ],
   '/ex04': [
-    thumb('/assets/video/ex04-sensory.jpg', 'A field of lines swelling and settling under contact'),
-    thumb('/assets/video/home-ex04-v2.jpg', 'The same touch response held at rest'),
+    thumb('/assets/video/ex04-sensory.jpg', 'A field of lines swelling and settling under contact', '#fbd9e8'),
+    thumb('/assets/video/home-ex04-v2.jpg', 'The same touch response held at rest', '#f9afd5'),
   ],
 };

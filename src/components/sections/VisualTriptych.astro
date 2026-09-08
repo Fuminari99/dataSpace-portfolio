@@ -15,7 +15,7 @@ export interface Tab {
 
 interface Props {
   tabs: Tab[];
-  /** Names the tab group for assistive tech when there is more than one. */
+  /** Names the group for assistive tech when there is more than one. */
   label?: string;
 }
 
@@ -23,49 +23,66 @@ const { tabs, label = 'Recordings' } = Astro.props;
 const isTabbed = tabs.length > 1;
 ---
 
-<section class="w-full px-gutter py-section" data-module={isTabbed ? 'tabs' : undefined}>
-  <div class="mx-auto flex max-w-page flex-col gap-4">
-    <div class="flex flex-wrap gap-4" role={isTabbed ? 'tablist' : undefined} aria-label={isTabbed ? label : undefined}>
-      {
-        tabs.map((tab, index) =>
-          isTabbed ? (
-            <button
-              id={tab.id}
-              type="button"
-              role="tab"
-              class="scroll-mt-32 font-body text-body tracking-tight whitespace-nowrap aria-[selected=false]:opacity-50"
-              aria-selected={index === 0 ? 'true' : 'false'}
-              aria-controls={`${tab.id}-panel`}
-              tabindex={index === 0 ? 0 : -1}
-              data-tab={tab.id}
-            >
-              [ {tab.label} ]
-            </button>
-          ) : (
-            <span
-              id={tab.id}
-              class="scroll-mt-32 font-body text-body tracking-tight whitespace-nowrap"
-            >
-              [ {tab.label} ]
-            </span>
-          )
-        )
-      }
-    </div>
+{/* The frame sets the rhythms out one under the other rather than behind a set
+    of tabs: every recording is on the page, and the list of names above each
+    one marks which is being read while doubling as a jump to the others. The
+    account of how it was recorded is folded away behind "More". */}
+<section class="w-full">
+  {
+    tabs.map((tab, index) => (
+      <div
+        id={tab.id}
+        class:list={[
+          'w-full scroll-mt-32 px-gutter',
+          index === 0 ? 'py-section' : 'pb-section',
+        ]}
+      >
+        <div class="mx-auto flex max-w-page flex-col gap-4">
+          <div class="rhythm__row flex w-full items-end justify-between gap-8">
+            {isTabbed ? (
+              <nav class="flex flex-wrap gap-4" aria-label={label}>
+                {tabs.map((other) =>
+                  other.id === tab.id ? (
+                    <span
+                      class="font-body text-body tracking-tight whitespace-nowrap"
+                      aria-current="true"
+                    >
+                      [ {other.label} ]
+                    </span>
+                  ) : (
+                    <a
+                      href={`#${other.id}`}
+                      class="font-body text-body tracking-tight whitespace-nowrap opacity-50"
+                      aria-label={`Go to ${other.label}`}
+                    >
+                      [ {other.label} ]
+                    </a>
+                  )
+                )}
+              </nav>
+            ) : (
+              <span class="font-body text-body tracking-tight whitespace-nowrap">
+                [ {tab.label} ]
+              </span>
+            )}
 
-    {
-      tabs.map((tab, index) => (
-        <div
-          id={`${tab.id}-panel`}
-          role={isTabbed ? 'tabpanel' : undefined}
-          aria-labelledby={isTabbed ? tab.id : undefined}
-          tabindex={isTabbed ? 0 : undefined}
-          data-tab-panel={tab.id}
-          hidden={index !== 0}
-          class="flex flex-col gap-6"
-        >
+            {tab.description && (
+              <details class="rhythm__more">
+                <summary
+                  class="font-body text-label leading-[1.5]"
+                  aria-controls={`${tab.id}-description`}
+                >
+                  More
+                </summary>
+              </details>
+            )}
+          </div>
+
           {tab.description && (
-            <p class="prose-justified max-w-[560px] font-body text-body tracking-tight">
+            <p
+              id={`${tab.id}-description`}
+              class="rhythm__description prose-justified max-w-[560px] font-body text-body tracking-tight"
+            >
               {tab.description}
             </p>
           )}
@@ -84,7 +101,33 @@ const isTabbed = tabs.length > 1;
             ))}
           </div>
         </div>
-      ))
-    }
-  </div>
+      </div>
+    ))
+  }
 </section>
+
+<style>
+  /* A disclosure with nothing inside it: what it opens is the paragraph that
+     follows the row, which has to sit outside so it can run the full measure
+     rather than being squeezed into the right-hand cell. */
+  .rhythm__more {
+    flex: none;
+  }
+
+  .rhythm__more summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .rhythm__more summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .rhythm__description {
+    display: none;
+  }
+
+  .rhythm__row:has(details[open]) + .rhythm__description {
+    display: block;
+  }
+</style>

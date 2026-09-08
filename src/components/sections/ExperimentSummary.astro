@@ -1,5 +1,6 @@
 ---
 import SectionLabel from '../ui/SectionLabel.astro';
+import SamplerSquare from '../ui/SamplerSquare.astro';
 import type { Experiment } from '../../data/experiments';
 import { nav } from '../../data/site';
 
@@ -28,10 +29,17 @@ const poster = experiment.video.replace(/\.mp4$/, '.jpg');
         flipped ? 'lg:flex-row-reverse' : 'lg:flex-row',
       ]}
     >
-      <div class="w-full overflow-hidden bg-placeholder lg:max-w-[712px]">
+      <div
+        class="relative w-full bg-placeholder lg:max-w-[712px]"
+        data-module="hero-cells"
+        data-drift-x="240"
+        data-drift-y="120"
+        data-lightbox
+      >
         <video
           class="aspect-video h-full w-full object-cover"
           data-module="lazy-video"
+          data-hero-clip
           poster={poster}
           role="img"
           aria-label={`${experiment.title} — a clip from the experiment`}
@@ -42,6 +50,8 @@ const poster = experiment.video.replace(/\.mp4$/, '.jpg');
         >
           <source data-src={experiment.video} type="video/mp4" />
         </video>
+
+        <SamplerSquare top="40%" left="45%" />
       </div>
 
       <div class="flex w-full flex-col gap-6 lg:max-w-[496px]">

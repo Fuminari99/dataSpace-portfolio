@@ -12,6 +12,26 @@ import { members } from '../../data/site';
 
 <div class="stack w-full" data-module="member-stack">
   <div class="stack__viewport w-full" data-stack-viewport>
+    {/* Only reach the pinned run through the script, so they are hidden until
+        it has taken the stack over. */}
+    <button
+      type="button"
+      class="stack__arrow stack__arrow--prev font-display text-h2 leading-none"
+      aria-label="Previous person"
+      data-stack-prev
+    >
+      ←
+    </button>
+
+    <button
+      type="button"
+      class="stack__arrow stack__arrow--next font-display text-h2 leading-none"
+      aria-label="Next person"
+      data-stack-next
+    >
+      →
+    </button>
+
     {
       members.map((member) => (
         <div class="stack__panel w-full" data-stack-panel data-stack-id={member.name.toLowerCase()}>
@@ -39,5 +59,54 @@ import { members } from '../../data/site';
     inset: 0;
     display: flex;
     align-items: center;
+  }
+
+  /* The panels sit exactly on top of one another, so all three lists of names
+     would too. The first one is left standing and becomes the list for all
+     three — the script moves which name is at full strength rather than
+     swapping one list for another. `:first-of-type` rather than `:first-child`
+     because the arrows are the viewport's first children. */
+  /* `:global` because the list is rendered by MemberProfile: without it the
+     rule is scoped to this component's own elements and never matches. */
+  .stack.is-stacked .stack__panel:not(:first-of-type) :global([data-stack-tabs]) {
+    visibility: hidden;
+  }
+
+  /* The arrows step through the three by hand, for a reader who would rather
+     not scroll their way along. They do nothing without the script, so they are
+     not shown until it is running. */
+  .stack__arrow {
+    display: none;
+  }
+
+  .stack.is-stacked .stack__arrow {
+    position: absolute;
+    inset-block-start: 50%;
+    z-index: 1;
+    display: block;
+    translate: 0 -50%;
+    padding: 16px;
+  }
+
+  .stack.is-stacked .stack__arrow--prev {
+    inset-inline-start: 24px;
+  }
+
+  .stack.is-stacked .stack__arrow--next {
+    inset-inline-end: 24px;
+  }
+
+  .stack__arrow[disabled] {
+    opacity: 0.25;
+  }
+
+  @media (min-width: 80rem) {
+    .stack.is-stacked .stack__arrow--prev {
+      inset-inline-start: 64px;
+    }
+
+    .stack.is-stacked .stack__arrow--next {
+      inset-inline-end: 64px;
+    }
   }
 </style>

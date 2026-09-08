@@ -1,6 +1,21 @@
 ---
 import SectionLabel from '../ui/SectionLabel.astro';
 import { background } from '../../data/home';
+import { experiments } from '../../data/experiments';
+import SamplerSquare from '../ui/SamplerSquare.astro';
+
+// The two blocks either side of the column are the experiments themselves,
+// read the way the hero reads its own footage: a framed panel that reports the
+// average colour of what is playing inside it.
+const panels = [
+  { experiment: experiments[1], position: 'top-20 right-[3%]' },
+  { experiment: experiments[3], position: 'top-[376px] left-[4%]' },
+].map(({ experiment, position }) => ({
+  position,
+  video: experiment.video,
+  poster: experiment.video.replace(/\.mp4$/, '.jpg'),
+  alt: `${experiment.title} — a clip from the experiment`,
+}));
 
 interface Props {
   /** Anchor target, matching the hash the header and footer links use. */
@@ -11,11 +26,37 @@ const { id } = Astro.props;
 ---
 
 <section id={id} class="relative w-full scroll-mt-32 overflow-hidden px-gutter py-section">
-  {/* Two flat blocks bleeding in from either edge, behind the column of text.
-      They are decoration in the design, not imagery, so they carry no content. */}
+  {/* The two blocks either side of the column, in the frame's own positions. */}
   <div class="pointer-events-none absolute inset-0 hidden xl:block" aria-hidden="true">
-    <span class="absolute top-20 right-[3%] h-[168px] w-[272px] bg-block"></span>
-    <span class="absolute top-[376px] left-[4%] h-[168px] w-[272px] bg-block"></span>
+    {
+      panels.map((panel) => (
+        <figure
+          class:list={['sampler absolute w-[272px]', panel.position]}
+          data-module="hero-cells"
+          data-drift-x="124"
+          data-drift-y="72"
+        >
+          {/* The panel is fixed; the square is what moves over it, reading the
+              colour of whatever it happens to be sitting on. */}
+          <div class="sampler__frame relative h-[168px] w-full">
+            <video
+              class="h-full w-full object-cover"
+              data-module="lazy-video"
+              data-hero-clip
+              poster={panel.poster}
+              muted
+              loop
+              playsinline
+              preload="none"
+            >
+              <source data-src={panel.video} type="video/mp4" />
+            </video>
+
+            <SamplerSquare top="56px" left="108px" />
+          </div>
+        </figure>
+      ))
+    }
   </div>
 
   <div class="relative mx-auto flex max-w-page flex-col items-center gap-12">
@@ -30,3 +71,13 @@ const { id } = Astro.props;
     </div>
   </div>
 </section>
+
+<style>
+  /* The panel is the footage and nothing else; the square is the only drawn
+     thing over it, and it is free to wander a little past the edges. */
+  .sampler__frame {
+    overflow: visible;
+  }
+
+
+</style>

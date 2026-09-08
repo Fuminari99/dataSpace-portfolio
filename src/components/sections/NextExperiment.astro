@@ -1,14 +1,18 @@
 ---
 import { nextPage } from '../../data/site';
 import { experiments } from '../../data/experiments';
+import { hero } from '../../data/home';
 
 const { href, label } = nextPage(Astro.url.pathname.replace(/\/$/, '') || '/');
 
-// The panel shows where the link goes. Home is the one destination with no
-// experiment clip of its own, so it keeps the plain surface panel.
+// The panel shows where the link goes. Home has no experiment clip of its own,
+// so it shows what the hero opens on.
 const destination = experiments.find((experiment) => experiment.href === href);
-const video = destination?.video;
-const poster = video?.replace(/\.mp4$/, '.jpg');
+const video = destination?.video ?? hero.clips[0].video;
+const poster = video.replace(/\.mp4$/, '.jpg');
+const clipLabel = destination
+  ? `${destination.title} — a clip from the experiment`
+  : hero.clips[0].alt;
 ---
 
 <section class="flex w-full flex-col items-center gap-4 px-gutter py-section">
@@ -26,7 +30,7 @@ const poster = video?.replace(/\.mp4$/, '.jpg');
             data-module="lazy-video"
             poster={poster}
             role="img"
-            aria-label={`${destination!.title} — a clip from the experiment`}
+            aria-label={clipLabel}
             muted
             loop
             playsinline

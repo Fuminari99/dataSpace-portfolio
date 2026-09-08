@@ -154,3 +154,58 @@
   text-align: justify;
   text-justify: inter-word;
 }
+
+/* A figure opened at size, on a black sheet over the page. Built by the
+   lightbox module, so the rules live here rather than in a component. */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: rgb(0 0 0 / 0.9);
+  /* The sheet itself is the way out, so it says so. */
+  cursor: zoom-out;
+}
+
+.lightbox__frame {
+  display: flex;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.lightbox__frame :is(img, video) {
+  max-width: 100%;
+  /* The sheet's own padding, twice over. */
+  max-height: calc(100svh - 48px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.lightbox__frame {
+  cursor: default;
+}
+
+.lightbox__close {
+  cursor: pointer;
+  position: absolute;
+  inset-block-start: 16px;
+  inset-inline-end: 24px;
+  padding: 8px 16px;
+  color: var(--color-paper);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* The page underneath does not scroll while the sheet is up. */
+.is-lightboxed body {
+  overflow: hidden;
+}
+
+/* Anything that can be opened says so under the pointer. */
+[data-lightbox] {
+  cursor: zoom-in;
+}

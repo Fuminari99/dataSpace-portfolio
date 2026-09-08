@@ -1,10 +1,19 @@
 import { registerModule } from './modules';
 import { initGsap } from './gsap';
 
-/** How far a square wanders from where it was drawn, in either direction. */
+/**
+ * How far a square wanders from where it was drawn, in either direction. A
+ * smaller panel can say so with `data-drift`, so its square stays inside it.
+ */
 const DRIFT_PX = 44;
 const DRIFT_MIN_S = 9;
 const DRIFT_MAX_S = 16;
+/**
+ * The squares jump rather than glide: each leg of the drift is cut into this
+ * many steps, so a square holds a position, moves, and holds again — the way an
+ * instrument reports a reading rather than sweeping between two.
+ */
+const DRIFT_STEPS = 5;
 
 /**
  * The footage is read back through a canvas this wide — a thumbnail, not the
@@ -39,7 +48,13 @@ registerModule('hero-cells', (root) => {
   const gsap = initGsap();
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  const drift = () => gsap.utils.random(-DRIFT_PX, DRIFT_PX, 1);
+  // A panel can set its own reach, and set it per axis when the space it has to
+  // wander over is not square.
+  const range = Number(root.dataset.drift) || DRIFT_PX;
+  const rangeX = Number(root.dataset.driftX) || range;
+  const rangeY = Number(root.dataset.driftY) || range;
+  const driftX = () => gsap.utils.random(-rangeX, rangeX, 1);
+  const driftY = () => gsap.utils.random(-rangeY, rangeY, 1);
 
   // Without motion the squares sit where they were drawn. They still take their
   // readings: that is the content, not the animation.
@@ -48,9 +63,9 @@ registerModule('hero-cells', (root) => {
     : cells.map((cell) =>
         gsap.to(cell, {
           keyframes: {
-            x: [drift(), drift(), drift(), 0],
-            y: [drift(), drift(), drift(), 0],
-            easeEach: 'sine.inOut',
+            x: [driftX(), driftX(), driftX(), 0],
+            y: [driftY(), driftY(), driftY(), 0],
+            easeEach: `steps(${DRIFT_STEPS})`,
           },
           duration: gsap.utils.random(DRIFT_MIN_S, DRIFT_MAX_S),
           repeat: -1,
@@ -61,11 +76,17 @@ registerModule('hero-cells', (root) => {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d', { willReadFrequently: true });
 
-  // Every square that carries a figure reports on its own area, the one under
-  // the pointer included.
-  const readings = [...root.querySelectorAll<HTMLElement>('[data-hero-sample]')]
-    .map((output) => ({ cell: output.parentElement, output }))
-    .filter((reading): reading is { cell: HTMLElement; output: HTMLElement } => !!reading.cell);
+  // Every square reads its own area — the one under the pointer included — and
+  // fills itself with what it finds. Only some of them print the figure as
+  // well: stacked squares would stack their readouts on top of each other.
+  const readings = [...cells, ...(cursor ? [cursor] : [])].map((cell) => ({
+    cell,
+    // The figure the square is travelling over can carry the readout instead,
+    // for a panel too small to print it inside.
+    output:
+      cell.querySelector<HTMLElement>('[data-hero-sample]') ??
+      root.querySelector<HTMLElement>('[data-hero-sample]'),
+  }));
 
   const clips = [...root.querySelectorAll<HTMLVideoElement>('[data-hero-clip]')];
 
@@ -171,8 +192,14 @@ registerModule('hero-cells', (root) => {
         }
       }
 
-      const pad = (value: number) => String(Math.round(value / count)).padStart(3, '0');
-      output.textContent = `${pad(r)} ${pad(g)} ${pad(b)}`;
+      const average = (value: number) => Math.round(value / count);
+      const [red, green, blue] = [average(r), average(g), average(b)];
+
+      cell.style.backgroundColor = `rgb(${red} ${green} ${blue})`;
+      if (output) {
+        const pad = (value: number) => String(value).padStart(3, '0');
+        output.textContent = `${pad(red)} ${pad(green)} ${pad(blue)}`;
+      }
     }
   };
 
@@ -245,5 +272,6 @@ registerModule('hero-cells', (root) => {
     document.removeEventListener('visibilitychange', onVisibility);
     for (const tween of tweens) tween.kill();
     gsap.set(cells, { clearProps: 'transform' });
+    for (const { cell } of readings) cell.style.removeProperty('background-color');
   };
 });

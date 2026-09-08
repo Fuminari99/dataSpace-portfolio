@@ -33,7 +33,7 @@ const rows = experiments.map((experiment, index) => ({
           <div class="row__body">
             <div class="row__media">
               {thumbs.map((image) => (
-                <div class="row__frame">
+                <div class="row__frame" style={`background-color:${image.tint}`}>
                   <img
                     src={image.src}
                     alt={image.alt}
@@ -105,11 +105,15 @@ const rows = experiments.map((experiment, index) => ({
     height: var(--row-shut);
   }
 
+  /* Ranged right rather than centred: the rows carry two, three or four
+     thumbnails between them, and centring each row's own group would leave the
+     copy — and the images beside it — landing in a different place on every
+     row. Against the right edge all four line up. */
   .row__body {
     display: flex;
     flex: 1 1 0;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: flex-end;
     gap: 32px;
     padding-block: 16px;
   }
@@ -122,11 +126,12 @@ const rows = experiments.map((experiment, index) => ({
     gap: 32px;
   }
 
+  /* The background is the image's own average colour, set from the data, so a
+     frame holds the shade of the thumbnail that is about to load in it. */
   .row__frame {
     width: 144px;
     height: 144px;
     overflow: hidden;
-    background-color: var(--color-placeholder);
   }
 
   .row__frame img {
@@ -135,9 +140,12 @@ const rows = experiments.map((experiment, index) => ({
     object-fit: cover;
   }
 
+  /* Fixed rather than capped, so the column's own edges are the same on every
+     row whatever the copy in it runs to. */
   .row__copy {
     display: flex;
-    max-width: 440px;
+    width: 440px;
+    flex: none;
     flex-direction: column;
     gap: 24px;
   }
@@ -192,6 +200,10 @@ const rows = experiments.map((experiment, index) => ({
       flex-direction: column;
       align-items: flex-start;
       padding-top: 0;
+    }
+
+    .row__copy {
+      width: 100%;
     }
 
     .row__media {

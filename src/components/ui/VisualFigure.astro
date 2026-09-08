@@ -1,4 +1,6 @@
 ---
+import sharp from 'sharp';
+
 interface Props {
   /** Still image. Ignored when `video` is set. */
   src?: string;
@@ -12,7 +14,10 @@ interface Props {
   name: string;
   /** Optional right-hand caption, e.g. the recorded count "56/3min". */
   value?: string;
-  /** Square in the Ex01/Ex02 grids, 16:9 for the wide stills. */
+  /**
+   * Fallback proportion, used only when the file's own cannot be read. Every
+   * figure otherwise takes the proportions of the footage or still itself.
+   */
   ratio?: 'square' | 'video';
   /** Anchor target, set where a footer link points at this figure. */
   id?: string;
@@ -30,14 +35,37 @@ const {
   id,
   class: className,
 } = Astro.props;
+
+/**
+ * The frame takes the proportions of what goes in it rather than cropping to a
+ * square. They are read off the file itself at build time — from the still, or
+ * from the clip's poster, which is generated at the clip's own size — so the
+ * space is reserved before anything has loaded and nothing shifts.
+ */
+const still = video ? (poster ?? video.replace(/\.mp4$/, '.jpg')) : src;
+
+async function proportions(file?: string) {
+  if (!file?.startsWith('/')) return undefined;
+  try {
+    const { width, height } = await sharp(`public${file}`).metadata();
+    return width && height ? `${width} / ${height}` : undefined;
+  } catch {
+    // A still that is not on disk falls back to the ratio the caller asked for.
+    return undefined;
+  }
+}
+
+const aspect = await proportions(still);
 ---
 
 <figure id={id} class:list={['flex scroll-mt-32 flex-col gap-2', className]}>
   <div
     class:list={[
       'w-full overflow-hidden bg-placeholder',
-      ratio === 'square' ? 'aspect-square' : 'aspect-video',
+      !aspect && (ratio === 'square' ? 'aspect-square' : 'aspect-video'),
     ]}
+    style={aspect ? `aspect-ratio:${aspect}` : undefined}
+    data-lightbox
   >
     {
       video ? (

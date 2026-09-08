@@ -13,14 +13,39 @@ interface Props {
 }
 
 const { label, id, video, poster, alt } = Astro.props;
+
+/**
+ * The panel runs edge to edge and keeps the clip's own proportions, read off
+ * the poster at build time so the space is reserved before anything loads.
+ */
+const still = poster ?? video?.replace(/\.mp4$/, '.jpg');
+
+let aspect: string | undefined;
+if (still?.startsWith('/')) {
+  try {
+    const { default: sharp } = await import('sharp');
+    const { width, height } = await sharp(`public${still}`).metadata();
+    if (width && height) aspect = `${width} / ${height}`;
+  } catch {
+    // Missing on disk: the panel falls back to the frame's own proportions.
+  }
+}
 ---
 
-<section class="w-full px-gutter py-section">
-  <div class="mx-auto flex max-w-page flex-col gap-6">
-    <SectionLabel label={label} id={id} />
+<section class="w-full py-section">
+  <div class="flex w-full flex-col gap-6">
+    <div class="mx-auto w-full max-w-page px-gutter">
+      <SectionLabel label={label} id={id} />
+    </div>
 
-    <div class="flex w-full flex-col items-center justify-center">
-      <div class="aspect-[1024/530] w-full max-w-[1024px] overflow-hidden bg-placeholder">
+    {/* Full width: the clip is cut off by the page's own edges rather than
+        sitting inside the gutter. */}
+    <div class="w-full">
+      <div
+        class:list={['w-full overflow-hidden bg-placeholder', !aspect && 'aspect-[1024/530]']}
+        style={aspect ? `aspect-ratio:${aspect}` : undefined}
+        data-lightbox
+      >
         {
           video && (
             <video

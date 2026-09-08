@@ -15,13 +15,13 @@ export interface ArchiveTile {
  */
 export const archive: ArchiveTile[] = [
   {
-    video: '/assets/video/ex01-breath-fumi.mp4',
+    video: '/assets/video/ex01-breath-fumi-v2.mp4',
     caption: 'Ex01 · Breath, Fumi',
     alt: 'Concentric forms opening and closing at the rate of a recorded breath',
     href: '/ex01#breath',
   },
   {
-    video: '/assets/video/ex01-blink-keagan.mp4',
+    video: '/assets/video/ex01-blink-keagan-v2.mp4',
     caption: 'Ex01 · Blink, Keagan',
     alt: 'Marks arriving in clusters at the rate of a recorded blink',
     href: '/ex01#blink',
@@ -33,13 +33,13 @@ export const archive: ArchiveTile[] = [
     href: '/ex02#noise-grid',
   },
   {
-    video: '/assets/video/ex02-fuzzy-keagan.mp4',
+    video: '/assets/video/ex02-fuzzy-keagan-v2.mp4',
     caption: 'Ex02 · Fuzzy grid, Keagan',
     alt: 'Particles running across the same source material without a grid',
     href: '/ex02#fuzzy-grid',
   },
   {
-    video: '/assets/video/ex03-expression.mp4',
+    video: '/assets/video/ex03-expression-v2.mp4',
     caption: 'Ex03 · Sound into visuals',
     alt: 'Line drawings surfacing out of a pale shore, driven by the mix',
     href: '/ex03#sound-into-visuals',

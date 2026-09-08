@@ -1,5 +1,5 @@
 ---
-import { headerNav } from '../../data/site';
+import { headerNav, nav, projects } from '../../data/site';
 
 interface Props {
   /**
@@ -18,6 +18,10 @@ const { overlay = false } = Astro.props;
 const current = Astro.url.pathname.replace(/\/$/, '') || '/';
 
 const items = headerNav;
+
+// The four experiments hang off Projects in the bar: they are reached through
+// it, and the footer lists them as columns of their own.
+const experiments = nav.filter((entry) => entry.href.startsWith('/ex'));
 ---
 
 <header
@@ -27,6 +31,11 @@ const items = headerNav;
   ]}
   data-module={overlay ? 'nav-scramble header-reveal' : 'nav-scramble'}
 >
+  {/* While the Projects panel is open the bar's own surface runs down behind
+      it, so the four links are read against the site rather than against
+      whatever the page happens to have under them. */}
+  <span class="nav-band" aria-hidden="true"></span>
+
   <nav
     class="mx-auto flex max-w-page items-center justify-between py-4 font-display text-label tracking-tight"
     aria-label="Main"
@@ -40,7 +49,7 @@ const items = headerNav;
 
         return (
           <div
-            class="nav-item"
+            class:list={['nav-item', { 'nav-item--sub': item.href === projects.href }]}
             data-nav-item
             data-nav-static={isCurrent ? '' : undefined}
           >
@@ -66,6 +75,33 @@ const items = headerNav;
                 {isCurrent ? item.hoverLabel : item.label}
               </span>
             </a>
+
+            {item.href === projects.href && (
+              <ul class="nav-sub" aria-label="Experiments">
+                {experiments.map((experiment) => (
+                  <li class="nav-item" data-nav-item>
+                    <a
+                      href={experiment.href}
+                      class="nav-link"
+                      aria-label={`${experiment.label}: ${experiment.hoverLabel}`}
+                      data-nav-link
+                      data-label={experiment.label}
+                      data-hover-label={experiment.hoverLabel}
+                    >
+                      {/* Same reservation as the bar above: the full title is
+                          longer than the short label, and grows leftwards into
+                          the panel rather than moving anything. */}
+                      <span class="nav-link__sizer" aria-hidden="true">
+                        {experiment.label}
+                      </span>
+                      <span class="nav-link__text" aria-hidden="true" data-nav-text>
+                        {experiment.label}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         );
       })
@@ -77,10 +113,55 @@ const items = headerNav;
   /* Out of the flow entirely, so the hero starts at the top of the viewport
      rather than under the bar. It sits over the footage in white for as long as
      the hero is on screen. */
+  /* No `position` here: the bar is already sticky or fixed from the class list,
+     and setting it in this block would beat that and drop the bar out of the
+     top of the page. Both of those are containing blocks for the band below. */
+  header {
+    /* The band's drop below the bar: the panel's own height, kept here so the
+       two cannot drift apart. */
+    --nav-sub-height: 152px;
+    --nav-band-colour: var(--color-paper);
+    --nav-band-rule: var(--color-rule);
+  }
+
   .site-header--overlay {
     position: fixed;
     inset-block-start: 0;
     inset-inline: 0;
+    /* Over the footage the bar has no surface of its own, so the band supplies
+       one: the same flat black lift the hero already sits under. */
+    --nav-band-colour: rgba(0, 0, 0, 0.72);
+    --nav-band-rule: var(--color-hero-rule);
+  }
+
+  .site-header--overlay.is-on-paper {
+    --nav-band-colour: var(--color-paper);
+    --nav-band-rule: var(--color-rule);
+  }
+
+  .nav-band {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    height: calc(100% + var(--nav-sub-height));
+    border-block-end: 1px solid var(--nav-band-rule);
+    background-color: var(--nav-band-colour);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  header:has(.nav-item--sub:hover) .nav-band,
+  header:has(.nav-item--sub:focus-within) .nav-band {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Above the band, which is otherwise painted over the links it is there to
+     carry. */
+  nav {
+    position: relative;
+    z-index: 1;
   }
 
   /* Past the hero there is no footage left to read against, so the bar takes
@@ -129,8 +210,38 @@ const items = headerNav;
     white-space: nowrap;
   }
 
-  /* "Home" anchors from the left instead, matching the design. */
-  .nav-item:first-child .nav-link__text {
+  /* The four experiments sit under Projects, out of the way until the item is
+     pointed at or tabbed into. Hidden with `visibility` rather than `display`
+     so the links stay in the tab order's reach only while the panel is open,
+     and the reservation above keeps the bar from moving when it opens. */
+  /* Ranged right, on the same edge as the label above them: the panel reads as
+     one column with "Project Concept" at its head. */
+  .nav-sub {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-end: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    /* Bridges the gap between the label and the list, so the pointer can cross
+       into the panel without passing over dead space. */
+    padding-block-start: 16px;
+    /* Matches --nav-sub-height above, less the bar's own bottom padding. */
+    min-height: 136px;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .nav-item:hover .nav-sub,
+  .nav-item:focus-within .nav-sub {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* "Home" anchors from the left instead, matching the design. Scoped to the
+     bar itself: the experiments in the panel below all anchor right. */
+  nav > .nav-item:first-child .nav-link__text {
     inset-inline-end: auto;
     inset-inline-start: 0;
   }

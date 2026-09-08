@@ -26,12 +26,12 @@ export const experiments: Experiment[] = [
     eyebrow: '[EX.01]',
     title: 'Rhythm of Our Bodies',
     href: '/ex01',
-    video: '/assets/video/home-ex01.mp4',
+    video: '/assets/video/home-ex01-v2.mp4',
     summary:
       'Recording breath, pulse and blink over time, then translating these bodily rhythms into a shared visual system.',
     intro: [
-      'The brief asks how raw data can be gathered, quantified and given a form by a designer rather than by a machine. This first experiment takes the shortest route to that question: the data is our own bodies, and it is collected by hand.',
-      'In the one-hundred and eighty seconds of being alive, let’s take a step back, and feel the rhythm of our bodies. Three minutes each of breath, pulse and blink, counted on paper before a line of code was written — the gathering and the quantifying are the same act here, since counting a rhythm changes it.',
+      'The introduction to Data Spaces began with a simple activity of manually recording our individual breaths, heartbeats over the span of three minutes, before translating those observations into p5.js sketches.',
+      'Across 180 seconds, we recorded raw, quantifiable data from our own bodies. Each rhythm revealed its own sets of patterns and variation, and eventually, the recorded differences had become our first data set.',
     ],
     overview: [
       'The three of us counted our own breaths, heartbeats and blinks on paper over three minutes, then wrote those counts into p5.js sketches. Nothing was measured by a device.',
@@ -42,7 +42,7 @@ export const experiments: Experiment[] = [
     eyebrow: '[EX.02]',
     title: 'Procedural Data',
     href: '/ex02',
-    video: '/assets/video/home-ex02-v2.mp4',
+    video: '/assets/video/home-ex02-v3.mp4',
     summary:
       'Procedural systems in TouchDesigner, where noise, particle behaviour and repeated geometry drive visual change.',
     intro: [
@@ -58,7 +58,7 @@ export const experiments: Experiment[] = [
     eyebrow: '[EX.03]',
     title: 'Data Expression',
     href: '/ex03',
-    video: '/assets/video/home-ex03-v2.mp4',
+    video: '/assets/video/home-ex03-v3.mp4',
     summary:
       'The same body rhythms rebuilt as a three-layer soundtrack, which is then handed back to TouchDesigner to draw the image.',
     intro: [

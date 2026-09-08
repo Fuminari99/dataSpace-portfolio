@@ -8,9 +8,9 @@ interface Props {
   /** One or two columns of intro copy. */
   intro?: string[];
   /**
-   * Sets the title in the display face at the design's own weight instead of
-   * the bold body face. This is what the Projects frame specifies; the
-   * experiment pages are left on the existing treatment.
+   * Sets the intro in the Projects frame's own measure — one narrow column of
+   * unjustified copy — rather than the pair of justified columns the experiment
+   * pages run.
    */
   display?: boolean;
   /**
@@ -32,14 +32,10 @@ const { eyebrow, title, id, intro = [], display = false, centred = false } = Ast
   >
     <div class:list={['flex flex-col gap-4', centred && 'items-center']}>
       {eyebrow && <p class="font-display text-body tracking-tight">{eyebrow}</p>}
-      <h1
-        class:list={[
-          'text-h1 tracking-tight',
-          display || centred ? 'font-display leading-[1.2]' : 'font-body font-bold',
-        ]}
-      >
-        {title}
-      </h1>
+      {/* Every page title is set the same way — the display face at the frame's
+          own weight. `display` and `centred` only decide what happens to the
+          intro underneath it. */}
+      <h1 class="font-display text-h1 leading-[1.2] tracking-tight">{title}</h1>
     </div>
 
     {

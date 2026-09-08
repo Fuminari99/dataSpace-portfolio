@@ -1,0 +1,52 @@
+---
+interface Props {
+  /** How far the square wanders from where it starts, per axis, in pixels. */
+  driftX?: number;
+  driftY?: number;
+  /** Where it starts, as CSS lengths inside the panel it travels over. */
+  top?: string;
+  left?: string;
+  /** Side of the square itself. */
+  size?: number;
+}
+
+const { top = '32px', left = '32px', size = 56 } = Astro.props;
+---
+
+{/* One of the samplers from the hero, over whatever panel it is dropped on:
+    an outlined square that wanders across the footage and fills itself with
+    the average colour of what it is sitting on, printing the reading under it.
+    The panel it is placed in supplies the clip and mounts the module. */}
+<span
+  class="sampler-square absolute"
+  style={`top:${top};left:${left};width:${size}px;height:${size}px`}
+  data-hero-cell
+>
+  <span class="sampler-square__readout font-display tracking-tight" data-hero-sample>
+    000 000 000
+  </span>
+</span>
+
+<style>
+  .sampler-square {
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    will-change: transform;
+  }
+
+  .sampler-square__readout {
+    position: absolute;
+    inset-block-start: calc(100% + 4px);
+    inset-inline-start: 0;
+    font-size: 0.625rem;
+    line-height: 1.4;
+    white-space: nowrap;
+    opacity: 0.6;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 64rem) {
+    .sampler-square {
+      display: none;
+    }
+  }
+</style>
