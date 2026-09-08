@@ -19,9 +19,9 @@ const { id } = Astro.props;
       <p class="prose-justified font-body text-copy leading-[1.5]">{concept.lead}</p>
     </div>
 
-    <div class="flex w-full flex-col items-start gap-8 lg:flex-row">
+    <div class="flex w-full flex-col items-center gap-8">
       <div
-        class="relative w-full bg-panel lg:max-w-[608px]"
+        class="relative w-full bg-panel"
         data-module="hero-cells"
         data-drift-x="200"
         data-drift-y="100"
@@ -39,7 +39,7 @@ const { id } = Astro.props;
         <SamplerSquare top="40%" left="45%" />
       </div>
 
-      <div class="flex flex-1 flex-col justify-center gap-6 lg:self-stretch">
+      <div class="flex w-full max-w-[608px] flex-col gap-6">
         <p class="prose-justified font-body text-copy leading-[1.5]">{concept.body}</p>
 
         <a
