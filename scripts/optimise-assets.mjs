@@ -1,18 +1,18 @@
 /**
- * Every still in `public/` gets a WebP alongside it.
+ * Turns the masters in `assets-src/` into the WebP the site actually serves.
  *
  * Astro's own image pipeline (`astro:assets`) only touches files imported from
  * `src/`; anything under `public/` is copied to the build untouched, and it has
- * nothing for video at all. The stills here have to live beside the clips —
- * they are `poster` attributes, and the paths are derived from the clip's own
- * name — so they stay in `public/` and are converted here instead. Run it
- * whenever the footage changes: `npm run optimise`.
+ * nothing for video at all. So the conversion happens here — and the masters
+ * sit outside `public/` so they are not shipped with the build. Run it whenever
+ * the footage or the photographs change: `npm run optimise`.
  */
-import { readdir, stat } from 'node:fs/promises';
-import { join, extname } from 'node:path';
+import { mkdir, readdir, stat } from 'node:fs/promises';
+import { dirname, extname, join, relative } from 'node:path';
 import sharp from 'sharp';
 
-const ROOT = 'public/assets';
+const ROOT = 'assets-src';
+const OUT = 'public/assets';
 /** Big enough for the largest place any still is shown, at 2x. */
 const MAX_WIDTH = 1280;
 const QUALITY = 62;
@@ -33,7 +33,8 @@ let count = 0;
 for await (const file of files(ROOT)) {
   if (!['.jpg', '.jpeg', '.png'].includes(extname(file).toLowerCase())) continue;
 
-  const target = file.replace(/\.(jpe?g|png)$/i, '.webp');
+  const target = join(OUT, relative(ROOT, file)).replace(/\.(jpe?g|png)$/i, '.webp');
+  await mkdir(dirname(target), { recursive: true });
   const source = sharp(file);
   const { width } = await source.metadata();
 
@@ -46,7 +47,7 @@ for await (const file of files(ROOT)) {
   await sharp(file)
     .resize({ width: THUMB_WIDTH, withoutEnlargement: true })
     .webp({ quality: QUALITY })
-    .toFile(file.replace(/\.(jpe?g|png)$/i, '-288.webp'));
+    .toFile(target.replace(/\.webp$/, '-288.webp'));
 
   const [before, after] = await Promise.all([stat(file), stat(target)]);
   saved += before.size - after.size;
