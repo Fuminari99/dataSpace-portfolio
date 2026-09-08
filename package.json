@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "optimise": "node scripts/optimise-assets.mjs"
   },
   "repository": {
     "type": "git",

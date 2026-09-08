@@ -157,8 +157,8 @@ const rate = (label: string, value: string): Rate => ({ label, value });
 export const members: Member[] = [
   {
     name: 'FUMI',
-    visual: '/assets/visuals/fumi.png',
-    portrait: '/assets/portraits/fumi.png',
+    visual: '/assets/visuals/fumi.webp',
+    portrait: '/assets/portraits/fumi.webp',
     rates: [rate('BREATH', '56'), rate('PULSE', '111'), rate('BLINK', '118')],
     note: 'The most blinks of the three — 118 against Maiya’s 52 — over a breath and a pulse that both sit between the other two.',
     bio: [
@@ -168,8 +168,8 @@ export const members: Member[] = [
   },
   {
     name: 'KEAGAN',
-    visual: '/assets/visuals/keagan.png',
-    portrait: '/assets/portraits/keagan.png',
+    visual: '/assets/visuals/keagan.webp',
+    portrait: '/assets/portraits/keagan.webp',
     rates: [rate('BREATH', '35'), rate('PULSE', '154'), rate('BLINK', '114')],
     note: 'The widest gap between two rhythms in the project: 35 breaths against 154 beats in the same three minutes, roughly four beats to a breath.',
     bio: [
@@ -179,8 +179,8 @@ export const members: Member[] = [
   },
   {
     name: 'MAIYA',
-    visual: '/assets/visuals/maiya.png',
-    portrait: '/assets/portraits/maiya.png',
+    visual: '/assets/visuals/maiya.webp',
+    portrait: '/assets/portraits/maiya.webp',
     rates: [rate('BREATH', '64'), rate('PULSE', '101'), rate('BLINK', '52')],
     note: 'The fastest breathing and the slowest pulse of the three, and 52 blinks — fewer than half of what Fumi recorded.',
     bio: [

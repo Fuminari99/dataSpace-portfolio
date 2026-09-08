@@ -8,7 +8,7 @@ import { experiments } from '../../data/experiments';
 const panels = experiments.map((experiment, index) => ({
   ...experiment,
   label: `Ex.0${index + 1}`,
-  poster: experiment.video.replace(/\.mp4$/, '.jpg'),
+  poster: experiment.video.replace(/\.mp4$/, '.webp'),
 }));
 ---
 

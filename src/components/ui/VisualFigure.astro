@@ -42,7 +42,7 @@ const {
  * from the clip's poster, which is generated at the clip's own size — so the
  * space is reserved before anything has loaded and nothing shifts.
  */
-const still = video ? (poster ?? video.replace(/\.mp4$/, '.jpg')) : src;
+const still = video ? (poster ?? video.replace(/\.mp4$/, '.webp')) : src;
 
 async function proportions(file?: string) {
   if (!file?.startsWith('/')) return undefined;

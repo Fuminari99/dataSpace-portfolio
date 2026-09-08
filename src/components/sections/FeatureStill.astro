@@ -18,7 +18,7 @@ const { label, id, video, poster, alt } = Astro.props;
  * The panel runs edge to edge and keeps the clip's own proportions, read off
  * the poster at build time so the space is reserved before anything loads.
  */
-const still = poster ?? video?.replace(/\.mp4$/, '.jpg');
+const still = poster ?? video?.replace(/\.mp4$/, '.webp');
 
 let aspect: string | undefined;
 if (still?.startsWith('/')) {

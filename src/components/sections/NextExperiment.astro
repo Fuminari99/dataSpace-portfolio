@@ -9,7 +9,7 @@ const { href, label } = nextPage(Astro.url.pathname.replace(/\/$/, '') || '/');
 // so it shows what the hero opens on.
 const destination = experiments.find((experiment) => experiment.href === href);
 const video = destination?.video ?? hero.clips[0].video;
-const poster = video.replace(/\.mp4$/, '.jpg');
+const poster = video.replace(/\.mp4$/, '.webp');
 const clipLabel = destination
   ? `${destination.title} — a clip from the experiment`
   : hero.clips[0].alt;

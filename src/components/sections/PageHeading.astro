@@ -23,7 +23,13 @@ interface Props {
 const { eyebrow, title, id, intro = [], display = false, centred = false } = Astro.props;
 ---
 
-<section id={id} class="w-full scroll-mt-32 border-b border-rule px-gutter py-section">
+{/* Every page opens on a band of the same height, whatever the title and
+    intro in it run to, so the first screen reads the same from page to page.
+    The block sits in the middle of it rather than at the top edge. */}
+<section
+  id={id}
+  class="flex min-h-[60svh] w-full scroll-mt-32 flex-col justify-center border-b border-rule px-gutter py-section"
+>
   <div
     class:list={[
       'mx-auto flex max-w-page flex-col gap-8',

@@ -1,5 +1,6 @@
 ---
 import SectionLabel from '../ui/SectionLabel.astro';
+import SamplerSquare from '../ui/SamplerSquare.astro';
 import { concept } from '../../data/home';
 
 interface Props {
@@ -22,10 +23,17 @@ const { id } = Astro.props;
     </div>
 
     <div class="flex w-full flex-col items-start gap-8 lg:flex-row">
-      <div class="w-full overflow-hidden bg-panel lg:max-w-[608px]">
+      <div
+        class="relative w-full bg-panel lg:max-w-[608px]"
+        data-module="hero-cells"
+        data-drift-x="200"
+        data-drift-y="100"
+        data-lightbox
+      >
         <video
           class="aspect-[604/375] h-full w-full object-cover"
           data-module="lazy-video"
+          data-hero-clip
           poster={concept.poster}
           role="img"
           aria-label={concept.alt}
@@ -36,6 +44,8 @@ const { id } = Astro.props;
         >
           <source data-src={concept.video} type="video/mp4" />
         </video>
+
+        <SamplerSquare top="40%" left="45%" />
       </div>
 
       <div class="flex flex-1 flex-col justify-center gap-6 lg:self-stretch">

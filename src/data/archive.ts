@@ -1,5 +1,5 @@
 export interface ArchiveTile {
-  /** Looping clip; the poster beside it is the same path with a .jpg suffix. */
+  /** Looping clip; the poster beside it is the same path with a .webp suffix. */
   video: string;
   /** Which experiment it came out of, and whose it is where that applies. */
   caption: string;

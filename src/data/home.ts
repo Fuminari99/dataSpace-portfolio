@@ -42,7 +42,7 @@ export const hero = {
     const video = experiment.video;
     return {
       video,
-      poster: video.replace(/\.mp4$/, '.jpg'),
+      poster: video.replace(/\.mp4$/, '.webp'),
       alt: `${experiment.title} — a clip from the experiment`,
       href: experiment.href,
       label: `EXPERIMENT 0${index + 1}`,
@@ -65,7 +65,7 @@ export const concept = {
   lead: 'After having compared our very first iterations, we began to notice similar qualities appearing within each of our responses: repetition and shifting patterns. Rather than forcing everyone to follow a singular design style, we looked for a concept that could tie them together.',
   body: 'From there, we decided on the concept of Fractal Glass as our shared project direction. It became the framework for all the experiments that followed, allowing us to individually experiment on how to achieve these broken, repeated structures across our codes.',
   video: '/assets/video/ex02-noise-fumi.mp4',
-  poster: '/assets/video/ex02-noise-fumi.jpg',
+  poster: '/assets/video/ex02-noise-fumi.webp',
   alt: 'A noise field sampled across a repeating grid — the Fractal Glass direction in motion',
   link: { href: '/projects', label: 'Project concept' },
 };
@@ -87,32 +87,32 @@ export const about = {
 export const experimentThumbs: Record<string, Thumb[]> = {
   '/ex01': [
     thumb(
-      '/assets/video/ex01-breath-fumi-v2.jpg',
+      '/assets/video/ex01-breath-fumi-v2.webp',
       'BREATH visualisation by Fumi — concentric forms at the rate of a recorded breath',
       '#bbe2d1'
     ),
     thumb(
-      '/assets/video/ex01-pulse-keagan-v2.jpg',
+      '/assets/video/ex01-pulse-keagan-v2.webp',
       'PULSE visualisation by Keagan — marks arriving at the rate of a recorded heartbeat',
       '#99b1f7'
     ),
     thumb(
-      '/assets/video/ex01-blink-keagan-v2.jpg',
+      '/assets/video/ex01-blink-keagan-v2.webp',
       'BLINK visualisation by Keagan — clusters at the rate of a recorded blink',
       '#a5dcf7'
     ),
   ],
   '/ex02': [
-    thumb('/assets/video/ex02-noise-fumi.jpg', 'Noise grid by Fumi — one noise field sampled nine ways', '#42744d'),
-    thumb('/assets/video/ex02-noise-keagan-v2.jpg', 'Noise grid by Keagan — the same field under different parameters', '#356f92'),
-    thumb('/assets/video/ex02-fuzzy-keagan-v2.jpg', 'Fuzzy grid by Keagan — particles running across the source material', '#282b3b'),
+    thumb('/assets/video/ex02-noise-fumi.webp', 'Noise grid by Fumi — one noise field sampled nine ways', '#42744d'),
+    thumb('/assets/video/ex02-noise-keagan-v2.webp', 'Noise grid by Keagan — the same field under different parameters', '#356f92'),
+    thumb('/assets/video/ex02-fuzzy-keagan-v2.webp', 'Fuzzy grid by Keagan — particles running across the source material', '#282b3b'),
   ],
   '/ex03': [
-    thumb('/assets/video/ex03-expression-v2.jpg', 'Line drawings surfacing out of a pale shore, driven by the mix', '#c7c2da'),
-    thumb('/assets/video/home-ex03-v3.jpg', 'A later frame of the same sound-driven sequence', '#ccd5fe'),
+    thumb('/assets/video/ex03-expression-v2.webp', 'Line drawings surfacing out of a pale shore, driven by the mix', '#c7c2da'),
+    thumb('/assets/video/home-ex03-v3.webp', 'A later frame of the same sound-driven sequence', '#ccd5fe'),
   ],
   '/ex04': [
-    thumb('/assets/video/ex04-sensory.jpg', 'A field of lines swelling and settling under contact', '#fbd9e8'),
-    thumb('/assets/video/home-ex04-v2.jpg', 'The same touch response held at rest', '#f9afd5'),
+    thumb('/assets/video/ex04-sensory.webp', 'A field of lines swelling and settling under contact', '#fbd9e8'),
+    thumb('/assets/video/home-ex04-v2.webp', 'The same touch response held at rest', '#f9afd5'),
   ],
 };

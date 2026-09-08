@@ -54,7 +54,7 @@ const { label, id, lead, rows, gap = 'normal', anchorMembers = false, visuals } 
               id={anchorMembers ? member.name.toLowerCase() : undefined}
               src={member.visual}
               video={visuals?.[index]}
-              poster={visuals?.[index]?.replace(/\.mp4$/, '.jpg')}
+              poster={visuals?.[index]?.replace(/\.mp4$/, '.webp')}
               alt={`${label} still by ${member.name}`}
               name={member.name}
               ratio="video"

@@ -2,7 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeading from '../components/sections/PageHeading.astro';
 import VisualTriptych from '../components/sections/VisualTriptych.astro';
-import ConceptCollage from '../components/sections/ConceptCollage.astro';
 import NextExperiment from '../components/sections/NextExperiment.astro';
 import { experiments } from '../data/experiments';
 
@@ -54,8 +53,6 @@ const tabs = [
   <PageHeading eyebrow={experiment.eyebrow} title={experiment.title} intro={experiment.intro} />
 
   <VisualTriptych label="Body rhythms" tabs={tabs} />
-
-  <ConceptCollage />
 
   <NextExperiment />
 </BaseLayout>

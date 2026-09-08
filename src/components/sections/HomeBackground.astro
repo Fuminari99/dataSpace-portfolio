@@ -13,7 +13,7 @@ const panels = [
 ].map(({ experiment, position }) => ({
   position,
   video: experiment.video,
-  poster: experiment.video.replace(/\.mp4$/, '.jpg'),
+  poster: experiment.video.replace(/\.mp4$/, '.webp'),
   alt: `${experiment.title} — a clip from the experiment`,
 }));
 

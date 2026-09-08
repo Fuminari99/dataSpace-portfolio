@@ -40,7 +40,7 @@ const { label, id, lead, visuals } = Astro.props;
           <VisualFigure
             src={member.visual}
             video={visuals?.[index]}
-            poster={visuals?.[index]?.replace(/\.mp4$/, '.jpg')}
+            poster={visuals?.[index]?.replace(/\.mp4$/, '.webp')}
             alt={`${label} still by ${member.name}`}
             name={member.name}
             ratio="video"

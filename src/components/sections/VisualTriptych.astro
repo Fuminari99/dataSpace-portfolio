@@ -92,7 +92,7 @@ const isTabbed = tabs.length > 1;
               <VisualFigure
                 src={member.visual}
                 video={tab.visuals?.[memberIndex]}
-                poster={tab.visuals?.[memberIndex]?.replace(/\.mp4$/, '.jpg')}
+                poster={tab.visuals?.[memberIndex]?.replace(/\.mp4$/, '.webp')}
                 alt={`${tab.label} visualisation by ${member.name}`}
                 name={member.name}
                 value={tab.values?.[memberIndex]}
