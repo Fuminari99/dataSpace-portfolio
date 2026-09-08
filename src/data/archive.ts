@@ -39,7 +39,7 @@ export const archive: ArchiveTile[] = [
     href: '/ex02#fuzzy-grid',
   },
   {
-    video: '/assets/video/ex03-expression-v4.mp4',
+    video: '/assets/video/ex03-expression-v5.mp4',
     caption: 'Ex03 · Sound into visuals',
     alt: 'Line drawings surfacing out of a pale shore, driven by the mix',
     href: '/ex03#sound-into-visuals',

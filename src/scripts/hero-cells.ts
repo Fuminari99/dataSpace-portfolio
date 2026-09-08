@@ -89,6 +89,8 @@ registerModule('hero-cells', (root) => {
   }));
 
   const clips = [...root.querySelectorAll<HTMLVideoElement>('[data-hero-clip]')];
+  /** A panel showing a still rather than a clip is read the same way. */
+  const still = root.querySelector<HTMLImageElement>('[data-hero-still]');
 
   /**
    * Whichever clip is actually painted, by its own opacity — not whichever one
@@ -135,6 +137,12 @@ registerModule('hero-cells', (root) => {
 
   /** Whatever is actually on screen: the decoded clip, or its poster. */
   const source = (): { element: CanvasImageSource; width: number; height: number } | null => {
+    if (still) {
+      return still.complete && still.naturalWidth
+        ? { element: still, width: still.naturalWidth, height: still.naturalHeight }
+        : null;
+    }
+
     const clip = activeClip();
     if (!clip) return null;
 

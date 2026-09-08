@@ -144,6 +144,13 @@ const SQUARES = [
     height: 100%;
     object-fit: cover;
     opacity: 0;
+    /* The footage is a ground for the wordmark rather than something to read,
+       and two of the four clips are only 600px wide against a full viewport.
+       Throwing it out of focus is what that softness should look like.
+       Scaled up a touch so the blur has material to work with at the edges
+       instead of fading into the page. */
+    filter: blur(28px);
+    scale: 1.12;
   }
 
   .hero__clip:first-of-type,

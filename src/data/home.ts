@@ -61,12 +61,14 @@ export const background = {
 
 export const concept = {
   label: 'Project concept',
-  subtitle: 'the concept of Fractal Glass',
   lead: 'After having compared our very first iterations, we began to notice similar qualities appearing within each of our responses: repetition and shifting patterns. Rather than forcing everyone to follow a singular design style, we looked for a concept that could tie them together.',
   body: 'From there, we decided on the concept of Fractal Glass as our shared project direction. It became the framework for all the experiments that followed, allowing us to individually experiment on how to achieve these broken, repeated structures across our codes.',
-  video: '/assets/video/ex02-noise-fumi.mp4',
-  poster: '/assets/video/ex02-noise-fumi.webp',
-  alt: 'A noise field sampled across a repeating grid — the Fractal Glass direction in motion',
+  /**
+   * (05) from the collage on the Projects page — the band the collage crops out
+   * of the strip of refraction tests, cut here so it can be shown on its own.
+   */
+  still: '/assets/concept/fractal-glass.webp',
+  alt: 'A run of arcs refracting from pink through to violet on a dark field',
   link: { href: '/projects', label: 'Project concept' },
 };
 
@@ -108,11 +110,11 @@ export const experimentThumbs: Record<string, Thumb[]> = {
     thumb('/assets/video/ex02-fuzzy-keagan-v3.webp', 'Fuzzy grid by Keagan — particles running across the source material', '#272e3e'),
   ],
   '/ex03': [
-    thumb('/assets/video/ex03-expression-v4.webp', 'Line drawings surfacing out of a pale shore, driven by the mix', '#c7c4d7'),
-    thumb('/assets/video/home-ex03-v4.webp', 'A later frame of the same sound-driven sequence', '#ccd8fb'),
+    thumb('/assets/video/ex03-expression-v5.webp', 'Line drawings surfacing out of a pale shore, driven by the mix', '#bbb4cd'),
+    thumb('/assets/video/home-ex03-v6.webp', 'A later frame of the same sound-driven sequence', '#b7b3cb'),
   ],
   '/ex04': [
     thumb('/assets/video/ex04-sensory.webp', 'A field of lines swelling and settling under contact', '#f5d9e7'),
-    thumb('/assets/video/home-ex04-v3.webp', 'The same touch response held at rest', '#efb0d5'),
+    thumb('/assets/video/home-ex04-v4.webp', 'The same touch response held at rest', '#f5d9e7'),
   ],
 };

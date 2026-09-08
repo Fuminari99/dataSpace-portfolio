@@ -8,6 +8,15 @@ export interface Row {
   text?: string;
   /** Which side the visual sits on. */
   align: 'left' | 'right';
+  /**
+   * A photograph in place of the member's own still — Ex04's rows are the
+   * object itself being touched, not a sketch of the reading.
+   */
+  photo?: string;
+  /** Describes the photograph; the caption alone is just a name. */
+  alt?: string;
+  /** Caption under it, in place of the member's name. */
+  caption?: string;
 }
 
 interface Props {
@@ -52,11 +61,11 @@ const { label, id, lead, rows, gap = 'normal', anchorMembers = false, visuals } 
           const figure = (
             <VisualFigure
               id={anchorMembers ? member.name.toLowerCase() : undefined}
-              src={member.visual}
-              video={visuals?.[index]}
-              poster={visuals?.[index]?.replace(/\.mp4$/, '.webp')}
-              alt={`${label} still by ${member.name}`}
-              name={member.name}
+              src={row.photo ?? member.visual}
+              video={row.photo ? undefined : visuals?.[index]}
+              poster={row.photo ? undefined : visuals?.[index]?.replace(/\.mp4$/, '.webp')}
+              alt={row.alt ?? `${label} still by ${member.name}`}
+              name={row.caption ?? member.name}
               ratio="video"
               class="w-full lg:max-w-[712px]"
             />

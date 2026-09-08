@@ -26,7 +26,7 @@ export const experiments: Experiment[] = [
     eyebrow: '[EX.01]',
     title: 'Rhythm of Our Bodies',
     href: '/ex01',
-    video: '/assets/video/home-ex01-v2.mp4',
+    video: '/assets/video/home-ex01-v3.mp4',
     summary:
       'Recording breath, pulse and blink over time, then translating these bodily rhythms into a shared visual system.',
     intro: [
@@ -42,7 +42,7 @@ export const experiments: Experiment[] = [
     eyebrow: '[EX.02]',
     title: 'Procedural Data',
     href: '/ex02',
-    video: '/assets/video/home-ex02-v4.mp4',
+    video: '/assets/video/home-ex02-v5.mp4',
     summary:
       'Procedural systems in TouchDesigner, where noise, particle behaviour and repeated geometry drive visual change.',
     intro: [
@@ -58,7 +58,7 @@ export const experiments: Experiment[] = [
     eyebrow: '[EX.03]',
     title: 'Data Expression',
     href: '/ex03',
-    video: '/assets/video/home-ex03-v4.mp4',
+    video: '/assets/video/home-ex03-v6.mp4',
     summary:
       'The same body rhythms rebuilt as a three-layer soundtrack, which is then handed back to TouchDesigner to draw the image.',
     intro: [
@@ -74,7 +74,7 @@ export const experiments: Experiment[] = [
     eyebrow: '[EX.04]',
     title: 'Sensory Data',
     href: '/ex04',
-    video: '/assets/video/home-ex04-v3.mp4',
+    video: '/assets/video/home-ex04-v4.mp4',
     summary:
       'A touch sensor on an everyday object, read into the browser through an Arduino, so contact becomes something visible.',
     intro: [
