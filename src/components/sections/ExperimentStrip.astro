@@ -1,13 +1,11 @@
 ---
 import { experiments } from '../../data/experiments';
+import HeroMediaTreatment from '../ui/HeroMediaTreatment.astro';
 
-// The About frame closes on a full-bleed band of four panels — one per
-// experiment — with the four links set out underneath it. The frame fills the
-// panels with flat grey, so the still each experiment already carries on the
-// home carousel stands in for that placeholder.
+// Four linked stills with the home hero's treatment and labels over the media.
 const panels = experiments.map((experiment, index) => ({
   ...experiment,
-  label: `Ex.0${index + 1}`,
+  label: `EX0${index + 1}`,
   poster: experiment.video.replace(/\.mp4$/, '.webp'),
 }));
 ---
@@ -15,36 +13,23 @@ const panels = experiments.map((experiment, index) => ({
 <section class="w-full">
   <ul class="flex w-full">
     {
-      panels.map((panel, index) => (
-        <li class="flex-1">
-          <a href={panel.href} aria-label={`Go to ${panel.label}: ${panel.title}`}>
+      panels.map((panel) => (
+        <li class="min-w-0 flex-1">
+          <a class="relative block h-[320px] w-full lg:h-[688px]" href={panel.href} aria-label={`Go to ${panel.label}: ${panel.title}`}>
+            <HeroMediaTreatment>
             <img
               src={panel.poster}
               alt=""
-              class:list={[
-                'h-[320px] w-full object-cover lg:h-[688px]',
-                index % 2 === 0 ? 'bg-placeholder' : 'bg-block',
-              ]}
+              class="h-full w-full object-cover"
               loading="lazy"
               decoding="async"
             />
+            </HeroMediaTreatment>
+            <span class="pointer-events-none absolute inset-0 flex items-center justify-center font-display text-body tracking-tight text-white">{panel.label}</span>
           </a>
         </li>
       ))
     }
   </ul>
 
-  <div class="mx-auto flex max-w-page flex-wrap justify-between gap-8 px-gutter py-5">
-    {
-      panels.map((panel) => (
-        <a
-          href={panel.href}
-          class="font-display text-body tracking-tight whitespace-nowrap"
-          aria-label={`Go to ${panel.label}: ${panel.title}`}
-        >
-          → {panel.label}
-        </a>
-      ))
-    }
-  </div>
 </section>

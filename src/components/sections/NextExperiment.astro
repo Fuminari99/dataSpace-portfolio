@@ -2,13 +2,17 @@
 import { nextPage } from '../../data/site';
 import { experiments } from '../../data/experiments';
 import { hero } from '../../data/home';
+import HeroMediaTreatment from '../ui/HeroMediaTreatment.astro';
 
 const { href, label } = nextPage(Astro.url.pathname.replace(/\/$/, '') || '/');
 
 // The panel shows where the link goes. Home has no experiment clip of its own,
 // so it shows what the hero opens on.
 const destination = experiments.find((experiment) => experiment.href === href);
-const video = destination?.video ?? hero.clips[0].video;
+const isAboutHome = Astro.url.pathname.replace(/\/$/, '') === '/about' && href === '/';
+const video = isAboutHome
+  ? '/assets/video/about-home-preview-v1.mp4'
+  : destination?.video ?? hero.clips[0].video;
 const poster = video.replace(/\.mp4$/, '.webp');
 const clipLabel = destination
   ? `${destination.title} — a clip from the experiment`
@@ -23,6 +27,7 @@ const clipLabel = destination
     data-module="hover-scramble"
   >
     <div class="aspect-[996/560] w-full overflow-hidden bg-surface">
+      <HeroMediaTreatment enabled={isAboutHome}>
       {
         video && (
           <video
@@ -40,6 +45,7 @@ const clipLabel = destination
           </video>
         )
       }
+      </HeroMediaTreatment>
     </div>
 
     <span class="font-display text-body tracking-tight whitespace-nowrap">

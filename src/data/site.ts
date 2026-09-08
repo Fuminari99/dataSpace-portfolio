@@ -162,8 +162,8 @@ export const members: Member[] = [
     rates: [rate('BREATH', '56'), rate('PULSE', '111'), rate('BLINK', '118')],
     note: 'The most blinks of the three — 118 against Maiya’s 52 — over a breath and a pulse that both sit between the other two.',
     bio: [
-      'Fumi works through building, with an interest in what a piece of code will do once it is running rather than in how it looks on the page.',
-      'He took the counts and the sensor readings into working sketches, wired the touch response through to the browser, and put the archive itself together — keeping every experiment reachable in the form it was made in.',
+      'Fumi brings a strong analytical mind and a deep understanding of code to the team. He is quick to turn ideas into working systems, and his ability to visualise data efficiently has helped shape many of the project’s most refined outcomes.',
+      'His technical knowledge became an important foundation for how we explored creative coding throughout Data Spaces.',
     ],
   },
   {
@@ -173,8 +173,8 @@ export const members: Member[] = [
     rates: [rate('BREATH', '35'), rate('PULSE', '154'), rate('BLINK', '114')],
     note: 'The widest gap between two rhythms in the project: 35 breaths against 154 beats in the same three minutes, roughly four beats to a breath.',
     bio: [
-      'Keagan brings a way of working that treats each brief as something to test rather than to settle, and is quick to try the version nobody has asked for yet.',
-      'Much of the procedural and sound-driven work came out of that — one noise field sampled again and again, and a patch where the mix drives the image — and the range those attempts produced is what the archive is made of.',
+      'Keagan brings energy, focus and a strong sense of direction to the group. He is constantly thinking about how each experiment can be pushed further, whether through concept, making or visual outcome.',
+      'His hands-on and outcome driven approach helped the team stay focused while shaping the broader direction of the project.',
     ],
   },
   {
