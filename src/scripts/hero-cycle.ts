@@ -95,7 +95,7 @@ registerModule('hero-cycle', (root) => {
   const start = () => {
     stop();
     timer = window.setInterval(() => {
-      if (onScreen) advance();
+      if (onScreen && !document.hidden) advance();
     }, interval * 1000);
   };
 
@@ -121,6 +121,26 @@ registerModule('hero-cycle', (root) => {
   sync();
   reduce.addEventListener('change', sync);
 
+  /**
+   * The clock the swap runs on and the clock the cross-fade runs on are not the
+   * same one: a background tab keeps firing intervals while it throttles
+   * requestAnimationFrame to a stop, so coming back to the page found two clips
+   * stranded part-way through a fade and a third marked as the one showing.
+   * Whatever happened while nobody was looking, this puts the pile back in
+   * order: the clip whose turn it is, at full opacity, and the others at none.
+   */
+  const settle = () => {
+    if (document.hidden) return;
+    gsap.killTweensOf(clips);
+    for (const [i, clip] of clips.entries()) {
+      gsap.set(clip, { opacity: i === index ? 1 : 0 });
+      if (i === index) play(clip);
+      else clip.pause();
+    }
+  };
+
+  document.addEventListener('visibilitychange', settle);
+
   // Scrolled past, the hero has nothing to show — pause rather than leave four
   // clips decoding behind the rest of the page.
   let observer: IntersectionObserver | null = null;
@@ -137,6 +157,7 @@ registerModule('hero-cycle', (root) => {
 
   return () => {
     stop();
+    document.removeEventListener('visibilitychange', settle);
     reduce.removeEventListener('change', sync);
     observer?.disconnect();
     for (const clip of clips) {

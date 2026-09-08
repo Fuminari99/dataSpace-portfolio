@@ -91,14 +91,23 @@ registerModule('hero-cells', (root) => {
   const clips = [...root.querySelectorAll<HTMLVideoElement>('[data-hero-clip]')];
 
   /**
-   * hero-cycle marks the clip on screen by taking `aria-hidden` off it. Until
-   * the first one has decoded a frame there is nothing to read, so a clip that
-   * is ready is taken over the one that is showing rather than reporting black.
+   * Whichever clip is actually painted, by its own opacity — not whichever one
+   * hero-cycle last marked, which is a step ahead of the cross-fade and can be
+   * a long way ahead of it if the tab has been in the background. The squares
+   * report the colour of what is on the screen or they report nothing useful.
    */
+  const showing = () =>
+    clips.reduce((front, clip) =>
+      Number(getComputedStyle(clip).opacity) > Number(getComputedStyle(front).opacity) ? clip : front
+    );
+
   const activeClip = () => {
-    const showing = clips.find((clip) => !clip.hasAttribute('aria-hidden'));
-    if (showing && showing.readyState >= 2) return showing;
-    return clips.find((clip) => clip.readyState >= 2) ?? showing;
+    if (clips.length === 0) return null;
+    const front = showing();
+    if (front.readyState >= 2) return front;
+    // Nothing decoded yet: the poster of the clip in front is what is on
+    // screen, and posterFor below will find it.
+    return front;
   };
 
   /**
