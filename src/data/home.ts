@@ -35,7 +35,7 @@ export interface HeroClip {
  * into that experiment, not decoration in front of a fixed link.
  */
 export const hero = {
-  wordmark: 'DATASPACES',
+  wordmark: 'FRACTAL VARIANT',
   /** Seconds each clip holds before the next one takes over. */
   interval: 6,
   clips: experiments.map((experiment, index): HeroClip => {

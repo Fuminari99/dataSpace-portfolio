@@ -66,7 +66,7 @@ export const nav: NavEntry[] = [
     hue: 332, // pink — the mauve/pink cast of the touch-sensor footage
     sections: [
       section('TOUCH RESPONSE', 'touch-response'),
-      section('Conceptualisation', 'conceptualisation'),
+      section('CONCEPT', 'concept'),
     ],
   },
   {
@@ -85,13 +85,13 @@ export const nav: NavEntry[] = [
 ];
 
 /**
- * The "Home" slot, which the hover variant renames to "DataSpace". Its sections
+ * The "Home" slot, which the hover variant renames to "Fractal Variant". Its sections
  * are the run-through the home page is built from — the brief, each experiment
  * in order, then the team — and index.astro takes its anchors from here.
  */
 export const home: NavEntry = {
   label: 'Home',
-  hoverLabel: 'DataSpace',
+  hoverLabel: 'Fractal Variant',
   longLabel: 'HOME',
   href: '/',
   hue: 346, // the site accent, which the home washes already carry
@@ -213,7 +213,7 @@ export const members: Member[] = [
     note: 'The most blinks of the three — 118 against Maiya’s 52 — over a breath and a pulse that both sit between the other two.',
     bio: [
       'Fumi brings a strong analytical mind and a deep understanding of code to the team. He is quick to turn ideas into working systems, and his ability to visualise data efficiently has helped shape many of the project’s most refined outcomes.',
-      'His technical knowledge became an important foundation for how we explored creative coding throughout Data Spaces.',
+      'His technical knowledge became an important foundation for how we explored creative coding throughout Fractal Variant.',
     ],
   },
   {

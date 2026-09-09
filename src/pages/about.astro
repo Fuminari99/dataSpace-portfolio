@@ -9,7 +9,7 @@ import { nav } from '../data/site';
 // The About frame opens on the three of us rather than on the module: one
 // single paragraph introducing the team, aligned to the page grid.
 const intro = [
-  'Hello there! We’re a team of three Design Communication students who came together through Data Spaces, each bringing a different way of thinking and making to the project. From coding and building ideas to shaping the visuals and overall art direction, we worked closely across every experiment and gradually turned our different strengths into one shared outcome.',
+  'Hello there! We’re a team of three Design Communication students who came together through Fractal Variant, each bringing a different way of thinking and making to the project. From coding and building ideas to shaping the visuals and overall art direction, we worked closely across every experiment and gradually turned our different strengths into one shared outcome.',
 ];
 
 const aboutSections = nav.find((entry) => entry.href === '/about')?.sections ?? [];
@@ -17,8 +17,8 @@ const anchorFor = (label: string) => aboutSections.find((s) => s.label === label
 ---
 
 <BaseLayout
-  title="About — Data Spaces"
-  description="The three of us, what each of us brought to Data Spaces, and the tools the four experiments were made with."
+  title="About — Fractal Variant"
+  description="The three of us, what each of us brought to Fractal Variant, and the tools the four experiments were made with."
 >
   <PageHeading title="About Us" id="class" intro={intro} singleColumn centred />
 

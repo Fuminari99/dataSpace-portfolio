@@ -36,7 +36,7 @@ export const experiments: Experiment[] = [
     summary:
       'Recording breath, pulse and blink over time, then translating these bodily rhythms into a shared visual system.',
     intro: [
-      'The introduction to Data Spaces began with a simple activity of manually recording our individual breaths, heartbeats over the span of three minutes, before translating those observations into p5.js sketches.',
+      'The introduction to Fractal Variant began with a simple activity of manually recording our individual breaths, heartbeats over the span of three minutes, before translating those observations into p5.js sketches.',
       'Across 180 seconds, we recorded raw, quantifiable data from our own bodies. Each rhythm revealed its own sets of patterns and variation, and eventually, the recorded differences had become our first data set.',
     ],
     overview: [

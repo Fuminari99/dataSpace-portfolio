@@ -20,7 +20,7 @@ const columns = [projects, ...nav];
     class="mx-auto flex max-w-page flex-col gap-12 font-display text-label tracking-tight md:flex-row md:gap-[128px]"
   >
     <a href="/" class="md:w-[184px]" data-nav-link>
-      Data Spaces
+      Fractal Variant
     </a>
 
     <div class="grid flex-1 grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3 lg:grid-cols-6 lg:gap-x-10 xl:gap-x-16">
@@ -30,15 +30,19 @@ const columns = [projects, ...nav];
             <a href={entry.href} class="whitespace-nowrap" data-nav-link>
               {entry.href === projects.href ? entry.hoverLabel : entry.label}
             </a>
-            <ul class="flex flex-col items-end gap-8">
-              {entry.sections.map((section) => (
-                <li>
-                  <a href={`${entry.href}#${section.hash}`}>
-                    {section.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            {/* Project Concept stands on its own: its sections are the four
+                experiments, which already have columns of their own here. */}
+            {entry.href !== projects.href && (
+              <ul class="flex flex-col items-end gap-8">
+                {entry.sections.map((section) => (
+                  <li>
+                    <a href={`${entry.href}#${section.hash}`}>
+                      {section.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         ))
       }
