@@ -1,20 +1,23 @@
 ---
 import SectionLabel from '../ui/SectionLabel.astro';
 import { background } from '../../data/home';
-import { experiments } from '../../data/experiments';
 import SamplerSquare from '../ui/SamplerSquare.astro';
 
-// The two blocks either side of the column are the experiments themselves,
-// read the way the hero reads its own footage: a framed panel that reports the
-// average colour of what is playing inside it.
-const panels = [
-  { experiment: experiments[1], position: 'top-20 right-[3%]' },
-  { experiment: experiments[3], position: 'top-[376px] left-[4%]' },
-].map(({ experiment, position }) => ({
-  position,
-  video: experiment.video,
-  poster: experiment.video.replace(/\.mp4$/, '.webp'),
-  alt: `${experiment.title} — a clip from the experiment`,
+// The two blocks either side of the column are the intro clips, read the way
+// the hero reads its own footage: a framed panel that reports the average
+// colour of what is playing inside it.
+//
+// Both are pinned to the section's own `py-28` rather than to a measured
+// offset, so they stay level with the column as the copy reflows: the first
+// clip's top edge meets the heading, and the second one's bottom edge meets the
+// last line of the last paragraph.
+const positions = ['top-28 right-[3%]', 'bottom-28 left-[4%]'];
+
+const panels = background.intros.map((intro, index) => ({
+  position: positions[index],
+  video: intro.video,
+  poster: intro.video.replace(/\.mp4$/, '.webp'),
+  alt: intro.alt,
 }));
 
 interface Props {
@@ -34,6 +37,7 @@ const { id } = Astro.props;
       panels.map((panel) => (
         <figure
           class:list={['sampler absolute w-[272px]', panel.position]}
+          data-reveal
           data-module="hero-cells"
           data-drift-x="124"
           data-drift-y="72"
@@ -62,12 +66,14 @@ const { id } = Astro.props;
   </div>
 
   <div class="relative mx-auto flex max-w-page flex-col items-center gap-12">
-    <SectionLabel label={background.label} variant="heading" />
+    <div data-reveal><SectionLabel label={background.label} variant="heading" /></div>
 
     <div class="flex w-full max-w-[592px] flex-col gap-16">
       {
         background.columns.map((paragraph) => (
-          <p class="prose-justified font-body text-copy leading-[1.5]">{paragraph}</p>
+          <p class="prose-justified font-body text-copy leading-[1.5]" data-reveal>
+            {paragraph}
+          </p>
         ))
       }
     </div>

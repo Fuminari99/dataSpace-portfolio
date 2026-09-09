@@ -3,110 +3,21 @@ import MemberProfile from './MemberProfile.astro';
 import { members } from '../../data/site';
 
 /**
- * The three of us, held one at a time. The stack is a plain run of profiles
- * until the script takes it over: from there the group is pinned in the middle
- * of the screen and scrolling hands the space from one person to the next,
- * releasing the page once the third has been read.
+ * The three of us, read side by side rather than one at a time: each panel
+ * carries its own copy of the [ KEAGAN ] [ FUMI ] [ MAIYA ] list, with only its
+ * own name at full strength, so any of the three names jumps straight to that
+ * person's panel from wherever the reader currently is.
  */
 ---
 
-<div class="stack w-full" data-module="member-stack">
-  <div class="stack__viewport w-full" data-stack-viewport>
-    {/* Only reach the pinned run through the script, so they are hidden until
-        it has taken the stack over. */}
-    <button
-      type="button"
-      class="stack__arrow stack__arrow--prev font-display text-h2 leading-none"
-      aria-label="Previous person"
-      data-stack-prev
-    >
-      ←
-    </button>
-
-    <button
-      type="button"
-      class="stack__arrow stack__arrow--next font-display text-h2 leading-none"
-      aria-label="Next person"
-      data-stack-next
-    >
-      →
-    </button>
-
+<section class="w-full px-gutter py-section">
+  <div class="mx-auto flex max-w-page flex-col items-start gap-16 lg:flex-row lg:justify-center">
     {
       members.map((member) => (
-        <div class="stack__panel w-full" data-stack-panel data-stack-id={member.name.toLowerCase()}>
+        <div class="flex lg:flex-1 lg:justify-center">
           <MemberProfile member={member} id={member.name.toLowerCase()} />
         </div>
       ))
     }
   </div>
-</div>
-
-<style>
-  /* Untouched, this is three profiles down the page — which is what a reader
-     without the script, or with motion turned down, gets. `is-stacked` is set
-     by the module and is what lays them on top of one another. */
-  .stack.is-stacked .stack__viewport {
-    position: relative;
-    display: flex;
-    height: 100svh;
-    align-items: center;
-    overflow: hidden;
-  }
-
-  .stack.is-stacked .stack__panel {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-  }
-
-  /* The panels sit exactly on top of one another, so all three lists of names
-     would too. The first one is left standing and becomes the list for all
-     three — the script moves which name is at full strength rather than
-     swapping one list for another. `:first-of-type` rather than `:first-child`
-     because the arrows are the viewport's first children. */
-  /* `:global` because the list is rendered by MemberProfile: without it the
-     rule is scoped to this component's own elements and never matches. */
-  .stack.is-stacked .stack__panel:not(:first-of-type) :global([data-stack-tabs]) {
-    visibility: hidden;
-  }
-
-  /* The arrows step through the three by hand, for a reader who would rather
-     not scroll their way along. They do nothing without the script, so they are
-     not shown until it is running. */
-  .stack__arrow {
-    display: none;
-  }
-
-  .stack.is-stacked .stack__arrow {
-    position: absolute;
-    inset-block-start: 50%;
-    z-index: 1;
-    display: block;
-    translate: 0 -50%;
-    padding: 16px;
-  }
-
-  .stack.is-stacked .stack__arrow--prev {
-    inset-inline-start: 24px;
-  }
-
-  .stack.is-stacked .stack__arrow--next {
-    inset-inline-end: 24px;
-  }
-
-  .stack__arrow[disabled] {
-    opacity: 0.25;
-  }
-
-  @media (min-width: 80rem) {
-    .stack.is-stacked .stack__arrow--prev {
-      inset-inline-start: 64px;
-    }
-
-    .stack.is-stacked .stack__arrow--next {
-      inset-inline-end: 64px;
-    }
-  }
-</style>
+</section>

@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import HomeHero from '../components/sections/HomeHero.astro';
 import HomeBackground from '../components/sections/HomeBackground.astro';
 import HomeConcept from '../components/sections/HomeConcept.astro';
-import ExperimentList from '../components/sections/ExperimentList.astro';
+import ExperimentStrip from '../components/sections/ExperimentStrip.astro';
 import HomeAbout from '../components/sections/HomeAbout.astro';
 import { experiments } from '../data/experiments';
 import { home } from '../data/site';
@@ -23,17 +23,19 @@ const team = rest[experiments.length];
   description="A web archive of experiments in collecting, quantifying and giving form to data, by Keagan, Fumi and Maiya."
   overlayHeader
 >
-  <div class="flex w-full flex-col items-center">
+  {/* Everything below the hero settles into place as it is scrolled to; the
+      hero is already on screen when the page opens, so it is left alone. */}
+  <div class="flex w-full flex-col items-center" data-module="reveal">
     <HomeHero />
 
     <HomeBackground id={background} />
 
-    {/* Concept and the experiment list read as one section — the shared
+    {/* Concept and the experiment strip read as one section — the shared
         project direction, then the four experiments it produced. */}
     <section class="flex w-full flex-col gap-16 py-28">
       <HomeConcept />
 
-      <ExperimentList ids={experimentAnchors} />
+      <ExperimentStrip ids={experimentAnchors} />
     </section>
 
     <HomeAbout id={team} />

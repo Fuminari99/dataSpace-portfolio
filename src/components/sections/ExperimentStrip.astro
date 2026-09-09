@@ -2,23 +2,42 @@
 import { experiments } from '../../data/experiments';
 import HeroMediaTreatment from '../ui/HeroMediaTreatment.astro';
 
-// Four linked clips with the home hero's treatment. Rest label is short
-// ("EX01"); hover scrambles to the formal title with an arrow, and widens
-// that column so the four shares of the strip rebalance. Height fills whatever
-// remains of the tools + strip 80svh block on About.
+interface Props {
+  /** Home-page anchors so header / footer section links still land on each clip. */
+  ids?: (string | undefined)[];
+}
+
+const { ids = [] } = Astro.props;
+
+// Four linked clips. Rest label is short ("EX01"); hover scrambles to the
+// formal title with an arrow, and widens that column so the four shares of the
+// strip rebalance. On About it fills whatever remains of the tools + strip
+// block; on Home it sits under the concept at a fixed minimum height.
 const panels = experiments.map((experiment, index) => ({
   ...experiment,
+  id: ids[index],
   shortLabel: `EX0${index + 1}`,
   hoverLabel: `→ ${experiment.title}`,
   poster: experiment.video.replace(/\.mp4$/, '.webp'),
 }));
 ---
 
-<section class="experiment-strip-section flex min-h-[240px] w-full flex-col lg:min-h-[240px] lg:flex-1">
-  <ul class="experiment-strip grid min-h-[240px] w-full flex-1 grid-cols-2 lg:flex lg:min-h-[240px]" data-module="nav-scramble">
+{/* The strip arrives as one band rather than four, so the four clips are not
+    read as four separate things landing. `data-reveal` is inert unless a page
+    mounts the reveal module around it, which is why About is unaffected. */}
+<section
+  class="experiment-strip-section flex min-h-[280px] w-full flex-col lg:min-h-[360px] lg:flex-1"
+  data-reveal
+>
+  <ul class="experiment-strip grid min-h-[280px] w-full flex-1 grid-cols-2 lg:flex lg:min-h-[360px]" data-module="nav-scramble">
     {
       panels.map((panel, index) => (
-        <li class="experiment-strip__item min-h-0 min-w-0" data-nav-item data-exp={`ex0${index + 1}`}>
+        <li
+          id={panel.id}
+          class="experiment-strip__item min-h-0 min-w-0 scroll-mt-32"
+          data-nav-item
+          data-exp={`ex0${index + 1}`}
+        >
           <a
             class="experiment-strip__link relative block h-full min-h-[200px] w-full overflow-hidden lg:min-h-0"
             href={panel.href}
@@ -28,7 +47,7 @@ const panels = experiments.map((experiment, index) => ({
             data-hover-label={panel.hoverLabel}
           >
             <div class="absolute inset-0">
-              <HeroMediaTreatment>
+              <HeroMediaTreatment blur={0} scale={1}>
                 <video
                   class="h-full w-full object-cover"
                   data-module="lazy-video"
@@ -60,6 +79,11 @@ const panels = experiments.map((experiment, index) => ({
 <style>
   .experiment-strip__item {
     min-width: 0;
+  }
+
+  /* Less grain than the hero so the sharp clips stay readable as a strip. */
+  .experiment-strip__item :global(.media-frame__grain) {
+    opacity: 0.35;
   }
 
   @media (min-width: 64rem) {

@@ -174,6 +174,38 @@ function boot() {
     ],
   });
 
+  /**
+   * Footer / header section links carry a hash. Barba may land on the path
+   * before the fragment is reliable, so the click stores it and the after hook
+   * scrolls once the new page has its final height.
+   */
+  let pendingHash = '';
+
+  const settleOnHash = (hash: string, immediate = false) => {
+    if (!hash) {
+      resetScroll();
+      return;
+    }
+
+    // Keep the fragment in the URL even if the history entry dropped it during
+    // the swap, so a refresh still opens on the same section.
+    if (window.location.hash !== hash) {
+      window.history.replaceState(null, '', `${window.location.pathname}${hash}`);
+    }
+
+    const jump = () => scrollToHash(hash, immediate);
+    if (jump()) return;
+
+    // Layout can still be settling (fonts, sticky rows, ScrambleText); retry
+    // briefly before giving up and leaving the reader at the top.
+    window.requestAnimationFrame(() => {
+      if (jump()) return;
+      window.setTimeout(() => {
+        if (!jump()) resetScroll();
+      }, 120);
+    });
+  };
+
   barba.hooks.after(() => {
     // The old container is gone by now, so this is the first point at which the
     // document has its final height.
@@ -182,9 +214,13 @@ function boot() {
     // ScrollTrigger has to re-measure against the new document before any of
     // them can be reached.
     ScrollTrigger.refresh();
-    // A footer or header link can name a section on the incoming page; landing
-    // there beats landing at the top.
-    if (!scrollToHash(window.location.hash, true)) resetScroll();
+
+    const hash = pendingHash || window.location.hash;
+    const fromSectionLink = Boolean(pendingHash);
+    pendingHash = '';
+    // Footer / header section clicks ease down with GSAP; a shared link still
+    // lands immediately so the first paint is already on the section.
+    settleOnHash(hash, !fromSectionLink && Boolean(hash));
   });
 
   // Barba only swaps pages, so a link to a section of the page already open has
@@ -201,9 +237,13 @@ function boot() {
       const url = new URL(link.href, window.location.href);
       if (url.origin !== window.location.origin || !url.hash) return;
 
+      pendingHash = url.hash;
+
       const path = (value: string) => value.replace(/\/$/, '') || '/';
       if (path(url.pathname) !== path(window.location.pathname)) return;
 
+      // Same page: scroll in place and keep Barba out of it.
+      pendingHash = '';
       if (!scrollToHash(url.hash)) return;
       event.preventDefault();
       event.stopPropagation();
@@ -217,7 +257,7 @@ function boot() {
 
   // Arriving with a hash already in the URL, e.g. from a shared link.
   if (window.location.hash) {
-    requestAnimationFrame(() => scrollToHash(window.location.hash, true));
+    requestAnimationFrame(() => settleOnHash(window.location.hash, true));
   }
 }
 

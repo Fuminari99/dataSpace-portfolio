@@ -57,6 +57,21 @@ export const background = {
     'What happens when data is visualised as design material? How can we translate code in a manner in which narratives can gradually be built with the various outcomes of our codes?',
     'Each session introduced a new brief, in succession of the other. In addition to documenting each process, the same data was revisited and transformed — allowing simple observations that were recorded by hand to gradually translate into computational and interactive forms.',
   ],
+  /**
+   * The two clips framed either side of the column. They are the module's own
+   * intro footage rather than any one experiment's, so the section opens on the
+   * project as a whole before the experiments are reached further down.
+   */
+  intros: [
+    {
+      video: '/assets/video/home-intro1-v1.mp4',
+      alt: 'Opening footage from the module — shifting refracted colour',
+    },
+    {
+      video: '/assets/video/home-intro2-v1.mp4',
+      alt: 'Opening footage from the module — repeating patterned bands',
+    },
+  ],
 };
 
 export const concept = {
@@ -73,11 +88,13 @@ export const concept = {
   ],
   body: 'From there, we decided on the concept of Fractal Glass as our shared project direction. It became the framework for all the experiments that followed, allowing us to individually experiment on how to achieve these broken, repeated structures across our codes.',
   /**
-   * (05) from the collage on the Projects page — the band the collage crops out
-   * of the strip of refraction tests, cut here so it can be shown on its own.
+   * The concept's own header footage. It replaces the still this panel used to
+   * carry — the poster beside it is a frame of the clip, so the panel reads the
+   * same before the video has loaded.
    */
-  still: '/assets/concept/fractal-glass.webp',
-  alt: 'A run of arcs refracting from pink through to violet on a dark field',
+  video: '/assets/video/project-header-v1.mp4',
+  poster: '/assets/video/project-header-v1.webp',
+  alt: 'Header footage for the Fractal Glass concept',
   link: { href: '/projects', label: 'Project concept' },
 };
 

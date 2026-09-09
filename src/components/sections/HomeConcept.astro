@@ -5,38 +5,45 @@ import { concept } from '../../data/home';
 ---
 
 {/* Figma 59:1038 — image left (604×375), copy right (604), 32px gutter.
-    Shares a section with ExperimentList below it — that outer <section> in
+    Shares a section with ExperimentStrip below it — that outer <section> in
     index.astro owns the vertical rhythm, so this stays a plain <div>. */}
 <div class="w-full px-gutter">
   <div class="mx-auto flex max-w-page flex-col items-stretch gap-8 lg:flex-row lg:items-start">
     <div
       class="relative w-full bg-panel lg:max-w-[608px] lg:flex-1"
+      data-reveal
       data-module="hero-cells"
       data-drift-x="200"
       data-drift-y="100"
       data-lightbox
     >
-      <img
+      {/* The panel plays the concept's header footage; the sampler square over
+          it reads whatever frame is showing, exactly as it did off the still. */}
+      <video
         class="aspect-[604/375] h-full w-full object-cover"
-        src={concept.still}
-        alt={concept.alt}
-        width="604"
-        height="375"
-        loading="lazy"
-        decoding="async"
-        data-hero-still
-      />
+        data-module="lazy-video"
+        data-hero-clip
+        data-poster={concept.poster}
+        aria-label={concept.alt}
+        role="img"
+        muted
+        loop
+        playsinline
+        preload="none"
+      >
+        <source data-src={concept.video} type="video/mp4" />
+      </video>
 
       <SamplerSquare top="40%" left="45%" />
     </div>
 
     <div class="flex w-full flex-col gap-6 lg:w-[608px] lg:shrink-0">
-      <SectionLabel label={concept.label} variant="heading" />
+      <div data-reveal><SectionLabel label={concept.label} variant="heading" /></div>
 
-      <p class="prose-justified font-body text-copy leading-[1.5]">{concept.lead}</p>
+      <p class="prose-justified font-body text-copy leading-[1.5]" data-reveal>{concept.lead}</p>
 
       <div class="flex flex-col gap-6">
-        <div class="prose-justified font-body text-copy leading-[1.5]">
+        <div class="prose-justified font-body text-copy leading-[1.5]" data-reveal>
           {
             concept.bodyLines.map((line) => (
               <p class="mb-0">{line}</p>
@@ -47,6 +54,7 @@ import { concept } from '../../data/home';
         <a
           href={concept.link.href}
           class="font-display text-copy leading-[1.667] tracking-tight capitalize"
+          data-reveal
           aria-label="Read about the project concept: Fractal Glass"
           data-module="hover-scramble"
         >

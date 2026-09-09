@@ -1,4 +1,5 @@
 import Lenis from 'lenis';
+import { gsap } from './gsap';
 
 let lenis: Lenis | null = null;
 let rafId = 0;
@@ -30,6 +31,8 @@ export function initSmoothScroll() {
  * have to be reset or the incoming page opens part-way down.
  */
 export function resetScroll() {
+  gsap.killTweensOf(window);
+  if (lenis) gsap.killTweensOf(lenis);
   window.scrollTo(0, 0);
   lenis?.scrollTo(0, { immediate: true, force: true });
 }
@@ -42,6 +45,9 @@ export function refreshScroll() {
 /**
  * Scroll a section into view under the sticky header. Returns false when the
  * page has no such target, so the caller can fall back to the top.
+ *
+ * Animated scrolls are driven by GSAP (expo.out) rather than an instant jump —
+ * Lenis is updated on each tick so it stays in step with the tween.
  */
 export function scrollToHash(hash: string, immediate = false) {
   const id = decodeURIComponent(hash.replace(/^#/, ''));
@@ -50,19 +56,51 @@ export function scrollToHash(hash: string, immediate = false) {
   const target = document.getElementById(id);
   if (!target) return false;
 
-  // Lenis measures from the element's own offset, so the header has to be
-  // subtracted by hand rather than left to CSS scroll-margin.
   const header = document.querySelector('header');
-  const offset = -((header?.offsetHeight ?? 0) + 32);
+  const pad = (header?.offsetHeight ?? 0) + 32;
+  const current = lenis?.scroll ?? window.scrollY;
+  const end = target.getBoundingClientRect().top + current - pad;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (lenis) lenis.scrollTo(target, { offset, immediate });
-  else target.scrollIntoView({ behavior: immediate ? 'auto' : 'smooth', block: 'start' });
+  gsap.killTweensOf(window);
+  if (lenis) gsap.killTweensOf(lenis);
+
+  if (immediate || reduceMotion) {
+    if (lenis) lenis.scrollTo(end, { immediate: true, force: true });
+    else window.scrollTo(0, end);
+    return true;
+  }
+
+  const distance = Math.abs(end - current);
+  const duration = gsap.utils.clamp(0.7, 1.6, distance / 1800);
+
+  if (lenis) {
+    const proxy = { y: current };
+    gsap.to(proxy, {
+      y: end,
+      duration,
+      ease: 'expo.out',
+      overwrite: true,
+      onUpdate: () => {
+        lenis?.scrollTo(proxy.y, { immediate: true, force: true });
+      },
+    });
+  } else {
+    gsap.to(window, {
+      duration,
+      ease: 'expo.out',
+      overwrite: true,
+      scrollTo: { y: end, autoKill: true },
+    });
+  }
 
   return true;
 }
 
 export function destroySmoothScroll() {
   cancelAnimationFrame(rafId);
+  gsap.killTweensOf(window);
+  if (lenis) gsap.killTweensOf(lenis);
   lenis?.destroy();
   lenis = null;
 }

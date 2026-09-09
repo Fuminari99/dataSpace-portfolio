@@ -15,19 +15,20 @@ const { id } = Astro.props;
 <section id={id} class="w-full scroll-mt-32 px-gutter py-28">
   <div class="mx-auto flex w-full max-w-page flex-col gap-20 text-ink">
     <div class="flex flex-col items-start gap-6 lg:max-w-[608px]">
-      <SectionLabel label={about.label} variant="heading" />
-      <p class="font-body text-copy leading-copy">{about.lead}</p>
+      <div data-reveal><SectionLabel label={about.label} variant="heading" /></div>
+      <p class="font-body text-copy leading-copy" data-reveal>{about.lead}</p>
     </div>
 
     <ul class="grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-8">
       {members.map((member) => (
-        <li class="min-w-0"><MemberPreview member={member} /></li>
+        <li class="min-w-0" data-reveal><MemberPreview member={member} /></li>
       ))}
     </ul>
 
     <a
       href={about.link.href}
       class="self-end font-display text-copy leading-[1.667] tracking-tight capitalize"
+      data-reveal
       aria-label="Read more about the team"
       data-module="hover-scramble"
     >

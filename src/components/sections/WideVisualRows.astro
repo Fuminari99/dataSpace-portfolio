@@ -13,6 +13,8 @@ export interface Row {
    * object itself being touched, not a sketch of the reading.
    */
   photo?: string;
+  /** Process clip for this row; wins over `photo` when both are set. */
+  video?: string;
   /** Describes the photograph; the caption alone is just a name. */
   alt?: string;
   /** Caption under it, in place of the member's name. */
@@ -58,12 +60,13 @@ const { label, id, lead, rows, gap = 'normal', anchorMembers = false, visuals } 
       {
         rows.map((row, index) => {
           const member = members[index % members.length];
+          const clip = row.video ?? (row.photo ? undefined : visuals?.[index]);
           const figure = (
             <VisualFigure
               id={anchorMembers ? member.name.toLowerCase() : undefined}
-              src={row.photo ?? member.visual}
-              video={row.photo ? undefined : visuals?.[index]}
-              poster={row.photo ? undefined : visuals?.[index]?.replace(/\.mp4$/, '.webp')}
+              src={clip ? undefined : (row.photo ?? member.visual)}
+              video={clip}
+              poster={clip ? clip.replace(/\.mp4$/, '.webp') : undefined}
               alt={row.alt ?? `${label} still by ${member.name}`}
               name={row.caption ?? member.name}
               ratio="video"

@@ -1,21 +1,31 @@
 ---
 interface Props {
   enabled?: boolean;
+  /** Soften the footage; defaults match the home hero. */
+  blur?: number;
+  /** Extra scale so the blur has material at the edges. */
+  scale?: number;
+  /** Fractal noise overlay; off for surfaces that should stay clean. */
+  grain?: boolean;
 }
-const { enabled = true } = Astro.props;
+
+const { enabled = true, blur = 28, scale = 1.12, grain = true } = Astro.props;
 ---
 
-<div class:list={['media-frame relative isolate h-full w-full overflow-hidden', { 'media-frame--treated': enabled }]}>
+<div
+  class:list={['media-frame relative isolate h-full w-full overflow-hidden', { 'media-frame--treated': enabled }]}
+  style={enabled ? `--media-blur: ${blur}px; --media-scale: ${scale};` : undefined}
+>
   <div class="media-frame__visual h-full w-full"><slot /></div>
   {enabled && <div class="absolute inset-0 bg-ink/30" aria-hidden="true"></div>}
-  {enabled && <div class="media-frame__grain" aria-hidden="true"></div>}
+  {enabled && grain && <div class="media-frame__grain" aria-hidden="true"></div>}
 </div>
 
 <style>
-  /* Match HomeHero's footage treatment; overlays never intercept the link. */
+  /* Defaults match HomeHero; callers can raise blur / drop grain via props. */
   .media-frame--treated .media-frame__visual {
-    filter: blur(28px);
-    scale: 1.12;
+    filter: blur(var(--media-blur, 28px));
+    scale: var(--media-scale, 1.12);
   }
 
   .media-frame__grain {

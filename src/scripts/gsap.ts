@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 let registered = false;
@@ -16,7 +17,7 @@ let registered = false;
 export function initGsap() {
   if (!registered) {
     registered = true;
-    gsap.registerPlugin(ScrambleTextPlugin, ScrollTrigger);
+    gsap.registerPlugin(ScrambleTextPlugin, ScrollToPlugin, ScrollTrigger);
   }
   return gsap;
 }

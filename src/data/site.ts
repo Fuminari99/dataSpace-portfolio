@@ -14,6 +14,17 @@ export interface NavEntry {
   href: string;
   /** Sub-items listed under the column heading, in the footer and on hover. */
   sections: Section[];
+  /**
+   * The page's own hue, in degrees, sampled from the footage that page carries.
+   * Ex02 and Ex03 both come back blue, so Ex02 is pulled to the cyan end of its
+   * range and Ex03 to the indigo end rather than letting the two pages land on
+   * the same footer.
+   *
+   * A number rather than a colour because the footer does not use it flat: it
+   * runs a gradient between this hue turned a little each way, which is what
+   * makes the field read as one soft colour that drifts rather than as two.
+   */
+  hue: number;
 }
 
 const section = (label: string, hash: string): Section => ({ label, hash });
@@ -24,6 +35,7 @@ export const nav: NavEntry[] = [
     hoverLabel: 'Rhythm of Our Bodies',
     longLabel: 'EXPERIMENT 01',
     href: '/ex01',
+    hue: 161, // teal — 85% of the Ex01 footage sits in this hue
     sections: [section('BREATH', 'breath'), section('PULSE', 'pulse'), section('BLINK', 'blink')],
   },
   {
@@ -31,6 +43,7 @@ export const nav: NavEntry[] = [
     hoverLabel: 'Procedural Data',
     longLabel: 'EXPERIMENT 02',
     href: '/ex02',
+    hue: 193, // cyan — the largest single band in the noise grid
     sections: [section('NOISE GRID', 'noise-grid'), section('FUZZY GRID', 'fuzzy-grid')],
   },
   {
@@ -38,6 +51,7 @@ export const nav: NavEntry[] = [
     hoverLabel: 'Data Expression',
     longLabel: 'EXPERIMENT 03',
     href: '/ex03',
+    hue: 231, // indigo — Ex03's blue, pushed off Ex02's cyan
     sections: [
       section('SOUND INTO VISUALS', 'sound-into-visuals'),
       section('Conceptualisation', 'conceptualisation'),
@@ -48,6 +62,7 @@ export const nav: NavEntry[] = [
     hoverLabel: 'Sensory Data',
     longLabel: 'EXPERIMENT 04',
     href: '/ex04',
+    hue: 332, // pink — the mauve/pink cast of the touch-sensor footage
     sections: [
       section('TOUCH RESPONSE', 'touch-response'),
       section('Conceptualisation', 'conceptualisation'),
@@ -58,6 +73,7 @@ export const nav: NavEntry[] = [
     hoverLabel: 'About Us',
     longLabel: 'ABOUT',
     href: '/about',
+    hue: 27, // orange — averaged off the three portrait marks
     sections: [
       section('KEAGAN', 'keagan'),
       section('FUMI', 'fumi'),
@@ -77,6 +93,7 @@ export const home: NavEntry = {
   hoverLabel: 'DataSpace',
   longLabel: 'HOME',
   href: '/',
+  hue: 346, // the site accent, which the home washes already carry
   sections: [
     section('BACKGROUND', 'background'),
     section('EX01', 'ex01-summary'),
@@ -97,6 +114,7 @@ export const projects: NavEntry = {
   hoverLabel: 'Project Concept',
   longLabel: 'PROJECTS',
   href: '/projects',
+  hue: 251, // violet — the hub the four experiments hang off
   sections: [
     section('CONCEPT', 'concept'),
     section('EX.01', 'ex01'),
@@ -110,10 +128,30 @@ const about = nav[nav.length - 1];
 
 /**
  * The header carries three entries — Home, Projects, About — with the four
- * experiments reached through Projects. The footer still lists them as columns
- * of their own, so `nav` above stays the full set; only the bar is narrowed.
+ * experiments reached through Projects. The footer lists Project Concept, the
+ * four experiments, and About as columns on every page.
  */
 export const headerNav: NavEntry[] = [home, projects, about];
+
+/**
+ * The nav entry for the page the reader is on. Home and Projects sit outside
+ * `nav` (the experiments + About set), so the lookup covers all three lists.
+ */
+export function entryFor(pathname: string) {
+  // Astro hands the footer "/about" while a browser on the built site may be on
+  // "/about/"; both have to find the same entry.
+  const path = pathname.replace(/\/+$/, '') || '/';
+  return [home, projects, ...nav].find((entry) => entry.href === path) ?? home;
+}
+
+/**
+ * The hue the footer gradient is built from on a given page. Resolved from the
+ * path rather than passed down as a prop, so a page does not have to know the
+ * footer exists — and an unknown path falls back to the site accent.
+ */
+export function hueFor(pathname: string) {
+  return entryFor(pathname).hue;
+}
 
 /** Reading order of the whole site, used to resolve the "go to next" link. */
 const order = ['/', projects.href, ...nav.map((entry) => entry.href)];

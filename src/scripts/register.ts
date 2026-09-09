@@ -6,7 +6,7 @@ import './hover-scramble';
 import './hero-cycle';
 import './hero-cells';
 import './experiment-rows';
-import './member-stack';
+import './reveal';
 import './lightbox';
 import './cursor';
 import './about-tools';
