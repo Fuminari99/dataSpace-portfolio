@@ -2,27 +2,49 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeading from '../components/sections/PageHeading.astro';
 import FeatureStill from '../components/sections/FeatureStill.astro';
-import WideVisualRows from '../components/sections/WideVisualRows.astro';
+import SoundLayers from '../components/sections/SoundMixer.astro';
 import NextExperiment from '../components/sections/NextExperiment.astro';
 import { experiments } from '../data/experiments';
 
 const experiment = experiments[2];
 
-// The layer design comes from the mix notes kept beside the TouchDesigner patch
-// in the project's audio folder; the rates are the ones recorded in Ex01.
-const lead =
-  'Three layers, each locked to a rate we actually recorded. Ocean is the ground the other two are built on: 4.5 second waves under a 17 second swell, standing in for a resting 13.3 breaths a minute.';
+// Rates are the rhythms the three of us counted by hand in Ex01; which sound
+// carries which comes from the patch itself — `math_mix` in particles6.toe
+// sums ocean, footsteps and gulls, at the volumes named on each stem.
+const tracks = [
+  { src: '/assets/audio/ex03-breath-v2.mp3', label: 'BREATH', source: 'Ocean' },
+  { src: '/assets/audio/ex03-pulse-v2.mp3', label: 'PULSE', source: 'Footsteps' },
+  { src: '/assets/audio/ex03-blink-v2.mp3', label: 'BLINK', source: 'Seagulls' },
+];
 
-const rows = [
+const more =
+  'Ocean is the ground the other two are built on: 4.5 second waves under a 17.2 second swell. Footsteps in sand carry the pulse, and the gulls the blink — placed irregularly rather than on a grid, because blinking arrives in clusters rather than at a steady rate.';
+
+const patch = [
   {
-    text: 'The train carries the pulse at 0.84 seconds a beat — 71.4 to the minute. Its two-part figure does the work of a heartbeat’s lub-dub, and the sub-bass sits in the 20 to 120Hz band where the ocean is weakest, so the beat is felt rather than heard.',
-    align: 'right' as const,
+    src: '/assets/td/td-particles.webp',
+    alt: 'The particlesGpu node in TouchDesigner, its preview showing a white particle burst',
+    name: 'particlesGpu',
+    stage: 'GENERATE',
+    description: '3,000 points, emitted along a line and driven by the analysed sound.',
   },
   {
-    text: 'Footsteps in sand mark the blink at an average of 3.2 seconds. They are placed on a log-normal distribution rather than a grid, sometimes doubling up, because blinking arrives in clusters. Each one ducks the other layers by 3.2dB — the sonic equivalent of vision briefly pulling back.',
-    align: 'left' as const,
+    src: '/assets/td/td-render.webp',
+    alt: 'The render chain — level_scale, cam2 and render1 — wired together in TouchDesigner',
+    name: 'level_scale / cam2 / render1',
+    stage: 'RENDER',
+    description: 'The particle system is scaled and rendered through the camera.',
+  },
+  {
+    src: '/assets/td/td-output.webp',
+    alt: 'The level5 node, showing the graded output in pink, cyan and yellow',
+    name: 'level5',
+    stage: 'OUTPUT',
+    description: 'Colour grading and frame feedback turn movement into trails.',
   },
 ];
+
+
 ---
 
 <BaseLayout title={`${experiment.title} — Data Spaces`} description={experiment.summary}>
@@ -36,12 +58,22 @@ const rows = [
     alt="Data Expression — line drawings surfacing out of a pale shore, driven by the mix"
   />
 
-  <WideVisualRows
-    label="Conceptualisation"
-    id="conceptualisation"
-    lead={lead}
-    gap="wide"
-    rows={[{ align: 'left' }, rows[0], rows[1]]}
+  <SoundLayers
+    label="SOUND"
+    id="sound"
+    lead="Each rhythm was given a sound matched to the rate we counted."
+    more={more}
+    tracks={tracks}
+    figures={patch}
+  />
+
+  <FeatureStill
+    label="FINAL OUTPUT"
+    id="final-output"
+    video="/assets/video/ex03-expression-final.mp4"
+    poster="/assets/video/ex03-expression-v5.webp"
+    alt="Final Data Expression video with its composed ocean, footsteps and seagull soundtrack"
+    audible
   />
 
   <NextExperiment />

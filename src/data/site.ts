@@ -54,7 +54,8 @@ export const nav: NavEntry[] = [
     hue: 231, // indigo — Ex03's blue, pushed off Ex02's cyan
     sections: [
       section('SOUND INTO VISUALS', 'sound-into-visuals'),
-      section('Conceptualisation', 'conceptualisation'),
+      section('SOUND', 'sound'),
+      section('FINAL OUTPUT', 'final-output'),
     ],
   },
   {

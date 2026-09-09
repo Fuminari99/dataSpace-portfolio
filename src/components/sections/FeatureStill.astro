@@ -10,9 +10,11 @@ interface Props {
   poster?: string;
   /** Describes the clip for screen readers. */
   alt?: string;
+  /** Shows native playback controls and permits sound. */
+  audible?: boolean;
 }
 
-const { label, id, video, poster, alt } = Astro.props;
+const { label, id, video, poster, alt, audible = false } = Astro.props;
 
 /**
  * The panel runs edge to edge and keeps the clip's own proportions, read off
@@ -50,16 +52,18 @@ if (still?.startsWith('/')) {
           video && (
             <video
               class="h-full w-full object-cover"
-              data-module="lazy-video"
-              data-poster={poster}
+              data-module={audible ? undefined : 'lazy-video'}
+              data-poster={audible ? undefined : poster}
+              poster={audible ? poster : undefined}
               role="img"
               aria-label={alt ?? label}
-              muted
-              loop
+              muted={!audible}
+              loop={!audible}
+              controls={audible}
               playsinline
-              preload="none"
+              preload={audible ? 'metadata' : 'none'}
             >
-              <source data-src={video} type="video/mp4" />
+              <source src={audible ? video : undefined} data-src={audible ? undefined : video} type="video/mp4" />
             </video>
           )
         }

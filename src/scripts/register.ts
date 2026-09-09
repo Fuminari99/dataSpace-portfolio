@@ -7,6 +7,7 @@ import './hero-cycle';
 import './hero-cells';
 import './experiment-rows';
 import './reveal';
+import './sound-mixer';
 import './lightbox';
 import './cursor';
 import './about-tools';
