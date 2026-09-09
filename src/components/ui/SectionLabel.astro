@@ -13,10 +13,17 @@ interface Props {
    * at heading size, and marked up as a heading because that is what it is.
    */
   variant?: 'inline' | 'heading';
+  /**
+   * Renders the inline label as a heading element rather than a span, for a
+   * section whose label is its heading. The label keeps its own classes, which
+   * a wrapping <h2> could not do — `heading-scramble` rewrites a heading's text
+   * content, and that drops any element nested inside it.
+   */
+  as?: 'span' | 'h2';
 }
 
-const { label, id, muted = false, href, variant = 'inline' } = Astro.props;
-const Tag = href ? 'a' : variant === 'heading' ? 'h2' : 'span';
+const { label, id, muted = false, href, variant = 'inline', as } = Astro.props;
+const Tag = href ? 'a' : (as ?? (variant === 'heading' ? 'h2' : 'span'));
 ---
 
 <Tag

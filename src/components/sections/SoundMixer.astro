@@ -1,12 +1,12 @@
 ---
 import SectionLabel from '../ui/SectionLabel.astro';
-interface Props { label: string; id: string; lead: string; more: string; tracks: {src: string; label: string; source: string; value?: string; mixed?: boolean}[]; figures: {src: string; alt: string}[] }
+interface Props { label: string; id: string; lead: string; more: string | string[]; tracks: {src: string; label: string; source: string; value?: string; mixed?: boolean}[]; figures: {src: string; alt: string}[] }
 const { label, id, lead, more, tracks, figures } = Astro.props;
 ---
 <section class="mixer w-full px-gutter" aria-labelledby={id} data-module="sound-mixer">
   <div class="mixer__content mx-auto max-w-page">
-    <h2><SectionLabel label={label} id={id} /></h2>
-    <div class="mixer__intro"><p>{lead}</p><p>{more}</p></div>
+    <SectionLabel label={label} id={id} as="h2" />
+    <div class="mixer__intro"><p>{lead}</p><div class="mixer__more">{[more].flat().map((paragraph) => <p>{paragraph}</p>)}</div></div>
     <div class="mixer__transport">
       <button type="button" data-play aria-label="Play all tracks">▶ PLAY</button>
       <div class="mixer__timeline">
@@ -17,7 +17,7 @@ const { label, id, lead, more, tracks, figures } = Astro.props;
     <ol class="mixer__tracks">
       {tracks.filter(t => !t.mixed).map((track, i) => (
         <li data-track data-src={track.src} data-title={track.label}>
-          <div class="mixer__heading"><span class="mixer__number">{String(i + 1).padStart(2, '0')}</span><h3>{track.source}</h3><span class="mixer__rhythm">{track.label.toLowerCase().replace(/^./, c => c.toUpperCase())}</span></div>
+          <div class="mixer__heading"><h3>{track.source} <span class="mixer__rhythm">- {track.label.toLowerCase().replace(/^./, c => c.toUpperCase())}</span></h3></div>
           <div class="mixer__scope"><canvas aria-hidden="true"></canvas></div>
           {figures[i] && <div class="mixer__image" data-lightbox><img src={figures[i].src} alt={figures[i].alt} loading="lazy" decoding="async" /></div>}
         </li>
@@ -29,15 +29,18 @@ const { label, id, lead, more, tracks, figures } = Astro.props;
   .mixer { padding-block: var(--spacing-section); }
   .mixer__content { display: flex; flex-direction: column; }
   .mixer__intro { display: grid; grid-template-columns: 496fr 712fr; gap: 72px; margin-block: 16px 24px; font-size: var(--text-copy); line-height: 1.5; letter-spacing: var(--tracking-tight); }
-  .mixer__intro p:first-child { font-size: var(--text-body-lg); }
+  .mixer__intro > p:first-child { font-size: var(--text-body-lg); }
+  .mixer__more { display: flex; flex-direction: column; gap: 16px; }
   .mixer__tracks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 24px; }
   .mixer__tracks li { min-width: 0; }
   .mixer__tracks li:hover .mixer__heading, .mixer__tracks li:focus-within .mixer__heading { opacity: 1; }
   .mixer__tracks:has(li:hover) li:not(:hover), .mixer__tracks:has(li:focus-within) li:not(:focus-within) { opacity: .35; }
   .mixer__heading { display: flex; align-items: baseline; gap: 12px; }
   .mixer__heading h3 { font-size: var(--text-body); }
-  .mixer__number, .mixer__rhythm { font-size: var(--text-caption); opacity: .5; }
-  .mixer__heading { flex-wrap: wrap; }
+  .mixer__rhythm { font-size: inherit; opacity: .5; }
+  /* Each track sits over its own scope and still, so the name reads as a
+     caption for that column rather than as the start of a list. */
+  .mixer__heading { flex-wrap: wrap; justify-content: center; text-align: center; }
   .mixer__image { width: 100%; margin-top: 8px; }
   .mixer__image img { display: block; width: 100%; height: auto; }
   .mixer__scope { position: relative; margin-block: 16px 8px; }
@@ -49,7 +52,8 @@ const { label, id, lead, more, tracks, figures } = Astro.props;
   .mixer__timeline::before, .mixer__timeline::after { content: ''; position: absolute; top: 50%; width: 1px; height: 10px; background: var(--color-rule); transform: translateY(-50%); pointer-events: none; }
   .mixer__timeline::before { left: 0; }
   .mixer__timeline::after { right: 0; }
-  .mixer__transport button { white-space: nowrap; }
+  /* Set to match the track headings (Ocean / Footsteps / Seagulls). */
+  .mixer__transport button { white-space: nowrap; font-size: var(--text-body); }
   input { display: block; appearance: none; width: 100%; margin: 0; height: 2px; background: var(--color-rule); min-width: 0; }
   input::-webkit-slider-thumb { appearance: none; height: 10px; width: 10px; background: var(--color-ink); }
   input::-moz-range-thumb { border: 0; border-radius: 0; height: 10px; width: 10px; background: var(--color-ink); }

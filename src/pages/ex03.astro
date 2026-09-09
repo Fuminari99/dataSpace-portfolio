@@ -17,8 +17,10 @@ const tracks = [
   { src: '/assets/audio/ex03-blink-v2.mp3', label: 'BLINK', source: 'Seagulls' },
 ];
 
-const more =
-  'Ocean is the ground the other two are built on: 4.5 second waves under a 17.2 second swell. Footsteps in sand carry the pulse, and the gulls the blink — placed irregularly rather than on a grid, because blinking arrives in clusters rather than at a steady rate.';
+const more = [
+  'Breath is continuous, like a sine wave. Pulse and blink are discontinuous. They are broken up, fragmented. Between those two, blink is the more fragmented and the more abrupt.',
+  'We picked the ocean for breath first, because it is continuous and sine-like. From there we stayed with what the ocean brings to mind, and took footsteps for pulse and seagulls for blink.',
+];
 
 const patch = [
   {
@@ -61,7 +63,7 @@ const patch = [
   <SoundLayers
     label="SOUND"
     id="sound"
-    lead="Each rhythm was given a sound matched to the rate we counted."
+    lead="To find sounds with rhythms close to breath, pulse and blink, we started off with analysing what each one sounds like."
     more={more}
     tracks={tracks}
     figures={patch}

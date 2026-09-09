@@ -75,8 +75,8 @@ export const experiments: Experiment[] = [
     summary:
       'The same body rhythms rebuilt as a three-layer soundtrack, which is then handed back to TouchDesigner to draw the image.',
     intro: [
-      'Transforming raw data into a narrative someone can read is the brief’s central question, and nothing in it says that narrative has to be an image. This experiment expresses the same body rhythms twice — once for the ear, and then once more for the eye.',
-      'An ocean carries the breath, a passing train carries the pulse and footsteps in sand mark each blink, every layer locked to a rate recorded in Ex01. That mix is fed back into TouchDesigner and read frame by frame, so the image is driven by the sound rather than composed to match it. Neither version is the original.',
+      'We found sounds that matched the pulse, breath and blink we counted in Ex01, and built the visuals from that sound.',
+      'The attempt was to turn our body rhythms into a narrative someone can read, generating the visuals in real time in TouchDesigner.',
     ],
     overview: [
       'The rhythms from the first experiment come back as sound. An ocean carries the breath, a passing train carries the pulse and footsteps in sand mark each blink, every layer locked to the rate we recorded.',
