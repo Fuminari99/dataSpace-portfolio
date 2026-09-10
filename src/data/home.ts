@@ -7,19 +7,6 @@ import { experiments } from './experiments';
  * the section components.
  */
 
-export interface Thumb {
-  src: string;
-  alt: string;
-  /**
-   * The image's own average colour, sat behind it while it loads. Taken by
-   * scaling the file to a single pixel, so a frame holds the shade of what is
-   * about to arrive in it rather than a flat grey.
-   */
-  tint: string;
-}
-
-const thumb = (src: string, alt: string, tint: string): Thumb => ({ src, alt, tint });
-
 export interface HeroClip {
   video: string;
   poster: string;
@@ -106,42 +93,4 @@ export const about = {
   label: 'About',
   lead: 'Three Design Communication students, each bringing a different way of thinking and making — brought together into one shared outcome.',
   link: { href: '/about', label: 'About' },
-};
-
-/**
- * The experiment list, one row per experiment. The row's own copy and link come
- * from `experiments`; only the still thumbnails are named here, since the list
- * shows a different set of frames from the ones the carousel and archive use.
- */
-export const experimentThumbs: Record<string, Thumb[]> = {
-  '/ex01': [
-    thumb(
-      '/assets/video/ex01-breath-fumi-v2.webp',
-      'BREATH visualisation by Fumi — concentric forms at the rate of a recorded breath',
-      '#b9e3d0'
-    ),
-    thumb(
-      '/assets/video/ex01-pulse-keagan-v2.webp',
-      'PULSE visualisation by Keagan — marks arriving at the rate of a recorded heartbeat',
-      '#9cb6f8'
-    ),
-    thumb(
-      '/assets/video/ex01-blink-keagan-v2.webp',
-      'BLINK visualisation by Keagan — clusters at the rate of a recorded blink',
-      '#a5dbf6'
-    ),
-  ],
-  '/ex02': [
-    thumb('/assets/video/ex02-noise-fumi.webp', 'Noise grid by Fumi — one noise field sampled nine ways', '#42744e'),
-    thumb('/assets/video/ex02-noise-keagan-v4.webp', 'Noise grid by Keagan — the same field under different parameters', '#366c95'),
-    thumb('/assets/video/ex02-fuzzy-keagan-v3.webp', 'Fuzzy grid by Keagan — particles running across the source material', '#272e3e'),
-  ],
-  '/ex03': [
-    thumb('/assets/video/ex03-expression-v5.webp', 'Line drawings surfacing out of a pale shore, driven by the mix', '#bbb4cd'),
-    thumb('/assets/video/home-ex03-v6.webp', 'A later frame of the same sound-driven sequence', '#b7b3cb'),
-  ],
-  '/ex04': [
-    thumb('/assets/video/ex04-sensory.webp', 'A field of lines swelling and settling under contact', '#f5d9e7'),
-    thumb('/assets/video/home-ex04-v4.webp', 'The same touch response held at rest', '#f5d9e7'),
-  ],
 };
