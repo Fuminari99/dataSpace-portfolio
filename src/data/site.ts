@@ -67,6 +67,7 @@ export const nav: NavEntry[] = [
     sections: [
       section('TOUCH RESPONSE', 'touch-response'),
       section('CONCEPT', 'concept'),
+      section('FINAL OUTPUT', 'final-output'),
     ],
   },
   {
