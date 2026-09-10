@@ -1,11 +1,9 @@
 import { registerModule } from './modules';
-import './carousel';
 import './nav-scramble';
 import './heading-scramble';
 import './hover-scramble';
 import './hero-cycle';
 import './hero-cells';
-import './experiment-rows';
 import './reveal';
 import './sound-mixer';
 import './lightbox';
