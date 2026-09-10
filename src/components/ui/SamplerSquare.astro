@@ -44,8 +44,10 @@ const { top = '32px', left = '32px', size = 56 } = Astro.props;
     font-variant-numeric: tabular-nums;
   }
 
+  /* Same call the hero makes at this width: the square is the point and stays,
+     the figure under it is too small to be worth the room and comes off. */
   @media (max-width: 64rem) {
-    .sampler-square {
+    .sampler-square__readout {
       display: none;
     }
   }

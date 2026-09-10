@@ -1,5 +1,5 @@
 ---
-import { headerNav, nav, projects } from '../../data/site';
+import { headerNav, home, nav, projects } from '../../data/site';
 
 interface Props {
   /**
@@ -22,6 +22,23 @@ const items = headerNav;
 // The four experiments hang off Projects in the bar: they are reached through
 // it, and the footer lists them as columns of their own.
 const experiments = nav.filter((entry) => entry.href.startsWith('/ex'));
+
+/**
+ * The narrow-screen panel. Home is not in it — it stays on the bar as the mark,
+ * where a reader expects it. The four experiments are indented under Project
+ * Concept the way the site nests them, and each carries its number as well as
+ * its title, since there is no bar above them to say which is which.
+ */
+const about = headerNav[headerNav.length - 1];
+const menuItems = [
+  { entry: projects, label: projects.hoverLabel, nested: false },
+  ...experiments.map((entry) => ({
+    entry,
+    label: `${entry.label.toUpperCase()} ${entry.hoverLabel}`,
+    nested: true,
+  })),
+  { entry: about, label: about.hoverLabel, nested: false },
+];
 ---
 
 <header
@@ -29,7 +46,7 @@ const experiments = nav.filter((entry) => entry.href.startsWith('/ex'));
     'z-20 w-full pt-4',
     overlay ? 'site-header--overlay text-paper' : 'sticky top-0 bg-paper',
   ]}
-  data-module={overlay ? 'nav-scramble header-reveal' : 'nav-scramble'}
+  data-module={overlay ? 'nav-scramble header-reveal menu' : 'nav-scramble menu'}
 >
   {/* While the Projects panel is open the bar's own surface runs down behind
       it, so the four links are read against the site rather than against
@@ -107,6 +124,71 @@ const experiments = nav.filter((entry) => entry.href.startsWith('/ex'));
       })
     }
   </nav>
+
+  {
+    /* Below the breakpoint the bar is more than a phone has room for — three
+       items with four more hanging off one of them — so it becomes a mark and
+       a button. Over the hero it inherits the bar's own white, and takes the
+       page's ink once the hero has been scrolled past. */
+    (
+      <>
+        <div class="nav-mobile">
+          <a
+            href={home.href}
+            class="nav-mobile__brand"
+            aria-label={`${home.label}: ${home.hoverLabel}`}
+            aria-current={home.href === current ? 'page' : undefined}
+          >
+            {home.hoverLabel}
+          </a>
+
+          <button
+            type="button"
+            class="nav-toggle"
+            data-menu-toggle
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="site-menu"
+          >
+            {/* Two rules that fold into a cross. Both turn about the middle
+                of the same 24-unit box, so the bars and the cross share a
+                centre and the icon does not shift as it changes. */}
+            <svg class="nav-toggle__icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <line data-menu-bar x1="2" y1="9" x2="22" y2="9" />
+              <line data-menu-bar x1="2" y1="15" x2="22" y2="15" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="nav-menu" id="site-menu" data-menu-panel aria-hidden="true">
+          <ul class="nav-menu__list">
+            {menuItems.map(({ entry, label, nested }) => {
+              const isCurrent = entry.href === current;
+              return (
+                <li class:list={{ 'is-nested': nested }}>
+                  {/* The dash sits in the indent as the mark of nesting; it is
+                      decoration, so it is not read out with the link. */}
+                  {nested && (
+                    <span class="nav-menu__dash" aria-hidden="true">
+                      -
+                    </span>
+                  )}
+                  <a
+                    href={entry.href}
+                    class:list={['nav-menu__link', { 'is-current': isCurrent }]}
+                    aria-current={isCurrent ? 'page' : undefined}
+                    data-menu-link
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </>
+    )
+  }
 </header>
 
 <style>
@@ -264,5 +346,131 @@ const experiments = nav.filter((entry) => entry.href.startsWith('/ex'));
   nav > .nav-item:first-child .nav-link__text {
     inset-inline-end: auto;
     inset-inline-start: 0;
+  }
+
+  /* ---- narrow screens: the bar hands over to a button and a panel ---- */
+
+  .nav-mobile,
+  .nav-menu {
+    display: none;
+  }
+
+  @media (max-width: 47.99rem) {
+    /* The bar's own items go; the mark and the button take the same line. */
+    header:has(.nav-mobile) nav {
+      display: none;
+    }
+
+    .nav-mobile {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-inline: var(--spacing-gutter);
+      padding-block: 4px;
+      /* Over the panel, which covers everything else — the mark and the close
+         control stay in reach while it is open. */
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-mobile__brand {
+      font-family: var(--font-display);
+      font-size: var(--text-label);
+      letter-spacing: var(--tracking-tight);
+      white-space: nowrap;
+      /* Same 44px reach as the button beside it. */
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    .nav-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* A 44px target, the same floor the mixer's controls use, around a
+         24px icon. */
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .nav-toggle__icon {
+      display: block;
+      overflow: visible;
+    }
+
+    .nav-toggle__icon line {
+      stroke: currentcolor;
+      stroke-width: 1;
+    }
+
+    /* The panel is paper. On the home page the bar is white over the hero, so
+       without this the mark and the close control are white on white once it
+       opens. */
+    header:has([data-menu-panel][data-open]) .nav-mobile {
+      color: var(--color-ink);
+    }
+
+    .nav-toggle:focus-visible {
+      outline: 2px solid var(--color-ink);
+      outline-offset: 4px;
+    }
+
+    .nav-menu {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background-color: var(--color-paper);
+      color: var(--color-ink);
+      /* The script owns these; the panel is off screen until it opens, and
+         stays off screen entirely if the script never runs. */
+      visibility: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .nav-menu__list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 96px var(--spacing-gutter) var(--spacing-section);
+    }
+
+    /* Set in from the two that are not experiments, so the four read as
+       sitting under Project Concept rather than beside it, and a step down in
+       size to match. */
+    .nav-menu__list li.is-nested {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding-inline-start: 12px;
+    }
+
+    .nav-menu__dash {
+      font-family: var(--font-display);
+      font-size: var(--text-body);
+      opacity: 0.5;
+    }
+
+    .nav-menu__list li.is-nested .nav-menu__link {
+      font-size: var(--text-body);
+    }
+
+    .nav-menu__link {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-size: var(--text-body-lg);
+      letter-spacing: var(--tracking-tight);
+      /* Comfortably past the 44px target on its own line. */
+      padding-block: 8px;
+    }
+
+    .nav-menu__link.is-current {
+      opacity: 0.5;
+    }
   }
 </style>

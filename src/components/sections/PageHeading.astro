@@ -40,16 +40,21 @@ const { eyebrow, title, id, intro = [], display = false, singleColumn = false, c
       <h1 class="font-display text-h1 leading-[1.2] tracking-tight">{title}</h1>
     </div>
 
+    {/* The heading itself resolves out of `heading-scramble`; the copy under it
+        settles in with everything else on the page — marked once, on the
+        block, so the paragraphs arrive together rather than one after the
+        other. */}
     {
       intro.length > 0 &&
         (singleColumn ? (
-          <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-6" data-reveal>
             {intro.map((paragraph) => (
               <p class="max-w-[888px] font-display text-copy leading-copy">{paragraph}</p>
             ))}
           </div>
         ) : (
           <div
+            data-reveal
             class:list={[
               'flex flex-col gap-6',
               display ? 'md:flex-row md:gap-[56px]' : 'md:flex-row',

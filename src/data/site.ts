@@ -56,6 +56,7 @@ export const nav: NavEntry[] = [
       section('SOUND INTO VISUALS', 'sound-into-visuals'),
       section('SOUND', 'sound'),
       section('FINAL OUTPUT', 'final-output'),
+      section('SCORE', 'visual-music-score'),
     ],
   },
   {

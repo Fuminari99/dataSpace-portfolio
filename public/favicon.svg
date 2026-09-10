@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="%23ee87a5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- One of the hero's sampler squares: the green it reads off the footage,
+       inside the same hairline the squares carry over the clip. -->
+  <rect x="5" y="5" width="22" height="22" fill="#90c0a8" />
+  <rect x="5.75" y="5.75" width="20.5" height="20.5" fill="none"
+        stroke="#ffffff" stroke-opacity="0.55" stroke-width="1.5" />
+</svg>

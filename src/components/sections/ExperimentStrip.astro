@@ -29,7 +29,12 @@ const panels = experiments.map((experiment, index) => ({
   class="experiment-strip-section flex min-h-[280px] w-full flex-col lg:min-h-[360px] lg:flex-1"
   data-reveal
 >
-  <ul class="experiment-strip grid min-h-[280px] w-full flex-1 grid-cols-2 lg:flex lg:min-h-[360px]" data-module="nav-scramble">
+  {/* One panel per row on a phone — side by side the four clips are too small
+      to read — two up from the tablet, and the widening strip on desktop. */}
+  <ul
+    class="experiment-strip grid min-h-[280px] w-full flex-1 grid-cols-1 md:grid-cols-2 lg:flex lg:min-h-[360px]"
+    data-module="nav-scramble"
+  >
     {
       panels.map((panel, index) => (
         <li

@@ -22,6 +22,7 @@
   "homepage": "https://github.com/Fuminari99/dataSpace-portfolio#readme",
   "dependencies": {
     "@astrojs/check": "^0.9.10",
+    "@astrojs/sitemap": "^3.7.4",
     "@barba/core": "^2.10.3",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.1",

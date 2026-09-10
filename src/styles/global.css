@@ -248,6 +248,37 @@
   line-height: 1;
 }
 
+/* Stepping through a set: one control on each side, clear of the figure. */
+.lightbox__step {
+  cursor: pointer;
+  position: absolute;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  /* The same 44px reach the rest of the site's controls have. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--color-paper);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.lightbox__step.is-prev {
+  inset-inline-start: 8px;
+}
+
+.lightbox__step.is-next {
+  inset-inline-end: 8px;
+}
+
+.lightbox__step:focus-visible,
+.lightbox__close:focus-visible {
+  outline: 2px solid var(--color-paper);
+  outline-offset: 4px;
+}
+
 /* The page underneath does not scroll while the sheet is up. */
 .is-lightboxed body {
   overflow: hidden;
@@ -287,4 +318,10 @@
 .has-cursor summary,
 .has-cursor [data-lightbox] {
   cursor: none;
+}
+
+/* Set by the narrow-screen menu while its panel covers the page. */
+html.has-menu-open,
+html.has-menu-open body {
+  overflow: hidden;
 }

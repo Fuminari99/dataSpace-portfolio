@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fractalvariant.netlify.app/sitemap-index.xml

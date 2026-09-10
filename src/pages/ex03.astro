@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeading from '../components/sections/PageHeading.astro';
 import FeatureStill from '../components/sections/FeatureStill.astro';
 import SoundLayers from '../components/sections/SoundMixer.astro';
+import ScoreRow from '../components/sections/ScoreRow.astro';
 import NextExperiment from '../components/sections/NextExperiment.astro';
 import { experiments } from '../data/experiments';
 
@@ -20,6 +21,37 @@ const tracks = [
 const more = [
   'Breath is continuous, like a sine wave. Pulse and blink are discontinuous. They are broken up, fragmented. Between those two, blink is the more fragmented and the more abrupt.',
   'We picked the ocean for breath first, because it is continuous and sine-like. From there we stayed with what the ocean brings to mind, and took footsteps for pulse and seagulls for blink.',
+];
+
+// The moving output read back as something that holds still: one sheet per
+// layer, then the three of them over each other.
+const scoreLead = [
+  'This project explores how environmental sound can be translated into a visual composition.',
+  'Using p5.js, audio recordings were analysed through their amplitude and sensitivity, with changes in sound intensity controlling the density, opacity, scale, and spatial distribution of graphic elements. Louder moments produce more prominent and concentrated forms, while quieter moments appear lighter and more sparse.',
+  'Drawing from our original moving visual, we reinterpreted and simplified its graphic language to create a static visual score. Different sounds are assigned distinct colours and forms, allowing the composition to document not only the progression of the recording, but also variations in its intensity and character.',
+];
+
+const scores = [
+  {
+    src: '/assets/ex03/ex03-score-ocean.webp',
+    alt: 'The ocean layer as a sheet — blue clusters massing and thinning down the page',
+    caption: 'Ocean - Breath',
+  },
+  {
+    src: '/assets/ex03/ex03-score-footsteps.webp',
+    alt: 'The footsteps layer as a sheet — pink strokes falling across the page in bursts',
+    caption: 'Footsteps - Pulse',
+  },
+  {
+    src: '/assets/ex03/ex03-score-seagulls.webp',
+    alt: 'The seagull layer as a sheet — orange spikes scattered in sparse clusters',
+    caption: 'Seagulls - Blink',
+  },
+  {
+    src: '/assets/ex03/ex03-score-full.webp',
+    alt: 'The three layers over each other, blue, pink and orange reading as one score',
+    caption: 'Full score',
+  },
 ];
 
 const patch = [
@@ -76,6 +108,13 @@ const patch = [
     poster="/assets/video/ex03-expression-v5.webp"
     alt="Final Data Expression video with its composed ocean, footsteps and seagull soundtrack"
     audible
+  />
+
+  <ScoreRow
+    label="VISUAL MUSIC SCORE"
+    id="visual-music-score"
+    lead={scoreLead}
+    scores={scores}
   />
 
   <NextExperiment />

@@ -99,7 +99,7 @@ const SQUARES = [
       SQUARES.map(({ x, y, side, reads }) => (
         <span
           class="hero__cell absolute"
-          style={`left:${pctX(x)};top:${pctY(y)};width:${pctX(side)};aspect-ratio:1`}
+          style={`left:${pctX(x)};top:${pctY(y)};--cell-w:${pctX(side)};--cell-side:${side};aspect-ratio:1`}
           data-hero-cell
         >
           {reads && (
@@ -182,6 +182,25 @@ const SQUARES = [
   .hero__cell {
     border: 1px solid rgba(255, 255, 255, 0.55);
     will-change: transform;
+    /* Held as a share of the frame, the way the design sets it. */
+    width: var(--cell-w);
+  }
+
+  /* Below the design's width that share stops working: at 5% of a phone the
+     squares come out around 16px, too small to read a colour off. Narrow
+     screens size them from the design's own side in pixels instead, so they
+     stay the size of an instrument while keeping the difference between the
+     48, 56 and 64 of a cluster. */
+  @media (max-width: 63.99rem) {
+    .hero__cell {
+      width: calc(var(--cell-side) * 0.85px);
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .hero__cell {
+      width: calc(var(--cell-side) * 0.72px);
+    }
   }
 
   .hero__sample {

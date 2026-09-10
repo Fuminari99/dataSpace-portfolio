@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeading from '../components/sections/PageHeading.astro';
 import VisualTriptych from '../components/sections/VisualTriptych.astro';
+import PlateStack from '../components/sections/PlateStack.astro';
 import NextExperiment from '../components/sections/NextExperiment.astro';
 import { experiments } from '../data/experiments';
 
@@ -47,12 +48,30 @@ const tabs = [
     ],
   },
 ];
+// The printed swatch book the recordings were bound into. Photographed, not
+// captioned — the bracketed label above the run is the only writing.
+const swatches = [
+  {
+    src: '/assets/ex01/swatch-1.webp',
+    alt: 'The swatch book fanned open beside its board box, sheets in pink, green and blue',
+  },
+  {
+    src: '/assets/ex01/swatch-2.webp',
+    alt: 'Six sheets laid out flat, two rows of three, each printed with a name and number',
+  },
+  {
+    src: '/assets/ex01/swatch-3.webp',
+    alt: 'The book held on its ring, the cover sheet lifted to show the printed sheets beneath',
+  },
+];
 ---
 
 <BaseLayout title={`${experiment.title} — Fractal Variant`} description={experiment.summary}>
   <PageHeading eyebrow={experiment.eyebrow} title={experiment.title} intro={experiment.intro} />
 
   <VisualTriptych label="Body rhythms" tabs={tabs} />
+
+  <PlateStack label="SWATCH BOOK" id="swatch-book" plates={swatches} />
 
   <NextExperiment />
 </BaseLayout>

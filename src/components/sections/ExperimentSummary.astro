@@ -9,13 +9,21 @@ interface Props {
   id?: string;
   /** Alternates which side the clip sits on down the page. */
   flipped?: boolean;
+  /**
+   * Shows a clip other than the one the experiment carries elsewhere, for a
+   * page whose footage has moved on from the still the home strip is cut from.
+   */
+  video?: string;
+  poster?: string;
 }
 
-const { experiment, id, flipped = false } = Astro.props;
+const { experiment, id, flipped = false, video: videoOverride, poster: posterOverride } =
+  Astro.props;
 
 const entry = nav.find((item) => item.href === experiment.href);
 const longLabel = entry ? entry.longLabel : experiment.title;
-const poster = experiment.video.replace(/\.mp4$/, '.webp');
+const video = videoOverride ?? experiment.video;
+const poster = posterOverride ?? video.replace(/\.mp4$/, '.webp');
 ---
 
 <section id={id} class="w-full scroll-mt-32 px-gutter py-section">
@@ -28,7 +36,13 @@ const poster = experiment.video.replace(/\.mp4$/, '.webp');
         flipped ? 'lg:flex-row-reverse' : 'lg:flex-row',
       ]}
     >
-      <div class="w-full overflow-hidden bg-placeholder lg:max-w-[712px]" data-lightbox data-reveal>
+      <a
+        href={experiment.href}
+        class="block w-full overflow-hidden bg-placeholder lg:max-w-[712px]"
+        aria-hidden="true"
+        tabindex="-1"
+        data-reveal
+      >
         <video
           class="aspect-video h-full w-full object-cover"
           data-module="lazy-video"
@@ -40,9 +54,9 @@ const poster = experiment.video.replace(/\.mp4$/, '.webp');
           playsinline
           preload="none"
         >
-          <source data-src={experiment.video} type="video/mp4" />
+          <source data-src={video} type="video/mp4" />
         </video>
-      </div>
+      </a>
 
       <div class="flex w-full flex-col gap-6 lg:max-w-[496px]" data-reveal>
         {/* The design shows no visible title here — the bracketed label above

@@ -3,13 +3,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeading from '../components/sections/PageHeading.astro';
 import FeatureStill from '../components/sections/FeatureStill.astro';
 import WideVisualRows from '../components/sections/WideVisualRows.astro';
+import NextExperiment from '../components/sections/NextExperiment.astro';
 import { experiments } from '../data/experiments';
 
 const experiment = experiments[3];
 
 // What the box does with a touch: still lines for the surface as it looks,
-// distorted ones for the surface as it turns out to feel.
-const lead =
+// distorted ones for the surface as it turns out to feel. This one reads
+// beside the setup photograph rather than above the section, so it is the
+// first row's copy instead of the section's lead.
+const untouched =
   'When untouched, the lines remain still and uniform, reflecting the perceived smoothness of the surface.';
 
 // The photographs are of the object itself: the sensor taped under it, and a
@@ -18,14 +21,12 @@ const rows = [
   {
     photo: '/assets/ex04/ex04-touch-finger.webp',
     alt: 'A fingertip resting on the object, with the sensor reading it underneath',
-    caption: 'TOUCH',
     text: 'When touched, these lines distort into abstract forms, bumps and movements, revealing the irregularities that would otherwise go unnoticed.',
     align: 'right' as const,
   },
   {
     photo: '/assets/ex04/ex04-touch-palm.webp',
     alt: 'A palm laid flat over the object, a broader and steadier contact',
-    caption: 'CONTACT',
     text: 'Through touch, invisible surface qualities are translated into visible data.',
     align: 'left' as const,
   },
@@ -46,14 +47,13 @@ const rows = [
   <WideVisualRows
     label="CONCEPT"
     id="concept"
-    lead={lead}
     gap="wide"
     rows={[
       {
         align: 'left',
         photo: '/assets/ex04/ex04-setup-front.webp',
         alt: 'The object in front of the screen, with the touch sensor wired to the board behind it',
-        caption: 'SETUP',
+        text: untouched,
       },
       rows[0],
       rows[1],
@@ -61,25 +61,16 @@ const rows = [
         align: 'right',
         photo: '/assets/ex04/ex04-setup-angle.webp',
         alt: 'The same setup from the side, showing the run of wire to the board',
-        caption: 'WIRING',
       },
       {
         align: 'left',
         photo: '/assets/ex04/ex04-touch-screen.webp',
         alt: 'A fingertip on the object with the field on screen moving behind it',
-        caption: 'RESPONSE',
       },
       {
         align: 'right',
-        photo: '/assets/ex04/ex04-object-still.webp',
-        alt: 'The same contact seen wider, the object between the hand and the screen',
-        caption: 'IN PLACE',
-      },
-      {
-        align: 'left',
         video: '/assets/video/ex04-process.mp4',
         alt: 'Process clip of the cube being touched while the field on screen moves with it',
-        caption: 'PROCESS',
       },
     ]}
   />
@@ -91,4 +82,6 @@ const rows = [
     poster="/assets/video/ex04-sensory-final.webp"
     alt="The full visual output, the field of lines running from rest through every distortion"
   />
+
+  <NextExperiment />
 </BaseLayout>

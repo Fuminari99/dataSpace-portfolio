@@ -1,7 +1,7 @@
 ---
-import { nextPage } from '../../data/site';
+import { nextPage, projects } from '../../data/site';
 import { experiments } from '../../data/experiments';
-import { hero } from '../../data/home';
+import { concept, hero } from '../../data/home';
 import HeroMediaTreatment from '../ui/HeroMediaTreatment.astro';
 import ClipStack from '../ui/ClipStack.astro';
 
@@ -11,11 +11,16 @@ const { href, label } = nextPage(Astro.url.pathname.replace(/\/$/, '') || '/');
 // about → home runs the same four-clip cycle as the hero (cross-fades included).
 const destination = experiments.find((experiment) => experiment.href === href);
 const isAboutHome = Astro.url.pathname.replace(/\/$/, '') === '/about' && href === '/';
-const video = destination?.video ?? hero.clips[0].video;
-const poster = video.replace(/\.mp4$/, '.webp');
+// Projects is not one of the experiments, so it has no clip of its own in
+// `experiments`; the concept's header footage is what that panel should carry.
+const isProjects = href === projects.href;
+const video = destination?.video ?? (isProjects ? concept.video : hero.clips[0].video);
+const poster = isProjects ? concept.poster : video.replace(/\.mp4$/, '.webp');
 const clipLabel = destination
   ? `${destination.title} — a clip from the experiment`
-  : hero.clips[0].alt;
+  : isProjects
+    ? concept.alt
+    : hero.clips[0].alt;
 ---
 
 {/* Same face as the home hero wordmark, centred over the next clip — the link

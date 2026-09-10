@@ -1,0 +1,52 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+
+export interface Plate {
+  src: string;
+  /** Describes the photograph. There is no caption, so this carries it alone. */
+  alt: string;
+}
+
+interface Props {
+  label: string;
+  /** Anchor target, matching the hash the footer link uses. */
+  id?: string;
+  plates: Plate[];
+}
+
+const { label, id, plates } = Astro.props;
+---
+
+{/*
+  Photographs set at the size the experiment summaries on Projects use, and
+  alternating sides down the page the same way. Nothing is captioned: these are
+  the object itself rather than figures being referred to, so the bracketed
+  label above the run is the only writing.
+*/}
+<section id={id} class="w-full scroll-mt-32 px-gutter py-section">
+  <div class="mx-auto flex max-w-page flex-col gap-8">
+    <SectionLabel label={label} />
+
+    {/* One group, so opening a plate lets the reader step through the rest. */}
+    <ul class="flex flex-col gap-16" data-lightbox-group>
+      {
+        plates.map((plate, index) => (
+          <li
+            class:list={['flex w-full', index % 2 === 1 ? 'lg:justify-end' : 'lg:justify-start']}
+            data-reveal
+          >
+            <div class="w-full overflow-hidden bg-placeholder lg:max-w-[712px]" data-lightbox>
+              <img
+                src={plate.src}
+                alt={plate.alt}
+                class="block h-auto w-full"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

@@ -11,10 +11,17 @@ import { members } from '../../data/site';
 ---
 
 <section class="w-full px-gutter py-section">
-  <div class="mx-auto flex max-w-page flex-col items-start gap-16 lg:flex-row lg:justify-center">
+  {/* Stacked, each panel takes the full width so its own centred contents sit
+      in the middle of the page; side by side they top-align as before. */}
+  {/* Marked once, on the row: the three are read side by side and should
+      arrive together rather than one after the next. */}
+  <div
+    class="mx-auto flex max-w-page flex-col items-stretch gap-16 lg:flex-row lg:items-start lg:justify-center"
+    data-reveal
+  >
     {
       members.map((member) => (
-        <div class="flex lg:flex-1 lg:justify-center" data-reveal>
+        <div class="flex lg:flex-1 lg:justify-center">
           <MemberProfile member={member} id={member.name.toLowerCase()} />
         </div>
       ))

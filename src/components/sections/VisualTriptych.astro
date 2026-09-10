@@ -39,32 +39,9 @@ const isTabbed = tabs.length > 1;
       >
         <div class="mx-auto flex max-w-page flex-col gap-4">
           <div class="rhythm__row flex w-full items-end justify-between gap-8">
-            {isTabbed ? (
-              <nav class="flex flex-wrap gap-4" aria-label={label}>
-                {tabs.map((other) =>
-                  other.id === tab.id ? (
-                    <span
-                      class="font-body text-body tracking-tight whitespace-nowrap"
-                      aria-current="true"
-                    >
-                      [ {other.label} ]
-                    </span>
-                  ) : (
-                    <a
-                      href={`#${other.id}`}
-                      class="font-body text-body tracking-tight whitespace-nowrap opacity-50"
-                      aria-label={`Go to ${other.label}`}
-                    >
-                      [ {other.label} ]
-                    </a>
-                  )
-                )}
-              </nav>
-            ) : (
-              <span class="font-body text-body tracking-tight whitespace-nowrap">
-                [ {tab.label} ]
-              </span>
-            )}
+            <span class="font-body text-body tracking-tight whitespace-nowrap">
+              [ {tab.label} ]
+            </span>
 
             {tab.description && (
               <details class="rhythm__more">
@@ -96,7 +73,7 @@ const isTabbed = tabs.length > 1;
                 alt={`${tab.label} visualisation by ${member.name}`}
                 name={member.name}
                 value={tab.values?.[memberIndex]}
-                class="w-full max-w-[320px]"
+                class="w-full md:max-w-[320px]"
               />
             ))}
           </div>

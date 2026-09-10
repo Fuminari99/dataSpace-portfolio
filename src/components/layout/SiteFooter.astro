@@ -16,24 +16,29 @@ const columns = [projects, ...nav];
   class="site-footer mt-16 w-full px-gutter pt-8 pb-section text-ink"
   style={`--footer-hue:${page.hue}`}
 >
+  {/* The mark and the site map read side by side at every width; only what
+      the map itself carries changes. */}
   <div
-    class="mx-auto flex max-w-page flex-col gap-12 font-display text-label tracking-tight md:flex-row md:gap-[128px]"
+    class="mx-auto flex max-w-page gap-8 font-display text-label tracking-tight md:gap-[128px]"
   >
     <a href="/" class="md:w-[184px]" data-nav-link>
       Fractal Variant
     </a>
 
-    <div class="grid flex-1 grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3 lg:grid-cols-6 lg:gap-x-10 xl:gap-x-16">
+    {/* On a phone the whole site map is more footer than page: the section
+        lists come off and what is left is the six destinations, read down the
+        left. The columns and their sections return with the width for them. */}
+    <div class="grid flex-1 grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-3 md:gap-y-12 lg:grid-cols-6 lg:gap-x-10 xl:gap-x-16">
       {
         columns.map((entry) => (
-          <div class="flex flex-col items-end gap-[40px] text-right">
+          <div class="flex flex-col items-start gap-4 text-left md:items-end md:gap-[40px] md:text-right">
             <a href={entry.href} class="whitespace-nowrap" data-nav-link>
               {entry.href === projects.href ? entry.hoverLabel : entry.label}
             </a>
             {/* Project Concept stands on its own: its sections are the four
                 experiments, which already have columns of their own here. */}
             {entry.href !== projects.href && (
-              <ul class="flex flex-col items-end gap-8">
+              <ul class="hidden flex-col items-end gap-8 md:flex">
                 {entry.sections.map((section) => (
                   <li>
                     <a href={`${entry.href}#${section.hash}`}>

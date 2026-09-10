@@ -13,6 +13,25 @@ const { id } = Astro.props;
 // units they hold their proportion as the canvas scales.
 const cqw = (px: number) => `${((px / TYPE_CANVAS) * 100).toFixed(4)}cqw`;
 
+/**
+ * Stacked, the collage should read the way the scatter does: a picture, the
+ * number that annotates it, the next picture. Below the breakpoint that is the
+ * order it is laid out in, so this interleaves the two here rather than
+ * reordering with CSS — the scatter is absolutely positioned, so document
+ * order costs it nothing, and a screen reader gets the same sequence the page
+ * shows. (Checked: no marker overlaps an image, so the paint order the swap
+ * changes is not visible.)
+ */
+const prose = collage.filter((item) => item.kind === 'text' && item.role !== 'marker');
+const markers = collage.filter((item) => item.kind === 'text' && item.role === 'marker');
+const images = collage.filter((item) => item.kind === 'image');
+
+const stacked = [
+  ...prose,
+  ...images.flatMap((image, index) => (markers[index] ? [image, markers[index]] : [image])),
+  ...markers.slice(images.length),
+];
+
 const canvasStyle = [
   `--collage-heading:${cqw(ROLE_SIZE.heading)}`,
   `--collage-note:${cqw(ROLE_SIZE.note)}`,
@@ -27,7 +46,7 @@ const canvasStyle = [
 
     <div class="collage" style={canvasStyle} data-reveal>
       {
-        collage.map((item) =>
+        stacked.map((item) =>
           item.kind === 'text' ? (
             <p
               class:list={[

@@ -68,7 +68,7 @@ const { label, id, lead, rows, gap = 'normal', anchorMembers = false, visuals } 
               video={clip}
               poster={clip ? clip.replace(/\.mp4$/, '.webp') : undefined}
               alt={row.alt ?? `${label} still by ${member.name}`}
-              name={row.caption ?? member.name}
+              name={row.caption ?? (row.photo || row.video ? undefined : member.name)}
               ratio="video"
               class="w-full lg:max-w-[712px]"
             />

@@ -5,6 +5,7 @@ import HomeBackground from '../components/sections/HomeBackground.astro';
 import HomeConcept from '../components/sections/HomeConcept.astro';
 import ExperimentStrip from '../components/sections/ExperimentStrip.astro';
 import HomeAbout from '../components/sections/HomeAbout.astro';
+import NextExperiment from '../components/sections/NextExperiment.astro';
 import { experiments } from '../data/experiments';
 import { home } from '../data/site';
 
@@ -40,5 +41,9 @@ const team = rest[experiments.length];
     </section>
 
     <HomeAbout id={team} />
+
+    {/* Closes on Project Concept — the page that the four experiments hang
+        off, and where the read continues. */}
+    <NextExperiment />
   </div>
 </BaseLayout>

@@ -51,9 +51,12 @@ import { concept } from '../../data/home';
           }
         </div>
 
+        {/* Ranged right on a phone, where it reads as the same kind of step
+            onward as About's own link below it; back to the column's own edge
+            once the section is two columns wide. */}
         <a
           href={concept.link.href}
-          class="font-display text-copy leading-[1.667] tracking-tight capitalize"
+          class="self-end font-display text-copy leading-[1.667] tracking-tight capitalize lg:self-start"
           data-reveal
           aria-label="Read about the project concept: Fractal Glass"
           data-module="hover-scramble"

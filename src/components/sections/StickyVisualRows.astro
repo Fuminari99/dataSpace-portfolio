@@ -17,27 +17,34 @@ const { label, id, lead, visuals } = Astro.props;
 ---
 
 <section class="w-full px-gutter py-section">
-  <div class="mx-auto flex max-w-page flex-col gap-8 lg:flex-row lg:items-start lg:gap-16">
+  <div
+    class="mx-auto flex max-w-page flex-col gap-8 lg:flex-row lg:items-start lg:gap-16"
+    data-module="sticky-label"
+  >
     {/*
-      Held in the middle of the viewport for the length of the column beside it,
-      so the reading stays put while the visuals it describes move past.
-      `self-start` is what gives the sticky element a shorter box than the row,
-      without which there is nothing for it to travel within. Centring is done
-      by giving the sticky box the full viewport height and flex-centring its
-      content inside it, rather than a `top-1/2` + `-translate-y-1/2` transform:
-      that transform applies unconditionally, including before the box is
-      actually pinned, which pulled the label up out of place the moment the
-      section came on screen. A flex-centred `h-svh` box reads the same whether
-      it is stuck or still sitting in normal flow.
+      Two boxes: a viewport-tall sticky track, and the label travelling down it.
+      The track's top starts at the row's top and its bottom ends at the row's
+      bottom, so `sticky-label` moving the label from one end of it to the other
+      over the length of the scroll lands it level with the first visual before
+      anything has moved, through the middle while the column is passing, and
+      level with the last visual at the end. `self-start` is what gives the
+      sticky element a shorter box than the row, without which there would be
+      nothing for it to travel within. With the script gone the label simply
+      sits at the top of the track.
     */}
-    <div class="flex flex-col gap-6 lg:sticky lg:top-0 lg:h-svh lg:w-[496px] lg:shrink-0 lg:justify-center lg:self-start" data-reveal>
-      <SectionLabel label={label} id={id} />
+    <div
+      class="lg:sticky lg:top-0 lg:h-svh lg:w-[496px] lg:shrink-0 lg:self-start"
+      data-sticky-track
+    >
+      <div class="flex flex-col gap-6" data-sticky-content data-reveal>
+        <SectionLabel label={label} id={id} />
 
-      {
-        lead && (
-          <p class="prose-justified font-body text-body-lg tracking-tight">{lead}</p>
-        )
-      }
+        {
+          lead && (
+            <p class="prose-justified font-body text-body-lg tracking-tight">{lead}</p>
+          )
+        }
+      </div>
     </div>
 
     <div class="flex w-full flex-col gap-16">

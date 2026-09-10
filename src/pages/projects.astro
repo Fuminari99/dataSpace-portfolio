@@ -17,6 +17,12 @@ const [conceptAnchor, ...experimentAnchors] = projects.sections.map((section) =>
 // The same two paragraphs the home page summarises the concept with. They are
 // the concept, so they are stated once and read from there.
 const intro = [concept.lead, concept.body];
+const summaryVideo: Record<string, string | undefined> = {
+  '/ex04': '/assets/video/ex04-sensory-v2.mp4',
+};
+const summaryPoster: Record<string, string | undefined> = {
+  '/ex04': '/assets/video/ex04-sensory-v2.webp',
+};
 ---
 
 <BaseLayout
@@ -33,6 +39,8 @@ const intro = [concept.lead, concept.body];
         experiment={experiment}
         id={experimentAnchors[index]}
         flipped={index % 2 === 1}
+        video={summaryVideo[experiment.href]}
+        poster={summaryPoster[experiment.href]}
       />
     ))
   }

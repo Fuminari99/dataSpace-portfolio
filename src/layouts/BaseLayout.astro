@@ -9,9 +9,30 @@ interface Props {
   description?: string;
   /** Floats the header over the page instead of stacking it above. See SiteHeader. */
   overlayHeader?: boolean;
+  /**
+   * Share card for this page, as a site-root path. Defaults to the site-wide
+   * card; give a page its own only when the default misrepresents it.
+   */
+  ogImage?: string;
+  ogImageAlt?: string;
 }
 
-const { title, description = '', overlayHeader = false } = Astro.props;
+const {
+  title,
+  description = '',
+  overlayHeader = false,
+  ogImage = '/og/og-default.jpg',
+  ogImageAlt = 'Fractal Variant — the site title over the home page background',
+} = Astro.props;
+
+/**
+ * Share cards and canonical links have to be absolute — a crawler reads them
+ * off the markup with no page to resolve against. `site` in astro.config.mjs
+ * is the one place that address is set.
+ */
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const shareImage = new URL(ogImage, Astro.site).href;
+const SITE_NAME = 'Fractal Variant';
 
 /** The clip the hero opens on, and with it the home page's LCP. */
 const heroPoster = hero.clips[0].poster;
@@ -24,7 +45,29 @@ const heroPoster = hero.clips[0].poster;
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    {/* Open Graph is what Slack, Discord, iMessage, Facebook and LinkedIn read.
+        X reads its own twitter:* tags and falls back to these, but naming the
+        card type is what gets the wide image rather than a thumbnail. Both
+        want the same 1200x630, so one file serves both. */}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta property="og:locale" content="en_GB" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={shareImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     {/* The two faces are served from here rather than from Google: a stylesheet
         on another origin blocks the first paint on a second connection, and the

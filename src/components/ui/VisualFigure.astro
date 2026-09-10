@@ -10,8 +10,8 @@ interface Props {
   poster?: string;
   /** Describes the visual for screen readers; the caption alone is just a name. */
   alt: string;
-  /** Left-hand caption, normally the member's name. */
-  name: string;
+  /** Left-hand caption, normally the member's name. Omit for no caption. */
+  name?: string;
   /** Optional right-hand caption, e.g. the recorded count "56/3min". */
   value?: string;
   /**
@@ -89,10 +89,12 @@ const aspect = await proportions(still);
     }
   </div>
 
-  <figcaption
-    class="flex w-full items-start justify-between font-body text-label leading-[1.8] tracking-[0.01em] opacity-50"
-  >
-    <span>{name}</span>
-    {value && <span class="text-right">{value}</span>}
-  </figcaption>
+  {
+    (name || value) && (
+      <figcaption class="flex w-full items-start justify-between font-body text-label leading-[1.8] tracking-[0.01em] opacity-50">
+        <span>{name}</span>
+        {value && <span class="text-right">{value}</span>}
+      </figcaption>
+    )
+  }
 </figure>

@@ -16,8 +16,6 @@ const OUT = 'public/assets';
 /** Big enough for the largest place any still is shown, at 2x. */
 const MAX_WIDTH = 1280;
 const QUALITY = 62;
-/** The experiment list shows its thumbnails at 144px; a 2x copy is plenty. */
-const THUMB_WIDTH = 288;
 
 async function* files(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
@@ -42,12 +40,6 @@ for await (const file of files(ROOT)) {
     .resize({ width: Math.min(width ?? MAX_WIDTH, MAX_WIDTH), withoutEnlargement: true })
     .webp({ quality: QUALITY })
     .toFile(target);
-
-  // A second, small copy for the places that show a still at thumbnail size.
-  await sharp(file)
-    .resize({ width: THUMB_WIDTH, withoutEnlargement: true })
-    .webp({ quality: QUALITY })
-    .toFile(target.replace(/\.webp$/, '-288.webp'));
 
   const [before, after] = await Promise.all([stat(file), stat(target)]);
   saved += before.size - after.size;

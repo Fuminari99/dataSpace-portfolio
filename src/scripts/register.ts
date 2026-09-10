@@ -7,6 +7,8 @@ import './hero-cells';
 import './reveal';
 import './sound-mixer';
 import './lightbox';
+import './menu';
+import './sticky-label';
 import './cursor';
 import './about-tools';
 
