@@ -7,10 +7,10 @@ import { experiments } from '../data/experiments';
 
 const experiment = experiments[3];
 
-// Drawn from the workshop sketch: a touch sensor on an Arduino, read into p5
-// over a serial bridge, with the reading eased rather than used raw.
+// What the box does with a touch: still lines for the surface as it looks,
+// distorted ones for the surface as it turns out to feel.
 const lead =
-  'The sensor is the whole input. It reports one number many times a second, and it only speaks up once a reading crosses the threshold set on the board, so what arrives in the browser is a sparse and jumpy stream rather than a smooth signal.';
+  'When untouched, the lines remain still and uniform, reflecting the perceived smoothness of the surface.';
 
 // The photographs are of the object itself: the sensor taped under it, and a
 // hand arriving on it. They are the other half of what the reading describes.
@@ -19,14 +19,14 @@ const rows = [
     photo: '/assets/ex04/ex04-touch-finger.webp',
     alt: 'A fingertip resting on the object, with the sensor reading it underneath',
     caption: 'TOUCH',
-    text: 'Nothing is drawn from the raw reading. Each frame moves five per cent of the way towards the latest value instead of jumping to it — a low-pass filter, in effect — so a hand landing on the object reads as something swelling and settling rather than as a switch being flipped.',
+    text: 'When touched, these lines distort into abstract forms, bumps and movements, revealing the irregularities that would otherwise go unnoticed.',
     align: 'right' as const,
   },
   {
     photo: '/assets/ex04/ex04-touch-palm.webp',
     alt: 'A palm laid flat over the object, a broader and steadier contact',
     caption: 'CONTACT',
-    text: 'That easing is the argument of the experiment. A sensor knows only touched or not touched, and the response is what supplies everything else: how firm the contact was, how long it lasted, whether it is still there. An ordinary object becomes sensable in the reading, not in the wiring.',
+    text: 'Through touch, invisible surface qualities are translated into visible data.',
     align: 'left' as const,
   },
 ];

@@ -95,8 +95,8 @@ export const experiments: Experiment[] = [
     summary:
       'A touch sensor on an everyday object, read into the browser through an Arduino, so contact becomes something visible.',
     intro: [
-      'The brief asks how data can be experienced, not only gathered and presented. Here nothing has been recorded in advance at all: the data is produced by whoever is standing in front of the object, in the moment, by touching it.',
-      'A touch sensor wired to an Arduino reports a single number many times a second into the browser. The sensor knows only that it is being touched — how firm the contact was, how long it lasted, whether it is still there is all supplied by how the sketch chooses to answer.',
+      'The brief centres around exploring how data can be created through interactive experiences. For this experiment, we focused on the discrepancy between how surfaces appear and how they actually feel.',
+      'Subtle scratches, bumps, dirt and crumbs scattered across a table can transform a seemingly smooth surface into a complex tactile experience. Using a touch sensor wired to an Arduino, we created an interactive box that translates touch into a visual response through stripes and unpredictable movement.',
     ],
     overview: [
       'A touch sensor on an ordinary object, wired to an Arduino and read into the browser many times a second.',
