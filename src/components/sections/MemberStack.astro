@@ -14,7 +14,7 @@ import { members } from '../../data/site';
   <div class="mx-auto flex max-w-page flex-col items-start gap-16 lg:flex-row lg:justify-center">
     {
       members.map((member) => (
-        <div class="flex lg:flex-1 lg:justify-center">
+        <div class="flex lg:flex-1 lg:justify-center" data-reveal>
           <MemberProfile member={member} id={member.name.toLowerCase()} />
         </div>
       ))

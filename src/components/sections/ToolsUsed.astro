@@ -34,13 +34,14 @@ const tools = [
 ---
 
 <section id={id} class="w-full shrink-0 scroll-mt-32 px-gutter pt-section pb-8">
-  <div class="mx-auto flex max-w-page flex-col gap-8">
+  <div class="mx-auto flex max-w-page flex-col gap-8" data-reveal>
     <SectionLabel label="TOOLS UTILISED" variant="heading" />
 
     <ul class="flex flex-col gap-12 lg:flex-row lg:gap-16">
       {
         tools.map((tool) => (
           <li
+            data-reveal
             class="tool flex flex-1 flex-col gap-2 transition-opacity duration-300 ease-out"
             data-tool-exps={tool.exps.join(' ')}
           >

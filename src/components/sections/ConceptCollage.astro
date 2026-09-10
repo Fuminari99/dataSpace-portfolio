@@ -22,10 +22,10 @@ const canvasStyle = [
 ---
 
 <section id={id} class="w-full scroll-mt-32 px-gutter py-section">
-  <div class="mx-auto flex max-w-page flex-col gap-4">
+  <div class="mx-auto flex max-w-page flex-col gap-4" data-reveal>
     <SectionLabel label="CONCEPT" />
 
-    <div class="collage" style={canvasStyle}>
+    <div class="collage" style={canvasStyle} data-reveal>
       {
         collage.map((item) =>
           item.kind === 'text' ? (

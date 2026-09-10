@@ -30,7 +30,7 @@ const { label, id, lead, visuals } = Astro.props;
       section came on screen. A flex-centred `h-svh` box reads the same whether
       it is stuck or still sitting in normal flow.
     */}
-    <div class="flex flex-col gap-6 lg:sticky lg:top-0 lg:h-svh lg:w-[496px] lg:shrink-0 lg:justify-center lg:self-start">
+    <div class="flex flex-col gap-6 lg:sticky lg:top-0 lg:h-svh lg:w-[496px] lg:shrink-0 lg:justify-center lg:self-start" data-reveal>
       <SectionLabel label={label} id={id} />
 
       {

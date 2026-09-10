@@ -6,8 +6,8 @@ const { label, id, lead, more, tracks, figures } = Astro.props;
 <section class="mixer w-full px-gutter" aria-labelledby={id} data-module="sound-mixer">
   <div class="mixer__content mx-auto max-w-page">
     <SectionLabel label={label} id={id} as="h2" />
-    <div class="mixer__intro"><p>{lead}</p><div class="mixer__more">{[more].flat().map((paragraph) => <p>{paragraph}</p>)}</div></div>
-    <div class="mixer__transport">
+    <div class="mixer__intro" data-reveal><p>{lead}</p><div class="mixer__more">{[more].flat().map((paragraph) => <p>{paragraph}</p>)}</div></div>
+    <div class="mixer__transport" data-reveal>
       <button type="button" data-play aria-label="Play all tracks">▶ PLAY</button>
       <div class="mixer__timeline">
         <input type="range" min="0" max="100" value="0" step="0.1" aria-label="Seek all tracks" data-seek />
@@ -16,7 +16,7 @@ const { label, id, lead, more, tracks, figures } = Astro.props;
     <p class="mixer__status" role="status" data-status></p>
     <ol class="mixer__tracks">
       {tracks.filter(t => !t.mixed).map((track, i) => (
-        <li data-track data-src={track.src} data-title={track.label}>
+        <li data-reveal data-track data-src={track.src} data-title={track.label}>
           <div class="mixer__heading"><h3>{track.source} <span class="mixer__rhythm">- {track.label.toLowerCase().replace(/^./, c => c.toUpperCase())}</span></h3></div>
           <div class="mixer__scope"><canvas aria-hidden="true"></canvas></div>
           {figures[i] && <div class="mixer__image" data-lightbox><img src={figures[i].src} alt={figures[i].alt} loading="lazy" decoding="async" /></div>}

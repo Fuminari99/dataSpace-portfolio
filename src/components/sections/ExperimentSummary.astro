@@ -19,7 +19,7 @@ const poster = experiment.video.replace(/\.mp4$/, '.webp');
 ---
 
 <section id={id} class="w-full scroll-mt-32 px-gutter py-section">
-  <div class="mx-auto flex max-w-page flex-col gap-6">
+  <div class="mx-auto flex max-w-page flex-col gap-6" data-reveal>
     <SectionLabel label={experiment.eyebrow.replace(/[[\]]/g, '')} />
 
     <div
@@ -28,7 +28,7 @@ const poster = experiment.video.replace(/\.mp4$/, '.webp');
         flipped ? 'lg:flex-row-reverse' : 'lg:flex-row',
       ]}
     >
-      <div class="w-full overflow-hidden bg-placeholder lg:max-w-[712px]" data-lightbox>
+      <div class="w-full overflow-hidden bg-placeholder lg:max-w-[712px]" data-lightbox data-reveal>
         <video
           class="aspect-video h-full w-full object-cover"
           data-module="lazy-video"
@@ -44,7 +44,7 @@ const poster = experiment.video.replace(/\.mp4$/, '.webp');
         </video>
       </div>
 
-      <div class="flex w-full flex-col gap-6 lg:max-w-[496px]">
+      <div class="flex w-full flex-col gap-6 lg:max-w-[496px]" data-reveal>
         {/* The design shows no visible title here — the bracketed label above
             names the experiment. The heading is kept for the document outline
             and for anyone reading with a screen reader. */}

@@ -36,13 +36,13 @@ if (still?.startsWith('/')) {
 
 <section class="w-full py-section">
   <div class="flex w-full flex-col gap-6">
-    <div class="mx-auto w-full max-w-page px-gutter">
+    <div class="mx-auto w-full max-w-page px-gutter" data-reveal>
       <SectionLabel label={label} id={id} />
     </div>
 
     {/* Full width: the clip is cut off by the page's own edges rather than
         sitting inside the gutter. */}
-    <div class="w-full">
+    <div class="w-full" data-reveal>
       <div
         class:list={['w-full overflow-hidden bg-placeholder', !aspect && 'aspect-[1024/530]']}
         style={aspect ? `aspect-ratio:${aspect}` : undefined}

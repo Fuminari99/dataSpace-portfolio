@@ -68,7 +68,9 @@ const heroPoster = hero.clips[0].poster;
     <div data-barba="container" data-barba-namespace="default" class="flex flex-1 flex-col">
       <SiteHeader overlay={overlayHeader} />
 
-      <main class="flex flex-1 flex-col items-center" data-module="heading-scramble lightbox">
+      {/* `reveal` sits here rather than on one page so every page settles the
+          same way; anything not marked `[data-reveal]` is untouched by it. */}
+      <main class="flex flex-1 flex-col items-center" data-module="heading-scramble lightbox reveal">
         <slot />
       </main>
 

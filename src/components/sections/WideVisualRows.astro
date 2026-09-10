@@ -45,7 +45,7 @@ const { label, id, lead, rows, gap = 'normal', anchorMembers = false, visuals } 
 
     {
       lead && (
-        <p class="prose-justified max-w-[496px] font-body text-body-lg tracking-tight">
+        <p class="prose-justified max-w-[496px] font-body text-body-lg tracking-tight" data-reveal>
           {lead}
         </p>
       )
@@ -81,6 +81,7 @@ const { label, id, lead, rows, gap = 'normal', anchorMembers = false, visuals } 
 
           return (
             <div
+              data-reveal
               class:list={[
                 'flex w-full flex-col items-start gap-8 lg:flex-row lg:items-center lg:justify-between',
                 !copy && row.align === 'right' && 'lg:justify-end',

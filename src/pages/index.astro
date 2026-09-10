@@ -24,8 +24,9 @@ const team = rest[experiments.length];
   overlayHeader
 >
   {/* Everything below the hero settles into place as it is scrolled to; the
-      hero is already on screen when the page opens, so it is left alone. */}
-  <div class="flex w-full flex-col items-center" data-module="reveal">
+      hero is already on screen when the page opens, so it is left alone.
+      The module itself is mounted on <main> in BaseLayout. */}
+  <div class="flex w-full flex-col items-center">
     <HomeHero />
 
     <HomeBackground id={background} />
